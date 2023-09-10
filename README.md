@@ -1,5 +1,4 @@
 # WhoruBackend
-### GrenNMC
 ---
 # Cài đặt
 1. Công cụ
@@ -14,16 +13,19 @@
 - Mở dự án trên Visual studio
 - Vào Tools -> Nuget Package Manager -> Package Manager Console
 - Nhập dòng:
-  ```
+  ````
   add-migration "Tên file bạn muốn đặt (lưu ý không trùng tên các file trong thư mực migration)"
-  ```
+  ````
   Chờ cho đến khi khởi tạo file migration.
 - Nhập dòng:
-  ``
+  ````
   update-database
-  ``
+  ````
   Chờ cập nhập database
 - Vào Postgresql kiểm tra dữ liệu đã tạo.
 4. Khởi động dự án
 - Vào giao diện visual studio code nhấn F5 hoặc Ctrl F5 để chạy chương trình.
 - Vào Postman để thực hiện Test các API.
+- 
+---
+### By GrenNMC
