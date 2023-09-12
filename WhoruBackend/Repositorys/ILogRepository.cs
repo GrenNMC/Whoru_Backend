@@ -1,4 +1,5 @@
-﻿using WhoruBackend.ModelViews;
+﻿using Microsoft.AspNetCore.Mvc;
+using WhoruBackend.ModelViews;
 
 namespace WhoruBackend.Repositorys
 {

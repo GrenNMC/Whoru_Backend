@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Threading;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WhoruBackend.Data;
 using WhoruBackend.ModelViews;
 using WhoruBackend.Utilities.Constants;
@@ -30,10 +30,11 @@ namespace WhoruBackend.Repositorys.Implement
                  {
                     return new(MessageConstant.WRONG_PASSWORD);
                  }       
-                return new(user.Id, MessageConstant.LOGIN_SUCCESS, user.UserName);
+                return new (user.Id, MessageConstant.LOGIN_SUCCESS, user.UserName);
             }
             catch (Exception e)
-            {
+            { 
+                Console.WriteLine(e);
                 return new (MessageConstant.SYSTEM_ERROR);
             }
         }

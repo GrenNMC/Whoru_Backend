@@ -15,6 +15,7 @@ Log.Logger = new LoggerConfiguration().WriteTo.File("log/logs.txt", rollingInter
 builder.Host.UseSerilog();
 
 // Add services to the container.
+//services.AddDbContext<ApplicationDbContext>(option => option.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnectionString")));
 services.AddDbContext<ApplicationDbContext>(option => option.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnectionString")));
 services.AddControllers();
 
