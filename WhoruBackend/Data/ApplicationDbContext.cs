@@ -35,7 +35,7 @@ namespace WhoruBackend.Data
 
             SeedRoles(modelBuilder);
             SeedUsers(modelBuilder);
-            //SeedUserInfos(modelBuilder);
+            SeedUserInfos(modelBuilder);
         }
 
         // Seed data
@@ -68,7 +68,6 @@ namespace WhoruBackend.Data
                 Id = 1,
                 UserName = "Admin",
                 Email = "nmc0401@gmail.com",
-                InfoId = 1,
                 RoleId = 1,
             };
             newUser.Password = new PasswordHasher().HashToString("123456@A");
@@ -81,7 +80,6 @@ namespace WhoruBackend.Data
                 Id = 2,
                 UserName = "admin_2",
                 Email = "20110455@gmail.com",
-                InfoId = 2,
                 RoleId = 1,
             };
             newUser2.Password = new PasswordHasher().HashToString("123456@A");
@@ -105,7 +103,7 @@ namespace WhoruBackend.Data
                 Avatar = "Link hinh anh :>",
                 UserId = 2
             };
-            modelBuilder.Entity<UserInfo>().HasData(userInfo);
+            modelBuilder.Entity<UserInfo>().HasData(userInfo2);
         }
 
     }

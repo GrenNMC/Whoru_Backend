@@ -21,8 +21,6 @@ namespace WhoruBackend.Models
 
         // Foreign keys
         public int RoleId { get; set; }
-        public int InfoId { get; set; }
-
         // Connect to tables
         public UserInfo? UserInfo { get; set; }
     }

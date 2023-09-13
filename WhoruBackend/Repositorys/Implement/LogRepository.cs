@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using WhoruBackend.Data;
 using WhoruBackend.ModelViews;
 using WhoruBackend.Utilities.Constants;
@@ -34,7 +33,7 @@ namespace WhoruBackend.Repositorys.Implement
             }
             catch (Exception e)
             { 
-                Console.WriteLine(e);
+                //Console.WriteLine(e);
                 return new (MessageConstant.SYSTEM_ERROR);
             }
         }
