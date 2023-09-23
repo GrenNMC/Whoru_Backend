@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using WhoruBackend.Data;
 using WhoruBackend.Models;
 using WhoruBackend.Models.dto;
@@ -19,6 +20,7 @@ namespace WhoruBackend.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [Authorize]
         public ActionResult<UserDto> GetAll(){
             var list = _userService.GetAll();
             return Ok(list);

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using WhoruBackend.ModelViews;
 using WhoruBackend.Services;
 using WhoruBackend.Utilities.Constants;
@@ -16,6 +17,7 @@ namespace WhoruBackend.Controllers
             _LogService = logService;
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Login([FromBody] LoginView loginView) {
             var response = await _LogService.Login(loginView);

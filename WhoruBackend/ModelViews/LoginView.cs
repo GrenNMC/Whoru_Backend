@@ -17,12 +17,14 @@
         public int UserId { get; set; }
         public string? UserName { get; set; }
         public string? Message { get; set; }
+        public string? Token { get; set; }
 
-        public ResponseLoginView(int UserId, string? Message, string? UserName)
+        public ResponseLoginView(int UserId, string? Message, string? UserName, string? token)
         {
             this.UserId = UserId;
             this.Message = Message;
             this.UserName = UserName;
+            this.Token = token;
         }
 
         public ResponseLoginView(string? Message)
