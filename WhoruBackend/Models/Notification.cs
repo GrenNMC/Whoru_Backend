@@ -15,8 +15,8 @@ namespace WhoruBackend.Models
         public int? UserReceive { get; set; }
 
         // Connect to tables
-        public User? Sender { get; set; }
-        public User? Receive { get; set; }
+        public UserInfo? Sender { get; set; }
+        public UserInfo? Receiver { get; set; }
     }
 }
 

@@ -13,7 +13,7 @@ namespace WhoruBackend.Models
         public int IdFollowing { get; set; }
 
         //Connect to tables
-        public User? Follower { get; set; }
-        public User? Following { get; set; }
+        public UserInfo? Follower { get; set; }
+        public UserInfo? Following { get; set; }
     }
 }

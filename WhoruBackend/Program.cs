@@ -13,15 +13,6 @@ var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 var configuration = builder.Configuration;
 
-// Register Serilog
-//Log.Logger = new LoggerConfiguration().WriteTo.File("log/logs.txt", rollingInterval: RollingInterval.Day).MinimumLevel.Debug().CreateLogger();
-//builder.Host.UseSerilog();
-var logger = new LoggerConfiguration()
-    .ReadFrom.Configuration(configuration)
-    .Enrich.FromLogContext()
-    .CreateLogger();
-builder.Logging.AddSerilog(logger);
-builder.Host.UseSerilog();
 // Add JwtAuth
 var key = configuration["Jwt:Key"];
 //mã hóa key
@@ -39,10 +30,10 @@ services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = true,
             ValidAudience = configuration["Jwt:Audience"],
             //Đảm bảo phải có thời gian hết hạn trong token
+
             RequireExpirationTime = true,
             ValidateLifetime = true,
             //Chỉ ra key sử dụng trong token
-            ValidateIssuerSigningKey = true,
             IssuerSigningKey = signingKey,
             RequireSignedTokens = true
         };
@@ -64,6 +55,26 @@ services.AddScoped<IlogRepository, LogRepository>();
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen();
 
+//Register Serilog
+//Log.Logger = new LoggerConfiguration().WriteTo.File("Logs/logs.txt", rollingInterval: RollingInterval.Day).CreateLogger();
+//builder.Host.UseSerilog();
+//var logger = new LoggerConfiguration()
+//    .ReadFrom.Configuration(configuration)
+//    .Enrich.FromLogContext()
+//    .CreateLogger();
+//builder.Logging.AddSerilog(logger);
+
+
+builder.Host.UseSerilog((context, config) =>
+{
+    config.WriteTo.File(path: "Logs/log-.txt",
+    rollingInterval: RollingInterval.Day,
+    rollOnFileSizeLimit: true
+    ).MinimumLevel.Information();
+});
+
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -72,9 +83,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseHttpsRedirection();
-
+app.UseSerilogRequestLogging();
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

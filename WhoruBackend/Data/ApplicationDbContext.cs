@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using WhoruBackend.Models;
 using WhoruBackend.Utilities.SecurePassword;
 
@@ -10,6 +9,13 @@ namespace WhoruBackend.Data
         public DbSet<Role> Roles { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<UserInfo> UserInfos { get; set; }
+        public DbSet<Feed> Feeds { get; set; }
+        public DbSet<FeedImage> FeedImages { get; set; }
+        public DbSet<Like> Likes { get; set; }
+        public DbSet<Share> Shares { get; set; }
+        public DbSet<Comment> Comments { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
+        public DbSet<Chat> Chats { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
 
@@ -28,6 +34,72 @@ namespace WhoruBackend.Data
                 .WithOne(s => s.UserInfo)
                 .HasForeignKey<UserInfo>(s => s.UserId)
                 .OnDelete(DeleteBehavior.SetNull);
+            modelBuilder.Entity<FeedImage>()
+                .HasOne(s => s.Feed)
+                .WithMany(s => s.Images)
+                .HasForeignKey(s => s.FeedId)
+                .OnDelete(DeleteBehavior.SetNull);
+            modelBuilder.Entity<Share>()
+                .HasOne(s => s.Feed)
+                .WithMany(s => s.Shares)
+                .HasForeignKey(s => s.FeedId)
+                .OnDelete(DeleteBehavior.SetNull);
+            modelBuilder.Entity<Share>()
+                .HasOne(s => s.UserInfo)
+                .WithMany(s => s.Shares)
+                .HasForeignKey(s => s.FeedId)
+                .OnDelete(DeleteBehavior.SetNull);
+            modelBuilder.Entity<Like>()
+               .HasOne(s => s.Feed)
+               .WithMany(s => s.Likes)
+               .HasForeignKey(s => s.FeedId)
+               .OnDelete(DeleteBehavior.SetNull);
+            modelBuilder.Entity<Like>()
+                .HasOne(s => s.UserInfo)
+                .WithMany(s => s.Likes)
+                .HasForeignKey(s => s.FeedId)
+                .OnDelete(DeleteBehavior.SetNull);
+            //modelBuilder.Entity<Notification>()
+            //    .HasOne(s => s.Sender)
+            //    .WithMany(s => s.Notifications)
+            //    .HasForeignKey(s => s.UserSend)
+            //    .OnDelete(DeleteBehavior.SetNull);
+            //modelBuilder.Entity<Notification>()
+            //    .HasOne(s => s.Receiver)
+            //    .WithMany(s => s.Notifications)
+            //    .HasForeignKey(s => s.UserReceive)
+            //    .OnDelete(DeleteBehavior.SetNull);
+            //modelBuilder.Entity<Chat>()
+            //    .HasOne(s => s.Sender)
+            //    .WithMany(s => s.Chats)
+            //    .HasForeignKey(s => s.UserSend)
+            //    .OnDelete(DeleteBehavior.SetNull);
+            //modelBuilder.Entity<Chat>()
+            //    .HasOne(s => s.Receiver)
+            //    .WithMany(s => s.Chats)
+            //    .HasForeignKey(s => s.UserReceive)
+            //    .OnDelete(DeleteBehavior.SetNull);
+            modelBuilder.Entity<Comment>()
+                .HasOne(s => s.Feed)
+                .WithMany(s => s.Comments)
+                .HasForeignKey(s => s.FeedId)
+                .OnDelete(DeleteBehavior.SetNull);
+            modelBuilder.Entity<Comment>()
+                .HasOne(s => s.UserInfo)
+                .WithMany(s => s.Comments)
+                .HasForeignKey(s => s.UserId)
+                .OnDelete(DeleteBehavior.SetNull);
+            modelBuilder.Entity<UserInfo>()
+                .HasMany(ui => ui.Follower)
+                .WithOne()
+                .HasForeignKey(ui => ui.UserId)
+                .OnDelete(DeleteBehavior.SetNull);
+            modelBuilder.Entity<UserInfo>()
+                .HasMany(ui => ui.Following)
+                .WithOne()
+                .HasForeignKey(ui => ui.UserId)
+                .OnDelete(DeleteBehavior.SetNull);
+
 
             // Set indexes
             modelBuilder.Entity<User>()
@@ -69,6 +141,7 @@ namespace WhoruBackend.Data
                 UserName = "Admin",
                 Email = "nmc0401@gmail.com",
                 RoleId = 1,
+                Phone = "0769395658",
             };
             newUser.Password = new PasswordHasher().HashToString("123456@A");
             modelBuilder.Entity<User>().HasData(newUser);
@@ -81,6 +154,7 @@ namespace WhoruBackend.Data
                 UserName = "admin_2",
                 Email = "20110455@gmail.com",
                 RoleId = 1,
+                Phone = "0769395658",
             };
             newUser2.Password = new PasswordHasher().HashToString("123456@A");
             modelBuilder.Entity<User>().HasData(newUser2);

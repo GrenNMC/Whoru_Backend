@@ -3,15 +3,17 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WhoruBackend.Models
 {
-    public class FeedImage
+    public class Like
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public string? Url { get; set; }
-        //Khóa ngoại
-        public int? FeedId { get; set; }
-        //Connect to table 
+        // Khóa ngoại
+        public int UserId { get; set; }
+        public int FeedId { get; set; }
+
+        // Connect to table 
         public Feed? Feed { get; set; }
+        public UserInfo? UserInfo { get; set; }
     }
 }

@@ -3,20 +3,19 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WhoruBackend.Models
 {
-    public class Chat
+    public class Comment
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public DateTime? Date { get; set; }
+        public DateTime Date { get; set; }
         public string? Message { get; set; }
+        // Khóa ngoại
+        public int UserId { get; set; }
+        public int FeedId { get; set; }
 
-        //Khoa ngoai
-        public int? UserSend { get; set; }
-        public int? UserReceive { get; set; }
-
-        // Connect to tables
-        public UserInfo? Sender { get; set; }
-        public UserInfo? Receiver { get; set; }
+        // Connect to table 
+        public Feed? Feed { get; set; }
+        public UserInfo? UserInfo { get; set; }
     }
 }

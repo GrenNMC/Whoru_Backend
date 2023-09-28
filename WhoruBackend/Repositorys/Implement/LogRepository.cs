@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using WhoruBackend.Controllers;
 using WhoruBackend.Data;
 using WhoruBackend.ModelViews;
 using WhoruBackend.Utilities.Constants;
@@ -51,23 +53,14 @@ namespace WhoruBackend.Repositorys.Implement
                     new Claim(ClaimTypes.Email, user.Email),
                 };
                 //tạo token
-                //var token = new JwtSecurityToken
-                //    (
-                //        issuer: _configuration["Jwt:Issuer"],
-                //        audience: _configuration["Jwt:Audience"],
-                //        expires: DateTime.Now.AddHours(1),
-                //        signingCredentials: signingCredential,
-                //        claims: claim
-                //    );
-
                 var token = new JwtSecurityToken
-                (
-                    _configuration["Jwt:Issuer"],
-                    _configuration["Jwt:Audience"],
-                    claims,
-                    expires: DateTime.Now.AddMinutes(15),
-                    signingCredentials: credentials
-                );
+                    (
+                        issuer: _configuration["Jwt:Issuer"],
+                        audience: _configuration["Jwt:Audience"],
+                        expires: DateTime.Now.AddHours(1),
+                        signingCredentials: credentials,
+                        claims: claims
+                    );
                 //sinh ra chuỗi token với các thông số ở trên
                 var UserToken = new JwtSecurityTokenHandler().WriteToken(token);
                 //Có thể tạo claims chứa thông tin người dùng (nếu cần)
@@ -75,7 +68,7 @@ namespace WhoruBackend.Repositorys.Implement
             }
             catch (Exception e)
             { 
-                Console.WriteLine(e);
+                Log.Error(e.Message);
                 return new (MessageConstant.SYSTEM_ERROR);
             }
         }
