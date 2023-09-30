@@ -13,6 +13,7 @@ namespace WhoruBackend.Data
         public DbSet<FeedImage> FeedImages { get; set; }
         public DbSet<Like> Likes { get; set; }
         public DbSet<Share> Shares { get; set; }
+        public DbSet<Follow> Follows { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Chat> Chats { get; set; }
@@ -28,6 +29,10 @@ namespace WhoruBackend.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Follow>()
+                .HasKey(f => new { f.IdFollowing, f.IdFollower });
+            modelBuilder.Entity<Notification>()
+                .HasKey(f => new { f.UserReceive, f.UserSend });
 
             modelBuilder.Entity<UserInfo>() 
                 .HasOne(s => s.User)
@@ -59,26 +64,6 @@ namespace WhoruBackend.Data
                 .WithMany(s => s.Likes)
                 .HasForeignKey(s => s.FeedId)
                 .OnDelete(DeleteBehavior.SetNull);
-            //modelBuilder.Entity<Notification>()
-            //    .HasOne(s => s.Sender)
-            //    .WithMany(s => s.Notifications)
-            //    .HasForeignKey(s => s.UserSend)
-            //    .OnDelete(DeleteBehavior.SetNull);
-            //modelBuilder.Entity<Notification>()
-            //    .HasOne(s => s.Receiver)
-            //    .WithMany(s => s.Notifications)
-            //    .HasForeignKey(s => s.UserReceive)
-            //    .OnDelete(DeleteBehavior.SetNull);
-            //modelBuilder.Entity<Chat>()
-            //    .HasOne(s => s.Sender)
-            //    .WithMany(s => s.Chats)
-            //    .HasForeignKey(s => s.UserSend)
-            //    .OnDelete(DeleteBehavior.SetNull);
-            //modelBuilder.Entity<Chat>()
-            //    .HasOne(s => s.Receiver)
-            //    .WithMany(s => s.Chats)
-            //    .HasForeignKey(s => s.UserReceive)
-            //    .OnDelete(DeleteBehavior.SetNull);
             modelBuilder.Entity<Comment>()
                 .HasOne(s => s.Feed)
                 .WithMany(s => s.Comments)
@@ -89,17 +74,66 @@ namespace WhoruBackend.Data
                 .WithMany(s => s.Comments)
                 .HasForeignKey(s => s.UserId)
                 .OnDelete(DeleteBehavior.SetNull);
-            modelBuilder.Entity<UserInfo>()
-                .HasMany(ui => ui.Follower)
-                .WithOne()
-                .HasForeignKey(ui => ui.UserId)
+            modelBuilder.Entity<Follow>()
+                .HasOne(s => s.Following)
+                .WithMany(s => s.Following)
+                .HasForeignKey(s => s.IdFollowing)
                 .OnDelete(DeleteBehavior.SetNull);
-            modelBuilder.Entity<UserInfo>()
-                .HasMany(ui => ui.Following)
-                .WithOne()
-                .HasForeignKey(ui => ui.UserId)
+            modelBuilder.Entity<Follow>()
+                .HasOne(s => s.Follower)
+                .WithMany(s => s.Follower)
+                .HasForeignKey(s => s.IdFollower)
                 .OnDelete(DeleteBehavior.SetNull);
-
+            modelBuilder.Entity<Notification>()
+                .HasOne(s => s.Sender)
+                .WithMany(s => s.SendNotifications)
+                .HasForeignKey(s => s.UserSend)
+                .OnDelete(DeleteBehavior.SetNull);
+            modelBuilder.Entity<Notification>()
+                .HasOne(s => s.Receiver)
+                .WithMany(s => s.ReceiveNotifications)
+                .HasForeignKey(s => s.UserReceive)
+                .OnDelete(DeleteBehavior.SetNull);
+            modelBuilder.Entity<Chat>()
+                .HasOne(s => s.Sender)
+                .WithMany(s => s.SendChats)
+                .HasForeignKey(s => s.UserSend)
+                .OnDelete(DeleteBehavior.SetNull);
+            modelBuilder.Entity<Chat>()
+                .HasOne(s => s.Receiver)
+                .WithMany(s => s.ReceiveChats)
+                .HasForeignKey(s => s.UserReceive)
+                .OnDelete(DeleteBehavior.SetNull);
+            //modelBuilder.Entity<UserInfo>()
+            //    .HasMany(ui => ui.Follower)
+            //    .WithOne()
+            //    .HasForeignKey(ui => ui.UserId)
+            //    .OnDelete(DeleteBehavior.SetNull);
+            //modelBuilder.Entity<UserInfo>()
+            //    .HasMany(ui => ui.Following)
+            //    .WithOne()
+            //    .HasForeignKey(ui => ui.UserId)
+            //    .OnDelete(DeleteBehavior.SetNull);
+            //modelBuilder.Entity<Notification>()
+            //    .HasOne(s => s.Sender)
+            //    .WithMany(s => s.Notifications)
+            //    .HasForeignKey(s => s.UserSend)
+            //    .OnDelete(DeleteBehavior.SetNull);
+            //modelBuilder.Entity<Notification>()
+            //    .HasOne(s => s.Receiver)
+            //    .WithMany(s => s.Notifications)
+            //    .HasForeignKey(s => s.UserReceive)
+            //    .OnDelete(DeleteBehavior.SetNull);
+            //modelBuilder.Entity<Chat>()
+            //    .HasOne(s => s.Sender)
+            //    .WithMany(s => s.Chats)
+            //    .HasForeignKey(s => s.UserSend)
+            //    .OnDelete(DeleteBehavior.SetNull);
+            //modelBuilder.Entity<Chat>()
+            //    .HasOne(s => s.Receiver)
+            //    .WithMany(s => s.Chats)
+            //    .HasForeignKey(s => s.UserReceive)
+            //    .OnDelete(DeleteBehavior.SetNull);
 
             // Set indexes
             modelBuilder.Entity<User>()

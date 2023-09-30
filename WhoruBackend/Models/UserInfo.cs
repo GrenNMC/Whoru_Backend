@@ -17,12 +17,14 @@ namespace WhoruBackend.Models
 
         // Connect to tables
         public User? User { get; set; }
-        public List<UserInfo>? Follower { get; set; }
-        public List<UserInfo>? Following { get; set; }
+        public List<Follow>? Follower { get; set; }
+        public List<Follow>? Following { get; set; }
         public List<Share>? Shares { get; set; }
         public List<Like>? Likes { get; set; }
-        //public List<Notification>? Notifications { get; set; }
-        //public List<Chat>? Chats { get; set; }
+        public List<Notification>? SendNotifications { get; set; }
+        public List<Notification>? ReceiveNotifications { get; set; }
+        public List<Chat>? SendChats { get; set; }
+        public List<Chat>? ReceiveChats { get; set; }
         public List<Comment>? Comments { get; set; }
     }
 }
