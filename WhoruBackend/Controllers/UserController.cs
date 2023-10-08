@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using WhoruBackend.Data;
 using WhoruBackend.Models;
 using WhoruBackend.Models.dto;
+using WhoruBackend.ModelViews;
 using WhoruBackend.Services;
 
 namespace WhoruBackend.Controllers
@@ -21,21 +22,21 @@ namespace WhoruBackend.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize]
-        public ActionResult<UserDto> GetAll(){
+        public ActionResult<UserDto> GetAll() {
             var list = _userService.GetAll();
             return Ok(list);
         }
 
         [HttpPost]
-        public ActionResult<UserDto> Create([FromBody] UserDto userDto) {
-            if (userDto == null)
+        [AllowAnonymous]
+        public ActionResult<ResponseView> Create([FromBody] RegisterView user) {
+            if (user == null)
             {
-                return BadRequest(userDto);
+                return BadRequest("Không có");
             }
-            var user = _userService.Create(userDto);
+            var register = _userService.Create(user);
 
-
-            return Ok(user);
+            return Ok(register.Message);
         }
     }
 }

@@ -6,6 +6,7 @@ namespace WhoruBackend.Data
 {
     public class ApplicationDbContext : DbContext
     {
+
         public DbSet<Role> Roles { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<UserInfo> UserInfos { get; set; }
@@ -176,6 +177,7 @@ namespace WhoruBackend.Data
                 Email = "nmc0401@gmail.com",
                 RoleId = 1,
                 Phone = "0769395658",
+                isDisabled = false,
             };
             newUser.Password = new PasswordHasher().HashToString("123456@A");
             modelBuilder.Entity<User>().HasData(newUser);
@@ -189,6 +191,7 @@ namespace WhoruBackend.Data
                 Email = "20110455@gmail.com",
                 RoleId = 1,
                 Phone = "0769395658",
+                isDisabled = false,
             };
             newUser2.Password = new PasswordHasher().HashToString("123456@A");
             modelBuilder.Entity<User>().HasData(newUser2);

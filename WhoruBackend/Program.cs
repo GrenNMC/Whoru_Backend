@@ -41,6 +41,7 @@ services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 // Add services to the container.
 services.AddDbContext<ApplicationDbContext>(option => option.UseNpgsql(builder.Configuration.GetConnectionString("ElephantSQLConnectionString")));
+
 services.AddControllers();
 
 // Register Service

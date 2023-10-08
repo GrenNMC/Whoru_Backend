@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WhoruBackend.Models.dto;
+using WhoruBackend.ModelViews;
 using WhoruBackend.Repositorys;
 
 namespace WhoruBackend.Services.Implement
@@ -13,9 +14,9 @@ namespace WhoruBackend.Services.Implement
             _userRepository = userRepository;
         }
 
-        public UserDto Create(UserDto userDto)
+        public ResponseView Create(RegisterView user)
         {
-            return _userRepository.Create(userDto);
+            return _userRepository.Create(user);
         }
 
         public List<UserDto> GetAll()

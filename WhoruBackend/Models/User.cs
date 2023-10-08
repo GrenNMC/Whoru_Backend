@@ -17,9 +17,8 @@ namespace WhoruBackend.Models
         public string? Email { get; set; }
         [Required]
         public string? Phone { get; set; }
-        [Required]
+        public bool? isDisabled { get; set; }
         public DateTime? CreatedDate { get; set; }
-        [Required]
         public DateTime? UpdatedDate { get; set; }
 
         // Foreign keys
