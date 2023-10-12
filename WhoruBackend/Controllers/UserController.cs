@@ -21,7 +21,8 @@ namespace WhoruBackend.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [Authorize]
+        //[Authorize]
+        [AllowAnonymous]
         public ActionResult<UserDto> GetAll() {
             var list = _userService.GetAll();
             return Ok(list);
