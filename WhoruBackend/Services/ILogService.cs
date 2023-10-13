@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WhoruBackend.ModelViews;
+using WhoruBackend.ModelViews.LogModelViews;
 
 namespace WhoruBackend.Services
 {

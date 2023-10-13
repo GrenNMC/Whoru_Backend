@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
-using WhoruBackend.ModelViews;
+using WhoruBackend.ModelViews.LogModelViews;
 using WhoruBackend.Services;
 using WhoruBackend.Utilities.Constants;
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WhoruBackend.Models.dto;
 using WhoruBackend.ModelViews;
+using WhoruBackend.ModelViews.LogModelViews;
+using WhoruBackend.ModelViews.UserModelViews;
 
 namespace WhoruBackend.Services
 {

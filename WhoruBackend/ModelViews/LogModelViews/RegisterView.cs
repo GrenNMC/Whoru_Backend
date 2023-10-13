@@ -1,4 +1,4 @@
-﻿namespace WhoruBackend.ModelViews
+﻿namespace WhoruBackend.ModelViews.LogModelViews
 {
     public class RegisterView
     {

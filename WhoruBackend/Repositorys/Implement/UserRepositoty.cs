@@ -1,8 +1,9 @@
 ﻿using Serilog;
 using WhoruBackend.Data;
 using WhoruBackend.Models;
-using WhoruBackend.Models.dto;
 using WhoruBackend.ModelViews;
+using WhoruBackend.ModelViews.LogModelViews;
+using WhoruBackend.ModelViews.UserModelViews;
 using WhoruBackend.Utilities.SecurePassword;
 
 namespace WhoruBackend.Repositorys.Implement

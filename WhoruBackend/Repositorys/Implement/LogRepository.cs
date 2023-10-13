@@ -6,7 +6,7 @@ using System.Security.Claims;
 using System.Text;
 using WhoruBackend.Controllers;
 using WhoruBackend.Data;
-using WhoruBackend.ModelViews;
+using WhoruBackend.ModelViews.LogModelViews;
 using WhoruBackend.Utilities.Constants;
 using WhoruBackend.Utilities.SecurePassword;
 
@@ -37,10 +37,17 @@ namespace WhoruBackend.Repositorys.Implement
                     return new(MessageConstant.WRONG_PASSWORD);
                  }
                 // Get role
-                var role = from n in _DbContext.Roles
-                           where n.Id == user.RoleId
-                           select n.RoleName;
-                
+                //var role = from n in _DbContext.Roles
+                //           where n.Id == user.RoleId
+                //           select n.RoleName;
+                string roleName;
+                switch (user.RoleId)
+                {
+                    case 1: roleName = "Admin";
+                        break;
+                    case 2: roleName = "User";
+                        break;
+                }
                 //mã hóa key
                 var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
                 //ký vào key đã mã hóa
@@ -48,7 +55,7 @@ namespace WhoruBackend.Repositorys.Implement
 
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Role, role.ToString()),
+                    new Claim(ClaimTypes.Role, roleName),
                     new Claim(ClaimTypes.Name, user.UserName),
                     new Claim(ClaimTypes.Email, user.Email),
                 };

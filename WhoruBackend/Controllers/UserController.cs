@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WhoruBackend.Data;
-using WhoruBackend.Models;
-using WhoruBackend.Models.dto;
 using WhoruBackend.ModelViews;
+using WhoruBackend.ModelViews.LogModelViews;
+using WhoruBackend.ModelViews.UserModelViews;
 using WhoruBackend.Services;
 
 namespace WhoruBackend.Controllers
@@ -21,10 +20,14 @@ namespace WhoruBackend.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        //[Authorize]
-        [AllowAnonymous]
+        [Authorize(Roles = "admin")]
+        //[AllowAnonymous]
         public ActionResult<UserDto> GetAll() {
             var list = _userService.GetAll();
+            if (list == null)
+            {
+                return NotFound();
+            }
             return Ok(list);
         }
 
@@ -33,11 +36,11 @@ namespace WhoruBackend.Controllers
         public ActionResult<ResponseView> Create([FromBody] RegisterView user) {
             if (user == null)
             {
-                return BadRequest("Không có");
+                return BadRequest("No user to add");
             }
             var register = _userService.Create(user);
 
-            return Ok(register.Message);
+            return Ok(register);
         }
     }
 }

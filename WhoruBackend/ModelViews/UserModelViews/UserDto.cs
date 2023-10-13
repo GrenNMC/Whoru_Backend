@@ -1,4 +1,4 @@
-﻿namespace WhoruBackend.Models.dto
+﻿namespace WhoruBackend.ModelViews.UserModelViews
 {
     public class UserDto
     {

@@ -1,4 +1,4 @@
-﻿namespace WhoruBackend.ModelViews
+﻿namespace WhoruBackend.ModelViews.LogModelViews
 {
     public class LoginView
     {
@@ -24,7 +24,7 @@
             this.UserId = UserId;
             this.Message = Message;
             this.UserName = UserName;
-            this.Token = token;
+            Token = token;
         }
 
         public ResponseLoginView(string? Message)
