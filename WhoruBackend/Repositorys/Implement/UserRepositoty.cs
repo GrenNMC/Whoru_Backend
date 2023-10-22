@@ -1,9 +1,11 @@
-﻿using Serilog;
+﻿using Microsoft.EntityFrameworkCore;
+using Serilog;
 using WhoruBackend.Data;
 using WhoruBackend.Models;
 using WhoruBackend.ModelViews;
 using WhoruBackend.ModelViews.LogModelViews;
 using WhoruBackend.ModelViews.UserModelViews;
+using WhoruBackend.Utilities.Constants;
 using WhoruBackend.Utilities.SecurePassword;
 
 namespace WhoruBackend.Repositorys.Implement
@@ -17,40 +19,36 @@ namespace WhoruBackend.Repositorys.Implement
             _dbcontext = dbcontext;
         }
 
-        public ResponseView Create(RegisterView user)
+        public async Task<ResponseView> Create(User user)
         {
-            User account = new User {
-            UserName = user.UserName,
-            Email = user.Email,
-            Password = new PasswordHasher().HashToString(user.Password),
-            RoleId = 2,
-            Phone = user.Phone,
-            CreatedDate = DateTime.UtcNow,
-            UpdatedDate = DateTime.UtcNow,
-            isDisabled = true,
-            };
             try
             {
-                _dbcontext.Users.Add(account);
-                _dbcontext.SaveChanges();
-                return new ResponseView ("Đăng ký thành công");
+                _dbcontext.Users.Add(user);
+                await _dbcontext.SaveChangesAsync();
+                return new ResponseView (MessageConstant.REGISTER_SUCCESS);
             }
             catch(Exception ex)
             {
                 Log.Error(ex.Message);
-                return new ResponseView("Đăng ký thất bại");
+                return new ResponseView(MessageConstant.REGISTER_FAILED);
             }
         }
 
-        public List<UserDto> GetAll()
+        public async Task<List<UserDto>> GetAll()
         {
-            var list = _dbcontext.Users.ToList();
+            var list = await _dbcontext.Users.ToListAsync();
             List<UserDto> users = new List<UserDto>();
             list.ForEach(user => {
                 users.Add(new UserDto(user.Id,user.UserName,user.Email));
             });
 
             return users;
+        }
+
+        public async Task<User> GetUserByName(string name)
+        {
+                User user = await _dbcontext.Users.Where(s => s.UserName == name).FirstOrDefaultAsync();
+                return user;
         }
     }
 }

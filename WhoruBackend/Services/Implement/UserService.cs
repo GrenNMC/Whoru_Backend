@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using WhoruBackend.Models;
 using WhoruBackend.ModelViews;
 using WhoruBackend.ModelViews.LogModelViews;
 using WhoruBackend.ModelViews.UserModelViews;
 using WhoruBackend.Repositorys;
+using WhoruBackend.Utilities.Constants;
+using WhoruBackend.Utilities.SecurePassword;
 
 namespace WhoruBackend.Services.Implement
 {
@@ -15,14 +18,30 @@ namespace WhoruBackend.Services.Implement
             _userRepository = userRepository;
         }
 
-        public ResponseView Create(RegisterView user)
+        public async Task<ResponseView> Create(RegisterView user)
         {
-            return _userRepository.Create(user);
+            var register = await _userRepository.GetUserByName(user.UserName);
+            if (register == null)
+            {
+                User account = new User
+                {
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    Password = new PasswordHasher().HashToString(user.Password),
+                    RoleId = 2,
+                    Phone = user.Phone,
+                    CreatedDate = DateTime.UtcNow,
+                    UpdatedDate = DateTime.UtcNow,
+                    isDisabled = true,
+                };
+                return await _userRepository.Create(account);
+            }
+            else return new ResponseView(MessageConstant.DUPLICATE_USERNAME);
         }
 
-        public List<UserDto> GetAll()
+        public async Task<List<UserDto>> GetAll()
         {
-            return _userRepository.GetAll();
+            return await _userRepository.GetAll();
         }
 
     }

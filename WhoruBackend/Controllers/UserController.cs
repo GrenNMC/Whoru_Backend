@@ -4,6 +4,7 @@ using WhoruBackend.ModelViews;
 using WhoruBackend.ModelViews.LogModelViews;
 using WhoruBackend.ModelViews.UserModelViews;
 using WhoruBackend.Services;
+using WhoruBackend.Utilities.Constants;
 
 namespace WhoruBackend.Controllers
 {
@@ -19,11 +20,10 @@ namespace WhoruBackend.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "Admin")]
         //[AllowAnonymous]
-        public ActionResult<UserDto> GetAll() {
-            var list = _userService.GetAll();
+        public async Task<IActionResult> GetAll() {
+            var list = await _userService.GetAll();
             if (list == null)
             {
                 return NotFound();
@@ -33,12 +33,13 @@ namespace WhoruBackend.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public ActionResult<ResponseView> Create([FromBody] RegisterView user) {
+        // Register
+        public async Task<IActionResult> Create([FromBody] RegisterView user) {
             if (user == null)
             {
-                return BadRequest("No user to add");
+                return BadRequest(MessageConstant.NO_DATA_REQUEST);
             }
-            var register = _userService.Create(user);
+            var register = await _userService.Create(user);
 
             return Ok(register);
         }

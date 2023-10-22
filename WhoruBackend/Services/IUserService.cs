@@ -7,7 +7,7 @@ namespace WhoruBackend.Services
 {
     public interface IUserService
     {
-        public List<UserDto> GetAll();
-        public ResponseView Create(RegisterView user);
+        public Task<List<UserDto>> GetAll();
+        public Task<ResponseView> Create(RegisterView user);
     }
 }

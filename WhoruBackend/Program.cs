@@ -53,7 +53,7 @@ services.AddScoped<ILogService, LogService>();
 // Register Repository
 services.AddScoped<IUserRepository, UserRepositoty>();
 services.AddScoped<IlogRepository, LogRepository>();
-
+services.AddScoped<IRoleRepository, RoleRepository>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen(options =>

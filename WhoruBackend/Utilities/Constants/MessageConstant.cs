@@ -1,4 +1,6 @@
-﻿namespace WhoruBackend.Utilities.Constants
+﻿using System.Net.NetworkInformation;
+
+namespace WhoruBackend.Utilities.Constants
 {
     public class MessageConstant
     {
@@ -18,5 +20,9 @@
         public static string CODE_NOT_ENTER = "Code not enter";
         public static string CODE_SENT = "Code was sent";
         public static string NO_DATA_REQUEST = "No data request";
+        public static string REGISTER_SUCCESS = "Register success";
+        public static string REGISTER_FAILED = "Register failed";
+        public static string DUPLICATE_USERNAME = "Duplicate username";
+
     }
 }

@@ -8,13 +8,11 @@ namespace WhoruBackend.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        [Required]
         public string? RoleName { get; set; }
-        [Required]
         public DateTime? CreatedDate { get; set; }
-        [Required]
         public DateTime? UpdatedDate { get; set; }
 
-
+        //Connect to table 
+        public List<User> Users { get; set;}
     }
 }

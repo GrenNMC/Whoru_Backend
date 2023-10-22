@@ -30,11 +30,18 @@ namespace WhoruBackend.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<Follow>()
                 .HasKey(f => new { f.IdFollowing, f.IdFollower });
             modelBuilder.Entity<Notification>()
                 .HasKey(f => new { f.UserReceive, f.UserSend });
 
+
+            modelBuilder.Entity<User>()
+                .HasOne(s => s.Role)
+                .WithMany(s => s.Users)
+                .HasForeignKey(s => s.RoleId)
+                .OnDelete(DeleteBehavior.SetNull);
             modelBuilder.Entity<UserInfo>() 
                 .HasOne(s => s.User)
                 .WithOne(s => s.UserInfo)

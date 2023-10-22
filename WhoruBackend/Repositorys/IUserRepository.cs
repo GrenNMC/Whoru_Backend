@@ -1,4 +1,5 @@
-﻿using WhoruBackend.ModelViews;
+﻿using WhoruBackend.Models;
+using WhoruBackend.ModelViews;
 using WhoruBackend.ModelViews.LogModelViews;
 using WhoruBackend.ModelViews.UserModelViews;
 
@@ -6,7 +7,9 @@ namespace WhoruBackend.Repositorys
 {
     public interface IUserRepository
     {
-        public List<UserDto> GetAll();
-        public ResponseView Create(RegisterView user);
+        public Task<List<UserDto>> GetAll();
+        public Task<ResponseView> Create(User user);
+
+        public Task<User> GetUserByName(string name);
     }
 }

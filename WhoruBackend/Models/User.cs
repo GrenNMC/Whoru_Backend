@@ -8,14 +8,10 @@ namespace WhoruBackend.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        [Required]
         public string? UserName { get; set; }
-        [Required]
 
         public string? Password { get; set; }
-        [Required]
         public string? Email { get; set; }
-        [Required]
         public string? Phone { get; set; }
         public bool? isDisabled { get; set; }
         public DateTime? CreatedDate { get; set; }
@@ -24,6 +20,7 @@ namespace WhoruBackend.Models
         // Foreign keys
         public int RoleId { get; set; }
         // Connect to tables
+        public Role? Role { get; set; }
         public UserInfo? UserInfo { get; set; }
     }
 }
