@@ -17,14 +17,16 @@
         public int UserId { get; set; }
         public string? UserName { get; set; }
         public string? Message { get; set; }
+        public bool? IsDisabled { get; set; }
         public string? Token { get; set; }
 
-        public ResponseLoginView(int UserId, string? Message, string? UserName, string? token)
+        public ResponseLoginView(int UserId, string? Message, string? UserName, string? token, bool? isDisabled)
         {
             this.UserId = UserId;
             this.Message = Message;
             this.UserName = UserName;
             Token = token;
+            IsDisabled = isDisabled;
         }
 
         public ResponseLoginView(string? Message)

@@ -4,6 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using WhoruBackend.Models;
+using WhoruBackend.ModelViews;
 using WhoruBackend.ModelViews.LogModelViews;
 using WhoruBackend.Repositorys;
 using WhoruBackend.Utilities.Constants;
@@ -16,12 +17,20 @@ namespace WhoruBackend.Services.Implement
         private readonly IUserRepository _UserRepo;
         private readonly IConfiguration _configuration;
         private readonly IRoleRepository _roleRepository;
+        private readonly IUserService _userService;
 
-        public LogService(IlogRepository logRepo, IUserRepository userRepo, IConfiguration configuration, IRoleRepository roleRepository)
+        public LogService(IlogRepository logRepo, IUserRepository userRepo, IConfiguration configuration, IRoleRepository roleRepository, IUserService userService)
         {
             _UserRepo = userRepo;
             _roleRepository = roleRepository;
             _configuration = configuration;
+            _userService = userService;
+        }
+
+        public  async Task<ResponseView> SendCodeByMail()
+        {
+            string name = await _userService.GetNameByToken();
+            return new ResponseView(name);
         }
 
         public async Task<ResponseLoginView> Login(LoginView view)
@@ -62,7 +71,7 @@ namespace WhoruBackend.Services.Implement
                 //sinh ra chuỗi token với các thông số ở trên
                 var UserToken = new JwtSecurityTokenHandler().WriteToken(token);
                 //Có thể tạo claims chứa thông tin người dùng (nếu cần)
-                return new(user.Id, MessageConstant.LOGIN_SUCCESS, user.UserName, UserToken);
+                return new(user.Id, MessageConstant.LOGIN_SUCCESS, user.UserName, UserToken, user.isDisabled);
             }
             catch (Exception e)
             {

@@ -35,5 +35,13 @@ namespace WhoruBackend.Controllers
             }
             return Ok(response);
         }
+
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> SendVerifyCodeByMail()
+        {
+            var reponse = await _LogService.SendCodeByMail();
+            return Ok(reponse);
+        }
     }
 }

@@ -56,6 +56,7 @@ services.AddScoped<IlogRepository, LogRepository>();
 services.AddScoped<IRoleRepository, RoleRepository>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 services.AddEndpointsApiExplorer();
+services.AddHttpContextAccessor();
 services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
