@@ -12,18 +12,18 @@ namespace WhoruBackend.Services.Implement
 {
     public class UserService : IUserService
     {
-        private readonly IUserRepository _userRepository;
+        private readonly IUserRepository _userRepo;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         public UserService(IUserRepository userRepository, IHttpContextAccessor httpContextAccessor)
         {
-            _userRepository = userRepository;
+            _userRepo = userRepository;
             _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<ResponseView> Create(RegisterView user)
         {
-            var register = await _userRepository.GetUserByName(user.UserName);
+            var register = await _userRepo.GetUserByName(user.UserName);
             if (register == null)
             {
                 User account = new User
@@ -35,16 +35,16 @@ namespace WhoruBackend.Services.Implement
                     Phone = user.Phone,
                     CreatedDate = DateTime.UtcNow,
                     UpdatedDate = DateTime.UtcNow,
-                    isDisabled = true,
+                    IsDisabled = true,
                 };
-                return await _userRepository.Create(account);
+                return await _userRepo.Create(account);
             }
-            else return new ResponseView(MessageConstant.DUPLICATE_USERNAME);
+            else return new ResponseView(MessageConstant.USERNAME_EXISTED);
         }
 
-        public async Task<List<UserDto>> GetAll()
+        public async Task<List<UserDto>?> GetAll()
         {
-            return await _userRepository.GetAll();
+            return await _userRepo.GetAll();
         }
         public async Task<string> GetNameByToken()
         {

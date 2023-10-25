@@ -7,17 +7,21 @@ namespace WhoruBackend.Repositorys.Implement
 {
     public class RoleRepository : IRoleRepository
     {
-        private readonly ApplicationDbContext _DbContext;
+        private readonly ApplicationDbContext _dbContext;
 
         public RoleRepository(ApplicationDbContext dbContext)
         {
-            _DbContext = dbContext;
+            _dbContext = dbContext;
         }
 
         public async Task<string> GetRoleName(int Id)
         {
-                Role role = await _DbContext.Roles.Where(s => s.Id == Id).FirstOrDefaultAsync();
-                return role.RoleName;
+            Role? role = await _dbContext.Roles.Where(s => s.Id == Id).FirstOrDefaultAsync();
+            if ( role == null || role.RoleName == null)
+            {
+                return string.Empty;
+            }
+            return role.RoleName;
         }
     }
 }

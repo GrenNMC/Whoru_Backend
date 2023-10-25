@@ -16,13 +16,12 @@ namespace WhoruBackend.Utilities.Constants
         public static string DELETE_SUCCESS = "Delete success";
         public static string VALIDATE_FAILED = "Validate failed";
         public static string EMAIL_NOT_CONFIRMED = "Email is not confirmed";
-        public static string TWO_FACTOR_DISABLED = "Two factor is disabled";
         public static string CODE_NOT_ENTER = "Code not enter";
         public static string CODE_SENT = "Code was sent";
         public static string NO_DATA_REQUEST = "No data request";
         public static string REGISTER_SUCCESS = "Register success";
         public static string REGISTER_FAILED = "Register failed";
-        public static string DUPLICATE_USERNAME = "Duplicate username";
-
+        public static string USERNAME_EXISTED = "Username Existed";
+        public static string ACTIVE_SUCCESS = "Your account is now active";
     }
 }

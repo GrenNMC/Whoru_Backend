@@ -9,11 +9,11 @@ namespace WhoruBackend.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string? UserName { get; set; }
-
         public string? Password { get; set; }
         public string? Email { get; set; }
         public string? Phone { get; set; }
-        public bool? isDisabled { get; set; }
+        public bool? IsDisabled { get; set; }
+        public string? ActiveCode { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
 

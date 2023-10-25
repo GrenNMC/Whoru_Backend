@@ -184,7 +184,8 @@ namespace WhoruBackend.Data
                 Email = "nmc0401@gmail.com",
                 RoleId = 1,
                 Phone = "0769395658",
-                isDisabled = false,
+                IsDisabled = false,
+                ActiveCode = "412002"
             };
             newUser.Password = new PasswordHasher().HashToString("123456@A");
             modelBuilder.Entity<User>().HasData(newUser);
@@ -198,7 +199,8 @@ namespace WhoruBackend.Data
                 Email = "20110455@gmail.com",
                 RoleId = 1,
                 Phone = "0769395658",
-                isDisabled = false,
+                IsDisabled = false,
+                ActiveCode = "412222"
             };
             newUser2.Password = new PasswordHasher().HashToString("123456@A");
             modelBuilder.Entity<User>().HasData(newUser2);

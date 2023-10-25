@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Serilog;
+using System.Runtime.CompilerServices;
 using WhoruBackend.Data;
 using WhoruBackend.Models;
 using WhoruBackend.ModelViews;
@@ -18,7 +19,18 @@ namespace WhoruBackend.Repositorys.Implement
         {
             _dbcontext = dbcontext;
         }
-
+        public async Task UpdateUser(User user)
+        {
+            try
+            {
+                _dbcontext.Users.Update(user);
+                await _dbcontext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+            }
+        }
         public async Task<ResponseView> Create(User user)
         {
             try
@@ -34,21 +46,36 @@ namespace WhoruBackend.Repositorys.Implement
             }
         }
 
-        public async Task<List<UserDto>> GetAll()
+        public async Task<List<UserDto>?> GetAll()
         {
-            var list = await _dbcontext.Users.ToListAsync();
-            List<UserDto> users = new List<UserDto>();
-            list.ForEach(user => {
-                users.Add(new UserDto(user.Id,user.UserName,user.Email));
-            });
+            try
+            {
+                var list = await _dbcontext.Users.ToListAsync();
+                List<UserDto> users = new List<UserDto>();
+                list.ForEach(user => {
+                    users.Add(new UserDto(user.Id, user.UserName, user.Email));
+                });
 
-            return users;
+                return users;
+            }
+            catch
+            {
+                return null;
+            }
         }
 
-        public async Task<User> GetUserByName(string name)
+        public async Task<User?> GetUserByName(string name)
         {
-                User user = await _dbcontext.Users.Where(s => s.UserName == name).FirstOrDefaultAsync();
+                
+            try
+            {
+                User? user = await _dbcontext.Users.Where(s => s.UserName == name).FirstOrDefaultAsync();
                 return user;
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }

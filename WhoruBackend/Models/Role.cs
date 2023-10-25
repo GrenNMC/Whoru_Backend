@@ -13,6 +13,6 @@ namespace WhoruBackend.Models
         public DateTime? UpdatedDate { get; set; }
 
         //Connect to table 
-        public List<User> Users { get; set;}
+        public List<User>? Users { get; set;}
     }
 }

@@ -8,39 +8,91 @@ using WhoruBackend.ModelViews;
 using WhoruBackend.ModelViews.LogModelViews;
 using WhoruBackend.Repositorys;
 using WhoruBackend.Utilities.Constants;
+using WhoruBackend.Utilities.Emails;
 using WhoruBackend.Utilities.SecurePassword;
 
 namespace WhoruBackend.Services.Implement
 {
     public class LogService : ILogService
     {
-        private readonly IUserRepository _UserRepo;
+        private readonly IUserRepository _userRepo;
         private readonly IConfiguration _configuration;
-        private readonly IRoleRepository _roleRepository;
+        private readonly IRoleRepository _roleRepo;
         private readonly IUserService _userService;
 
         public LogService(IlogRepository logRepo, IUserRepository userRepo, IConfiguration configuration, IRoleRepository roleRepository, IUserService userService)
         {
-            _UserRepo = userRepo;
-            _roleRepository = roleRepository;
+            _userRepo = userRepo;
+            _roleRepo = roleRepository;
             _configuration = configuration;
             _userService = userService;
         }
 
+
+        public async Task<ResponseView> ActiveAccount(string code)
+        {
+            try
+            {
+                string name = await _userService.GetNameByToken();
+                User? user = await _userRepo.GetUserByName(name);
+                if (user == null)
+                {
+                    return new ResponseView(MessageConstant.NOT_FOUND);
+                }
+                var activeCode = user.ActiveCode;
+                if (activeCode == code)
+                {
+                    user.IsDisabled = false;
+                    await _userRepo.UpdateUser(user);
+                    return new ResponseView(MessageConstant.ACTIVE_SUCCESS);
+                }
+                user.ActiveCode = string.Empty;
+                await _userRepo.UpdateUser(user);
+                return new ResponseView(MessageConstant.VALIDATE_FAILED);
+            }
+            catch(Exception ex)
+            {
+                Log.Error(ex.Message);
+                return new ResponseView(MessageConstant.SYSTEM_ERROR);
+            }
+        }
         public  async Task<ResponseView> SendCodeByMail()
         {
-            string name = await _userService.GetNameByToken();
-            return new ResponseView(name);
+            try
+            {
+                string name = await _userService.GetNameByToken();
+                User? user = await _userRepo.GetUserByName(name);
+                if(user == null)
+                {
+                    return new ResponseView(MessageConstant.NOT_FOUND);
+                }
+                VerifyEmail email = new VerifyEmail();
+                ValidateCodeProvider provider = new ValidateCodeProvider();
+                if (user.Email != null && user.IsDisabled == true)
+                {
+                    string code = provider.ValidateCode(6);
+                    email.SendMail(user.Email, code);
+                    user.ActiveCode = code;
+                    await _userRepo.UpdateUser(user);
+                    return new ResponseView(MessageConstant.CODE_SENT);
+                }
+                return new ResponseView(MessageConstant.EMAIL_NOT_CONFIRMED);
+            }
+            catch(Exception e)
+            {
+                Log.Error(e.Message);
+                return new ResponseView(MessageConstant.SYSTEM_ERROR);
+            }
         }
 
         public async Task<ResponseLoginView> Login(LoginView view)
         {
             try
             {
-                User user = await _UserRepo.GetUserByName(view.UserName);
+                User? user = await _userRepo.GetUserByName(view.UserName);
                 if (user == null)
                 {
-                    return new(MessageConstant.NOT_FOUND);
+                    return new(MessageConstant.USER_NOT_FOUND);
                 }
                 var checkPassword = new PasswordHasher().Verify(view.Password, user.Password);
                 if (checkPassword == false)
@@ -52,7 +104,7 @@ namespace WhoruBackend.Services.Implement
                 //ký vào key đã mã hóa
                 var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-                string role = await _roleRepository.GetRoleName(user.RoleId);
+                string role = await _roleRepo.GetRoleName(user.RoleId);
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Role, role),
@@ -71,7 +123,7 @@ namespace WhoruBackend.Services.Implement
                 //sinh ra chuỗi token với các thông số ở trên
                 var UserToken = new JwtSecurityTokenHandler().WriteToken(token);
                 //Có thể tạo claims chứa thông tin người dùng (nếu cần)
-                return new(user.Id, MessageConstant.LOGIN_SUCCESS, user.UserName, UserToken, user.isDisabled);
+                return new(user.Id, MessageConstant.LOGIN_SUCCESS, user.UserName, UserToken, user.IsDisabled);
             }
             catch (Exception e)
             {
