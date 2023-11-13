@@ -29,13 +29,13 @@ namespace WhoruBackend.Services.Implement
                 User account = new User
                 {
                     UserName = user.UserName,
-                    Email = user.Email,
                     Password = new PasswordHasher().HashToString(user.Password),
-                    RoleId = 2,
+                    Email = user.Email,
                     Phone = user.Phone,
                     CreatedDate = DateTime.UtcNow,
                     UpdatedDate = DateTime.UtcNow,
                     IsDisabled = true,
+                    RoleId = 2,
                 };
                 return await _userRepo.Create(account);
             }
@@ -46,12 +46,12 @@ namespace WhoruBackend.Services.Implement
         {
             return await _userRepo.GetAll();
         }
-        public async Task<string> GetNameByToken()
+        public async Task<int> GetIdByToken()
         {
-            var id = string.Empty;
-            if(_httpContextAccessor.HttpContext is not null)
+            var id = -1;
+            if( _httpContextAccessor.HttpContext is not null)
             {
-                id = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
+                id = int.Parse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
             }
             return id;
         }

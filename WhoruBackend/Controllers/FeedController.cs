@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WhoruBackend.ModelViews.FeedModelViews;
+using WhoruBackend.Services;
+using WhoruBackend.Services.Implement;
 
 namespace WhoruBackend.Controllers
 {
@@ -7,11 +10,29 @@ namespace WhoruBackend.Controllers
     [ApiController]
     public class FeedController : ControllerBase
     {
+        private readonly IFeedService _feedService;
+        private readonly IUserService _userService;
+        public FeedController(IFeedService feedService, IUserService userService)
+        {
+            _feedService = feedService;
+            _userService = userService;
+        }
+
         [Authorize]
         [HttpPost]
-        public IActionResult Post()
+        public async Task<IActionResult> Post([FromForm] NewFeedModelView feed)
         {
-            return Ok("Post success");
+            var id = await _userService.GetIdByToken();
+            if (feed == null)
+            {
+                return BadRequest();
+            }
+            var post = await _feedService.Create(id, feed.Status);
+            //if (feed.Files != null)
+            //{
+            //     await _feedService.UploadFeedImage(feed.Files);
+            //}
+            return Ok(post);
         }
 
         [Authorize]

@@ -33,8 +33,8 @@ namespace WhoruBackend.Services.Implement
         {
             try
             {
-                string name = await _userService.GetNameByToken();
-                User? user = await _userRepo.GetUserByName(name);
+                int id = await _userService.GetIdByToken();
+                User? user = await _userRepo.GetUserById(id);
                 if (user == null)
                 {
                     return new ResponseView(MessageConstant.NOT_FOUND);
@@ -60,9 +60,9 @@ namespace WhoruBackend.Services.Implement
         {
             try
             {
-                string name = await _userService.GetNameByToken();
-                User? user = await _userRepo.GetUserByName(name);
-                if(user == null)
+                int id = await _userService.GetIdByToken();
+                User? user = await _userRepo.GetUserById(id);
+                if (user == null)
                 {
                     return new ResponseView(MessageConstant.NOT_FOUND);
                 }
@@ -85,6 +85,24 @@ namespace WhoruBackend.Services.Implement
             }
         }
 
+        public async Task<ResponseView> SendCodeBySMS()
+        {
+            try
+            {
+                int id = await _userService.GetIdByToken();
+                User? user = await _userRepo.GetUserById(id);
+                if (user == null)
+                {
+                    return new ResponseView(MessageConstant.NOT_FOUND);
+                }
+                return new ResponseView(MessageConstant.CODE_SENT);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.Message);
+                return new ResponseView(MessageConstant.SYSTEM_ERROR);
+            }
+        }
         public async Task<ResponseLoginView> Login(LoginView view)
         {
             try
@@ -110,6 +128,7 @@ namespace WhoruBackend.Services.Implement
                     new Claim(ClaimTypes.Role, role),
                     new Claim(ClaimTypes.Name, user.UserName),
                     new Claim(ClaimTypes.Email, user.Email),
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 };
                 //tạo token
                 var token = new JwtSecurityToken

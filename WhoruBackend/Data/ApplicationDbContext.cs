@@ -36,7 +36,6 @@ namespace WhoruBackend.Data
             modelBuilder.Entity<Notification>()
                 .HasKey(f => new { f.UserReceive, f.UserSend });
 
-
             modelBuilder.Entity<User>()
                 .HasOne(s => s.Role)
                 .WithMany(s => s.Users)
@@ -46,6 +45,11 @@ namespace WhoruBackend.Data
                 .HasOne(s => s.User)
                 .WithOne(s => s.UserInfo)
                 .HasForeignKey<UserInfo>(s => s.UserId)
+                .OnDelete(DeleteBehavior.SetNull);
+            modelBuilder.Entity<Feed>()
+                .HasOne(s => s.UserInfo)
+                .WithMany(s => s.Feeds)
+                .HasForeignKey(s => s.UserInfoId)
                 .OnDelete(DeleteBehavior.SetNull);
             modelBuilder.Entity<FeedImage>()
                 .HasOne(s => s.Feed)

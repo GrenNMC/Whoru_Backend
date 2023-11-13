@@ -11,12 +11,19 @@ namespace WhoruBackend.Models
         public string? FullName { get; set; }
         public string? Avatar { get; set; }
         public string? Backround { get; set; }
+        // Contact 
+        // Description
+        // Working at
+        // Sturdy at
+        // Story
+        // 
 
         // Foreign keys
         public int? UserId { get; set; }
 
         // Connect to tables
         public User? User { get; set; }
+        public List<Feed>? Feeds { get; set; }
         public List<Follow>? Follower { get; set; }
         public List<Follow>? Following { get; set; }
         public List<Share>? Shares { get; set; }

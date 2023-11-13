@@ -13,7 +13,7 @@ namespace WhoruBackend.Models
 
         // Khóa ngoại
         public int? UserId { get; set; }
-
+        public int? UserInfoId { get; set; }
         //Connect to tables
         public List<FeedImage>? Images { get; set;}
         public List<Share>? Shares { get; set; }

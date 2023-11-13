@@ -77,5 +77,18 @@ namespace WhoruBackend.Repositorys.Implement
                 return null;
             }
         }
+
+        public async Task<User?> GetUserById(int id)
+        {
+            try
+            {
+                User? user = await _dbcontext.Users.Where(s => s.Id == id).FirstOrDefaultAsync();
+                return user;
+            }
+            catch
+            {
+                return null;
+            }
+        }
     }
 }

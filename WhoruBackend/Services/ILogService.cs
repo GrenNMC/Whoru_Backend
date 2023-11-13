@@ -8,6 +8,7 @@ namespace WhoruBackend.Services
     {
         public Task<ResponseLoginView> Login(LoginView view);
         public Task<ResponseView> SendCodeByMail();
+        public Task<ResponseView> SendCodeBySMS();
         public Task<ResponseView> ActiveAccount(string code);
     }
 }

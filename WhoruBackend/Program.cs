@@ -49,11 +49,14 @@ services.AddControllers();
 // Register Service
 services.AddScoped<IUserService, UserService>();
 services.AddScoped<ILogService, LogService>();
+services.AddScoped<IFeedService, FeedService>();
 
 // Register Repository
 services.AddScoped<IUserRepository, UserRepositoty>();
 services.AddScoped<IlogRepository, LogRepository>();
 services.AddScoped<IRoleRepository, RoleRepository>();
+services.AddScoped<IFeedRepository, FeedRepository>();
+services.AddScoped<IUserInfoRepository, UserInfoRepository>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 services.AddEndpointsApiExplorer();
 services.AddHttpContextAccessor();

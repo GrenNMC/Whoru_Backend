@@ -10,6 +10,6 @@ namespace WhoruBackend.Services
     {
         public Task<List<UserDto>?> GetAll();
         public Task<ResponseView> Create(RegisterView user);
-        public Task<string> GetNameByToken();
+        public Task<int> GetIdByToken();
     }
 }

@@ -12,5 +12,6 @@ namespace WhoruBackend.Repositorys
         public Task<ResponseView> Create(User user);
         public Task UpdateUser(User user);
         public Task<User?> GetUserByName(string name);
+        public Task<User?> GetUserById(int id);
     }
 }

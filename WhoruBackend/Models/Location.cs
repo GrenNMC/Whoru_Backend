@@ -2,5 +2,7 @@
 {
     public class Location
     {
+        //userid
+        //x y
     }
 }

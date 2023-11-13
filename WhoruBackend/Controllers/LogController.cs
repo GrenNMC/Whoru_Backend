@@ -45,6 +45,14 @@ namespace WhoruBackend.Controllers
         }
 
         [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> SendCodeBySMS()
+        {
+            var reponse = await _LogService.SendCodeBySMS();
+            return Ok(reponse);
+        }
+
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult>VerifyAccount([FromQuery]string code)
         {

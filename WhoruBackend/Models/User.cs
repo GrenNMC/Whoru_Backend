@@ -22,5 +22,6 @@ namespace WhoruBackend.Models
         // Connect to tables
         public Role? Role { get; set; }
         public UserInfo? UserInfo { get; set; }
+
     }
 }
