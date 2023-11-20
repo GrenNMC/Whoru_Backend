@@ -5,6 +5,7 @@ using Microsoft.OpenApi.Models;
 using Serilog;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
+using System.Text.Json.Serialization;
 using WhoruBackend.Data;
 using WhoruBackend.Repositorys;
 using WhoruBackend.Repositorys.Implement;
@@ -44,12 +45,16 @@ services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 // Add services to the container.
 services.AddDbContext<ApplicationDbContext>(option => option.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnectionString")));
 
-services.AddControllers();
+services.AddControllers().AddJsonOptions(s => s.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
 // Register Service
 services.AddScoped<IUserService, UserService>();
 services.AddScoped<ILogService, LogService>();
 services.AddScoped<IFeedService, FeedService>();
+services.AddScoped<IUserInfoService, UserInfoService>();
+services.AddScoped<IFollowService, FollowService>();
+services.AddScoped<ILikeService, LikeService>();
+services.AddScoped<IShareService, ShareService>();
 
 // Register Repository
 services.AddScoped<IUserRepository, UserRepositoty>();
@@ -57,6 +62,9 @@ services.AddScoped<IlogRepository, LogRepository>();
 services.AddScoped<IRoleRepository, RoleRepository>();
 services.AddScoped<IFeedRepository, FeedRepository>();
 services.AddScoped<IUserInfoRepository, UserInfoRepository>();
+services.AddScoped<IFollowRepository, FollowRepository>();
+services.AddScoped<ILikeRepository, LikeRepository>();
+services.AddScoped<IShareRepository, ShareRepository>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 services.AddEndpointsApiExplorer();
 services.AddHttpContextAccessor();

@@ -19,6 +19,54 @@ namespace WhoruBackend.Controllers
 
         [AllowAnonymous]
         [HttpPost]
+        public async Task<IActionResult> ResetPassword([FromQuery] string email)
+        {
+            if (email == null)
+            {
+                return BadRequest();
+            }
+            var response = await _LogService.ResetPassword(email);
+            if (response.Message == MessageConstant.SYSTEM_ERROR)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            else
+            {
+                if (response.Message == MessageConstant.NOT_FOUND)
+                {
+                    return NotFound(response);
+                }
+                return Ok(response);
+            }
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword([FromQuery] string newPassword)
+        {
+            if(newPassword == null)
+            {
+                return BadRequest();
+            }
+            var response = await _LogService.ChangePassword(newPassword);
+
+            if (response.Message == MessageConstant.SYSTEM_ERROR)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            else
+            {
+                if (response.Message == MessageConstant.NOT_FOUND)
+                {
+                    return NotFound(response);
+                }
+                return Ok(response);
+            }
+        }
+
+
+        [AllowAnonymous]
+        [HttpPost]
         public async Task<IActionResult> Login([FromBody] LoginView loginView) {
             var response = await _LogService.Login(loginView);
             if (response.Message == MessageConstant.NOT_FOUND)

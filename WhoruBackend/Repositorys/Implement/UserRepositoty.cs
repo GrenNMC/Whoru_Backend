@@ -90,5 +90,18 @@ namespace WhoruBackend.Repositorys.Implement
                 return null;
             }
         }
+
+        public async Task<User?> GetUserByMail(string email)
+        {
+            try
+            {
+                User? user = await _dbcontext.Users.Where(s => s.Email == email).FirstOrDefaultAsync();
+                return user;
+            }
+            catch
+            {
+                return null;
+            }
+        }
     }
 }

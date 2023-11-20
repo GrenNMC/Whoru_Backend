@@ -13,5 +13,6 @@ namespace WhoruBackend.Repositorys
         public Task UpdateUser(User user);
         public Task<User?> GetUserByName(string name);
         public Task<User?> GetUserById(int id);
+        public Task<User?> GetUserByMail(string email);
     }
 }

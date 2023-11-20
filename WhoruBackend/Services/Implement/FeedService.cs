@@ -16,7 +16,7 @@ namespace WhoruBackend.Services.Implement
             _infoRepo = infoRepo;
         }
 
-        public async Task<ResponseView> Create(int userId, string status)
+        public async Task<ResponseView> Create(int userId, string status, List<IFormFile> files)
         {
             if(status == null)
             {
@@ -30,13 +30,19 @@ namespace WhoruBackend.Services.Implement
                 UserInfoId = infoId,
                 Date = DateTime.UtcNow,
             };
-            var newPost = await _feedRepo.Create(feed);
+            var newPost = await _feedRepo.Create(feed, files);
             return newPost;
         }
 
-        public Task UploadFeedImage(List<IFormFile> files)
+        public async Task<ResponseView> Delete(int id)
         {
-            throw new NotImplementedException();
+            Feed? feed = await _feedRepo.FindFeedById(id);
+            if(feed == null)
+            {
+                return new(MessageConstant.NOT_FOUND);
+            }
+            var response = await _feedRepo.Delete(feed);
+            return response;
         }
     }
 }

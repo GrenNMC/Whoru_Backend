@@ -46,8 +46,8 @@ namespace WhoruBackend.Services.Implement
                     await _userRepo.UpdateUser(user);
                     return new ResponseView(MessageConstant.ACTIVE_SUCCESS);
                 }
-                user.ActiveCode = string.Empty;
-                await _userRepo.UpdateUser(user);
+                //user.ActiveCode = string.Empty;
+                //await _userRepo.UpdateUser(user);
                 return new ResponseView(MessageConstant.VALIDATE_FAILED);
             }
             catch(Exception ex)
@@ -143,6 +143,52 @@ namespace WhoruBackend.Services.Implement
                 var UserToken = new JwtSecurityTokenHandler().WriteToken(token);
                 //Có thể tạo claims chứa thông tin người dùng (nếu cần)
                 return new(user.Id, MessageConstant.LOGIN_SUCCESS, user.UserName, UserToken, user.IsDisabled);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.Message);
+                return new(MessageConstant.SYSTEM_ERROR);
+            }
+        }
+
+        public async Task<ResponseView> ChangePassword(string pass)
+        {
+            try
+            {
+                int id = await _userService.GetIdByToken();
+                User? user = await _userRepo.GetUserById(id);
+                if (user == null)
+                {
+                    return new ResponseView(MessageConstant.NOT_FOUND);
+                }
+                user.Password = new PasswordHasher().HashToString(pass);
+                await _userRepo.UpdateUser(user);
+                return new ResponseView(MessageConstant.CHANGE_PASSWORD_SUCCESS);
+            }
+            catch(Exception e)
+            {
+                Log.Error(e.Message);
+                return new(MessageConstant.SYSTEM_ERROR);
+            }
+        }
+
+        public async Task<ResponseView> ResetPassword(string mail)
+        {
+            try
+            {
+                User? user = await _userRepo.GetUserByMail(mail);
+                if(user == null)
+                {
+                    return new(MessageConstant.NOT_FOUND);
+                }
+
+                VerifyEmail email = new VerifyEmail();
+                ValidateCodeProvider provider = new ValidateCodeProvider();
+                string newPass = provider.ValidateCode(8);
+                user.Password = new PasswordHasher().HashToString(newPass);
+                await _userRepo.UpdateUser(user);
+                email.ResetPassword(mail, newPass);
+                return new ResponseView(MessageConstant.CODE_SENT);
             }
             catch (Exception e)
             {

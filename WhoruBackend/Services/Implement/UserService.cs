@@ -26,18 +26,23 @@ namespace WhoruBackend.Services.Implement
             var register = await _userRepo.GetUserByName(user.UserName);
             if (register == null)
             {
-                User account = new User
+                var email = await _userRepo.GetUserByMail(user.Email);
+                if(email == null)
                 {
-                    UserName = user.UserName,
-                    Password = new PasswordHasher().HashToString(user.Password),
-                    Email = user.Email,
-                    Phone = user.Phone,
-                    CreatedDate = DateTime.UtcNow,
-                    UpdatedDate = DateTime.UtcNow,
-                    IsDisabled = true,
-                    RoleId = 2,
-                };
-                return await _userRepo.Create(account);
+                    User account = new User
+                    {
+                        UserName = user.UserName,
+                        Password = new PasswordHasher().HashToString(user.Password),
+                        Email = user.Email,
+                        Phone = user.Phone,
+                        CreatedDate = DateTime.UtcNow,
+                        UpdatedDate = DateTime.UtcNow,
+                        IsDisabled = true,
+                        RoleId = 2,
+                    };
+                    return await _userRepo.Create(account);
+                }
+                else return new ResponseView(MessageConstant.USERNAME_EXISTED);
             }
             else return new ResponseView(MessageConstant.USERNAME_EXISTED);
         }
@@ -56,5 +61,10 @@ namespace WhoruBackend.Services.Implement
             return id;
         }
 
+        public async Task<User?> GetUserByName(string name)
+        {
+            var user = await _userRepo.GetUserByName(name);
+            return user;
+        }
     }
 }

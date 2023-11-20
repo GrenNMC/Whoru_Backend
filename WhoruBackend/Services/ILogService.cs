@@ -10,5 +10,7 @@ namespace WhoruBackend.Services
         public Task<ResponseView> SendCodeByMail();
         public Task<ResponseView> SendCodeBySMS();
         public Task<ResponseView> ActiveAccount(string code);
+        public Task<ResponseView> ChangePassword(string pass);
+        public Task<ResponseView> ResetPassword(string mail);
     }
 }

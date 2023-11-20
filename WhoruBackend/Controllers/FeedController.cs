@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using WhoruBackend.ModelViews.FeedModelViews;
 using WhoruBackend.Services;
 using WhoruBackend.Services.Implement;
+using WhoruBackend.Utilities.Constants;
 
 namespace WhoruBackend.Controllers
 {
@@ -23,23 +24,35 @@ namespace WhoruBackend.Controllers
         public async Task<IActionResult> Post([FromForm] NewFeedModelView feed)
         {
             var id = await _userService.GetIdByToken();
-            if (feed == null)
+            if (feed == null || feed.Status == null)
             {
                 return BadRequest();
             }
-            var post = await _feedService.Create(id, feed.Status);
-            //if (feed.Files != null)
-            //{
-            //     await _feedService.UploadFeedImage(feed.Files);
-            //}
+            var post = await _feedService.Create(id, feed.Status, feed.Files);
             return Ok(post);
         }
 
         [Authorize]
         [HttpDelete]
-        public IActionResult Delete()
+        public async Task<IActionResult> Delete([FromQuery]int id)
         {
-            return Ok("Delete success");
+            if (id < 0)
+            {
+                return BadRequest();
+            }
+            var response =await _feedService.Delete(id);
+            if(response.Message == MessageConstant.NOT_FOUND)
+            {
+                return NotFound();
+            }
+            else
+            {
+                if(response.Message == MessageConstant.SYSTEM_ERROR)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError);
+                }
+                return Ok(response);
+            }
         }
     }
 }

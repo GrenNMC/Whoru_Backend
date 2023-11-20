@@ -20,8 +20,9 @@ namespace WhoruBackend.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         //[AllowAnonymous]
+        [Authorize]
         public async Task<IActionResult> GetAll() {
             var list = await _userService.GetAll();
             if (list == null)
@@ -29,6 +30,22 @@ namespace WhoruBackend.Controllers
                 return NotFound();
             }
             return Ok(list);
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetUserByName([FromQuery] string name)
+        {
+            if(name == null)
+            {
+                return BadRequest();
+            }
+            var user = await _userService.GetUserByName(name);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return Ok(user);
         }
 
         [HttpPost]
@@ -41,7 +58,18 @@ namespace WhoruBackend.Controllers
             }
             var register = await _userService.Create(user);
 
-            return Ok(register);
+            if(register.Message == MessageConstant.USERNAME_EXISTED)
+            {
+                return BadRequest(register.Message);
+            }
+            return CreatedAtAction(nameof(GetUserByName),user.UserName);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult Update([FromBody] UpdateUserModelView updatedUser)
+        {    
+            return Ok(updatedUser);
         }
     }
 }

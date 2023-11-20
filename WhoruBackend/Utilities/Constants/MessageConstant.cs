@@ -21,8 +21,9 @@ namespace WhoruBackend.Utilities.Constants
         public static string NO_DATA_REQUEST = "No data request";
         public static string REGISTER_SUCCESS = "Register success";
         public static string REGISTER_FAILED = "Register failed";
-        public static string USERNAME_EXISTED = "Username Existed";
+        public static string USERNAME_EXISTED = "Your Information is Existed";
         public static string ACTIVE_SUCCESS = "Your account is now active";
         public static string CREATE_POST_SUCCESS = "Your Feed create success";
+        public static string CHANGE_PASSWORD_SUCCESS = "Your password has changed";
     }
 }
