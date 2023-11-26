@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WhoruBackend.Repositorys;
+using WhoruBackend.Services;
+using WhoruBackend.Utilities.Constants;
 
 namespace WhoruBackend.Controllers
 {
@@ -7,19 +10,38 @@ namespace WhoruBackend.Controllers
     [ApiController]
     public class ShareController: ControllerBase
     {
+        private readonly IShareService _shareService;
+
+        public ShareController(IShareService shareService)
+        {
+            _shareService = shareService;
+        }
+
         [HttpPost]
         [Authorize]
-        public IActionResult SharePost([FromQuery] int idPost)
+        public async Task<IActionResult> SharePost([FromQuery] int idPost)
         {
-            var str = "You just shared the Post of id: "+ idPost;
+            if (idPost < 0)
+                return BadRequest();
+            var str = await _shareService.SharePost(idPost);
+            if(str.Message == MessageConstant.NOT_FOUND)
+                return NotFound();
+            if(str.Message == MessageConstant.SYSTEM_ERROR)
+                return StatusCode(StatusCodes.Status500InternalServerError);
             return Ok(str);
         }
 
         [HttpPost]
         [Authorize]
-        public IActionResult UnSharePost([FromQuery] int idPost)
+        public async Task<IActionResult> UnSharePost([FromQuery] int idPost)
         {
-            var str = "You just unshared the Post of id: " + idPost;
+            if (idPost < 0)
+                return BadRequest();
+            var str = await _shareService.UnSharePost(idPost);
+            if (str.Message == MessageConstant.NOT_FOUND)
+                return NotFound();
+            if (str.Message == MessageConstant.SYSTEM_ERROR)
+                return StatusCode(StatusCodes.Status500InternalServerError);
             return Ok(str);
         }
     }

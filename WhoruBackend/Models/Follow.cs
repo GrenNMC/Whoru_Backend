@@ -5,9 +5,10 @@ namespace WhoruBackend.Models
 {
     public class Follow
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        //[Key]
+        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        //public int Id { get; set; }
+
         // Foreign keys
         public int IdFollower { get; set; }
         public int IdFollowing { get; set; }

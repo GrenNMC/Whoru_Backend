@@ -53,6 +53,24 @@ namespace WhoruBackend.Repositorys.Implement
             }
         }
 
+        public async Task<UserInfo?> GetUserInfoById(int userId)
+        {
+            try
+            {
+                var info = await _dbContext.UserInfos.FirstOrDefaultAsync(s => s.Id == userId);
+                if (info == null)
+                {
+                    return null;
+                }
+                return info;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+                return null;
+            }
+        }
+
         public async Task<UserInfo?> GetUserInfoByName(string userName)
         {
             try

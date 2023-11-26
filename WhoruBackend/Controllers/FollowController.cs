@@ -1,5 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using WhoruBackend.ModelViews.FollowModelViews;
+using WhoruBackend.Services;
+using WhoruBackend.Utilities.Constants;
 
 namespace WhoruBackend.Controllers
 {
@@ -7,36 +11,63 @@ namespace WhoruBackend.Controllers
     [ApiController]
     public class FollowController: ControllerBase
     {
-        [HttpPost]
-        [Authorize]
-        public IActionResult FollowUser([FromQuery] int id)
+        private readonly IFollowService _followService;
+
+        public FollowController(IFollowService followService)
         {
-            var str = "You just follow User have id: " + id;
-            return Ok(str);
+            _followService = followService;
         }
 
         [HttpPost]
         [Authorize]
-        public IActionResult UnFollowUser([FromQuery] int id)
+        public async Task<IActionResult> FollowUser([FromQuery] int id)
         {
-            var str = "You just unfollow User have id: " + id;
-            return Ok(str);
+            var response = await _followService.FollowUser(id);
+            if(response.Message == MessageConstant.NOT_FOUND)
+            {
+                return NotFound();
+            }
+            if(response.Message == MessageConstant.SYSTEM_ERROR)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            return Ok(response);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> UnFollowUser([FromQuery] int id)
+        {
+            var response = await _followService.UnFollowUser(id);
+            if (response.Message == MessageConstant.NOT_FOUND)
+            {
+                return NotFound();
+            }
+            if (response.Message == MessageConstant.SYSTEM_ERROR)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            return Ok(response);
         }
 
         [HttpGet]
         [Authorize]
-        public IActionResult GetAllFollower()
+        public async Task<IActionResult> GetAllFollower()
         {
-            var str = "List user";
-            return Ok(str);
+            var list = await _followService.GetAllFollower();
+            if (list == null)
+                return NotFound();
+            return Ok(list);
         }
 
         [HttpGet]
         [Authorize]
-        public IActionResult GetAllFollowing()
+        public async Task<IActionResult> GetAllFollowing()
         {
-            var str = "List user";
-            return Ok(str);
+            var list = await _followService.GetAllFollowing();
+            if (list == null)
+                return NotFound();
+            return Ok(list);
         }
     }
 }

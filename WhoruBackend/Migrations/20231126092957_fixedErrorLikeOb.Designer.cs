@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using WhoruBackend.Data;
@@ -11,9 +12,11 @@ using WhoruBackend.Data;
 namespace WhoruBackend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231126092957_fixedErrorLikeOb")]
+    partial class fixedErrorLikeOb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -220,16 +223,16 @@ namespace WhoruBackend.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedDate = new DateTime(2023, 11, 26, 9, 39, 37, 32, DateTimeKind.Utc).AddTicks(6774),
+                            CreatedDate = new DateTime(2023, 11, 26, 9, 29, 57, 468, DateTimeKind.Utc).AddTicks(3640),
                             RoleName = "Admin",
-                            UpdatedDate = new DateTime(2023, 11, 26, 9, 39, 37, 32, DateTimeKind.Utc).AddTicks(6778)
+                            UpdatedDate = new DateTime(2023, 11, 26, 9, 29, 57, 468, DateTimeKind.Utc).AddTicks(3645)
                         },
                         new
                         {
                             Id = 2,
-                            CreatedDate = new DateTime(2023, 11, 26, 9, 39, 37, 32, DateTimeKind.Utc).AddTicks(6781),
+                            CreatedDate = new DateTime(2023, 11, 26, 9, 29, 57, 468, DateTimeKind.Utc).AddTicks(3647),
                             RoleName = "User",
-                            UpdatedDate = new DateTime(2023, 11, 26, 9, 39, 37, 32, DateTimeKind.Utc).AddTicks(6781)
+                            UpdatedDate = new DateTime(2023, 11, 26, 9, 29, 57, 468, DateTimeKind.Utc).AddTicks(3648)
                         });
                 });
 
@@ -253,8 +256,6 @@ namespace WhoruBackend.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("FeedId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Shares");
                 });
@@ -307,26 +308,26 @@ namespace WhoruBackend.Migrations
                         {
                             Id = 1,
                             ActiveCode = "412002",
-                            CreatedDate = new DateTime(2023, 11, 26, 9, 39, 37, 32, DateTimeKind.Utc).AddTicks(6833),
+                            CreatedDate = new DateTime(2023, 11, 26, 9, 29, 57, 468, DateTimeKind.Utc).AddTicks(3716),
                             Email = "nmc0401@gmail.com",
                             IsDisabled = false,
-                            Password = "AQAQJwAAOdXiJUMhxfF9iZgUQ+NurKqURI47PwzvROmtICMNUu4FpOQmGDUHgdV++J/bZWIW",
+                            Password = "AQAQJwAAlCzp0R87s9pBOL99LFaBMbbj90a691hOIq5tyjXksE2eAzYE+X7lDFrJrb3/U/4Y",
                             Phone = "0769395658",
                             RoleId = 1,
-                            UpdatedDate = new DateTime(2023, 11, 26, 9, 39, 37, 32, DateTimeKind.Utc).AddTicks(6834),
+                            UpdatedDate = new DateTime(2023, 11, 26, 9, 29, 57, 468, DateTimeKind.Utc).AddTicks(3717),
                             UserName = "Admin"
                         },
                         new
                         {
                             Id = 2,
                             ActiveCode = "412222",
-                            CreatedDate = new DateTime(2023, 11, 26, 9, 39, 37, 42, DateTimeKind.Utc).AddTicks(267),
+                            CreatedDate = new DateTime(2023, 11, 26, 9, 29, 57, 479, DateTimeKind.Utc).AddTicks(134),
                             Email = "20110455@gmail.com",
                             IsDisabled = false,
-                            Password = "AQAQJwAAmANqZUfh5m65phhLBrvdsoczQwhhx/yE320v0ThbOjkTjTTEYWzr1F99Vtn7+rP7",
+                            Password = "AQAQJwAATAakuIQ9+PFab7+aPUDK8NcHgzBGp1TfRD7B4aSxV4+qxr1+S+f7XDTE/8mh2XLN",
                             Phone = "0769395658",
                             RoleId = 1,
-                            UpdatedDate = new DateTime(2023, 11, 26, 9, 39, 37, 42, DateTimeKind.Utc).AddTicks(268),
+                            UpdatedDate = new DateTime(2023, 11, 26, 9, 29, 57, 479, DateTimeKind.Utc).AddTicks(137),
                             UserName = "admin_2"
                         });
                 });
@@ -496,7 +497,7 @@ namespace WhoruBackend.Migrations
 
                     b.HasOne("WhoruBackend.Models.UserInfo", "UserInfo")
                         .WithMany("Shares")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("FeedId")
                         .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();
 

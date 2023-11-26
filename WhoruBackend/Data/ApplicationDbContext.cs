@@ -33,8 +33,6 @@ namespace WhoruBackend.Data
 
             modelBuilder.Entity<Follow>()
                 .HasKey(f => new { f.IdFollowing, f.IdFollower });
-            modelBuilder.Entity<Notification>()
-                .HasKey(f => new { f.UserReceive, f.UserSend });
 
             modelBuilder.Entity<User>()
                 .HasOne(s => s.Role)
@@ -64,7 +62,7 @@ namespace WhoruBackend.Data
             modelBuilder.Entity<Share>()
                 .HasOne(s => s.UserInfo)
                 .WithMany(s => s.Shares)
-                .HasForeignKey(s => s.FeedId)
+                .HasForeignKey(s => s.UserId)
                 .OnDelete(DeleteBehavior.SetNull);
             modelBuilder.Entity<Like>()
                .HasOne(s => s.Feed)
@@ -74,7 +72,7 @@ namespace WhoruBackend.Data
             modelBuilder.Entity<Like>()
                 .HasOne(s => s.UserInfo)
                 .WithMany(s => s.Likes)
-                .HasForeignKey(s => s.FeedId)
+                .HasForeignKey(s => s.UserId)
                 .OnDelete(DeleteBehavior.SetNull);
             modelBuilder.Entity<Comment>()
                 .HasOne(s => s.Feed)
