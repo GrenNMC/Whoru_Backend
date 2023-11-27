@@ -16,8 +16,8 @@ namespace WhoruBackend.Repositorys.Implement
         private readonly ApplicationDbContext _dbContext;
         private readonly string apiKey = "AIzaSyBEJTPrsVR8wgoiD4FLtx0XZNhxdqz6kjs";
         private readonly string bucketUrl = "whoru-2f115.appspot.com";
-        private readonly string authEmail = "nmc0401@gmail.com";
-        private readonly string authPassword = "123456@A";
+        private readonly string authEmail = "luci1luv187@gmail.com";
+        private readonly string authPassword = "nhut12345678";
 
         public FeedRepository(ApplicationDbContext dbContext)
         {
@@ -37,7 +37,8 @@ namespace WhoruBackend.Repositorys.Implement
 
                 if(files != null)
                 {
-                    files.ForEach(async file => {
+                    foreach(var file in files)
+                    {
                         Stream fileStream;
                         fileStream = file.OpenReadStream();
                         var auth = new FirebaseAuthProvider(new FirebaseConfig(apiKey));
@@ -64,7 +65,7 @@ namespace WhoruBackend.Repositorys.Implement
 
                         _dbContext.FeedImages.Add(image);
                         await _dbContext.SaveChangesAsync();
-                    });
+                    }
                 }
                 return new ResponseView(MessageConstant.CREATE_POST_SUCCESS);
             }
