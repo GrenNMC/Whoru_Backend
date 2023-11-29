@@ -3,10 +3,10 @@
     public class RequestUserInfoView
     {
         public string? FullName { get; set; }
-        public string? Avatar { get; set; }
-        public string? Backround { get; set; }
+        public IFormFile? Avatar { get; set; }
+        public IFormFile? Backround { get; set; }
 
-        public RequestUserInfoView(string? fullName, string? avatar, string? backround)
+        public RequestUserInfoView(string? fullName, IFormFile? avatar, IFormFile? backround)
         {
             FullName = fullName;
             Avatar = avatar;

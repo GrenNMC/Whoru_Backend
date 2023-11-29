@@ -9,6 +9,7 @@ namespace WhoruBackend.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string? Url { get; set; }
+        public string? ImageName {  get; set; }
         //Khóa ngoại
         public int? FeedId { get; set; }
         //Connect to table 

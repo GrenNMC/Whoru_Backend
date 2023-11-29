@@ -19,7 +19,7 @@ namespace WhoruBackend.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> LikePost([FromQuery] int idPost)
+        public async Task<IActionResult> LikePost([FromBody] int idPost)
         {
             if(idPost < 0)
             {

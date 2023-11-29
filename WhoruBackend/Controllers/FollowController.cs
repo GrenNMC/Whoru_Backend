@@ -20,7 +20,7 @@ namespace WhoruBackend.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> FollowUser([FromQuery] int id)
+        public async Task<IActionResult> FollowUser([FromBody] int id)
         {
             var response = await _followService.FollowUser(id);
             if(response.Message == MessageConstant.NOT_FOUND)
@@ -36,7 +36,7 @@ namespace WhoruBackend.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> UnFollowUser([FromQuery] int id)
+        public async Task<IActionResult> UnFollowUser([FromBody] int id)
         {
             var response = await _followService.UnFollowUser(id);
             if (response.Message == MessageConstant.NOT_FOUND)

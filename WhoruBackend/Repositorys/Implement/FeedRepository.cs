@@ -1,9 +1,5 @@
-﻿using Firebase.Auth;
-using Firebase.Storage;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Serilog;
-using System;
 using WhoruBackend.Data;
 using WhoruBackend.Models;
 using WhoruBackend.ModelViews;
@@ -14,10 +10,6 @@ namespace WhoruBackend.Repositorys.Implement
     public class FeedRepository : IFeedRepository
     {
         private readonly ApplicationDbContext _dbContext;
-        private readonly string apiKey = "AIzaSyBEJTPrsVR8wgoiD4FLtx0XZNhxdqz6kjs";
-        private readonly string bucketUrl = "whoru-2f115.appspot.com";
-        private readonly string authEmail = "luci1luv187@gmail.com";
-        private readonly string authPassword = "nhut12345678";
 
         public FeedRepository(ApplicationDbContext dbContext)
         {
@@ -39,28 +31,13 @@ namespace WhoruBackend.Repositorys.Implement
                 {
                     foreach(var file in files)
                     {
-                        Stream fileStream;
-                        fileStream = file.OpenReadStream();
-                        var auth = new FirebaseAuthProvider(new FirebaseConfig(apiKey));
-                        var firebaseAuth = await auth.SignInWithEmailAndPasswordAsync(authEmail, authPassword);
-
-                        var cancellation = new CancellationTokenSource();
-                        var task = new FirebaseStorage(
-                            bucketUrl,
-                            new FirebaseStorageOptions
-                            {
-                                AuthTokenAsyncFactory = () => Task.FromResult(firebaseAuth.FirebaseToken),
-                                ThrowOnCancel = true
-                            }
-                            ).Child("Images")
-                             .Child(file.FileName)
-                             .PutAsync(fileStream, cancellation.Token);
-
-                        string url = await task;
+                        UploadImageToStorage storage = new UploadImageToStorage();
+                        string url = await storage.ImageURL(file);
                         FeedImage image = new FeedImage
                         {
                             FeedId = feed.Id,
                             Url = url,
+                            ImageName = file.FileName,
                         };
 
                         _dbContext.FeedImages.Add(image);
@@ -85,9 +62,14 @@ namespace WhoruBackend.Repositorys.Implement
                     return new(MessageConstant.NO_DATA_REQUEST);
                 }
                 List<FeedImage> listImg = _dbContext.FeedImages.Where(s => s.FeedId == feed.Id).ToList();
-                foreach (FeedImage img in listImg)
+                if (listImg != null)
                 {
-                    _dbContext.FeedImages.Remove(img);
+                    UploadImageToStorage storage = new UploadImageToStorage();
+                    foreach (FeedImage img in listImg)
+                    {
+                        storage.DeleteImage(img);
+                        _dbContext.FeedImages.Remove(img);
+                    }
                 }
                 _dbContext.Feeds.Remove(feed);
                 await _dbContext.SaveChangesAsync();

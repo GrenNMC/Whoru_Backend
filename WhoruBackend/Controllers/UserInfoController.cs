@@ -38,29 +38,29 @@ namespace WhoruBackend.Controllers
             }
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
-        [HttpPost]
-        [Authorize]
-        public async Task<IActionResult> UpdateInfo([FromBody] RequestUserInfoView request)
-        {
-            if (request == null)
-                return BadRequest();
+        //[HttpPost]
+        //[Authorize]
+        //public async Task<IActionResult> UpdateInfo([FromBody] RequestUserInfoView request)
+        //{
+        //    if (request == null)
+        //        return BadRequest();
 
-            var response = await _userInfoService.Update(request);
-            if (response.Message == MessageConstant.NOT_FOUND)
-                return NotFound();
-            else
-            {
-                if (response.Message == MessageConstant.SYSTEM_ERROR)
-                {
-                    return StatusCode(StatusCodes.Status500InternalServerError);
-                }
-                return Ok(response);
-            }
-        }
+        //    var response = await _userInfoService.Update(request);
+        //    if (response.Message == MessageConstant.NOT_FOUND)
+        //        return NotFound();
+        //    else
+        //    {
+        //        if (response.Message == MessageConstant.SYSTEM_ERROR)
+        //        {
+        //            return StatusCode(StatusCodes.Status500InternalServerError);
+        //        }
+        //        return Ok(response);
+        //    }
+        //}
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> GetInfoByName([FromQuery] string name)
+        public async Task<IActionResult> GetInfoByName([FromBody] string name)
         {
             if(name == null)
             {

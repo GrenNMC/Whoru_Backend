@@ -1,5 +1,6 @@
 ﻿using Azure;
 using System.Collections.Generic;
+using WhoruBackend.Models;
 using WhoruBackend.ModelViews;
 using WhoruBackend.ModelViews.FollowModelViews;
 

@@ -29,11 +29,23 @@ namespace WhoruBackend.Services.Implement
             int info = await _userInfoRepo.GetInfoByUserId(userId);
             if(info == -1)
             {
+                string urlAvt = string.Empty;
+                string urlBackground = string.Empty;
+                UploadImageToStorage storage = new UploadImageToStorage();
+                if(request.Avatar != null)
+                {
+                    urlAvt = await storage.ImageURL(request.Avatar);
+                }
+                if (request.Backround != null)
+                {
+                    urlBackground = await storage.ImageURL(request.Backround);
+                }
+
                 UserInfo user = new UserInfo
                 {
                     FullName = request.FullName,
-                    Avatar = request.Avatar,
-                    Backround = request.Backround,
+                    Avatar = urlAvt,
+                    Backround = urlBackground,
                     UserId = userId,
                 };                
                 return await _userInfoRepo.Create(user);
@@ -48,21 +60,20 @@ namespace WhoruBackend.Services.Implement
 
         public async Task<ResponseView> Update(RequestUserInfoView request)
         {
-            int idUser = await _userService.GetIdByToken();
-            User? user = await _userRepo.GetUserById(idUser);
-            if (user == null)
-            {
-                return new(MessageConstant.NOT_FOUND);
-            }
-            UserInfo? userInfo = await _userInfoRepo.GetUserInfoByName(user.UserName);
-            if (userInfo == null)
-                return new(MessageConstant.NOT_FOUND);
-            userInfo.Avatar = request.Avatar;
-            userInfo.Backround = request.Backround;
-            userInfo.FullName = request.FullName;
+            //int idUser = await _userService.GetIdByToken();
+            //User? user = await _userRepo.GetUserById(idUser);
+            //if (user == null)
+            //{
+            //    return new(MessageConstant.NOT_FOUND);
+            //}
+            //UserInfo? userInfo = await _userInfoRepo.GetUserInfoByName(user.UserName);
+            //if (userInfo == null)
+            //    return new(MessageConstant.NOT_FOUND);
 
-            var response = await _userInfoRepo.Update(userInfo);
-            return response;
+            //if(request.Avatar.FileName != userInfo.)
+
+            //var response = await _userInfoRepo.Update(userInfo);
+            return new(MessageConstant.OK);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using WhoruBackend.ModelViews;
+﻿using WhoruBackend.Models;
+using WhoruBackend.ModelViews;
 using WhoruBackend.ModelViews.FollowModelViews;
 using WhoruBackend.Repositorys;
 using WhoruBackend.Utilities.Constants;

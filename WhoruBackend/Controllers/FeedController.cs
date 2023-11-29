@@ -34,7 +34,7 @@ namespace WhoruBackend.Controllers
 
         [Authorize]
         [HttpDelete]
-        public async Task<IActionResult> Delete([FromQuery]int id)
+        public async Task<IActionResult> Delete([FromBody]int id)
         {
             if (id < 0)
             {

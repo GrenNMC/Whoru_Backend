@@ -86,7 +86,7 @@ namespace WhoruBackend.Repositorys.Implement
 
                 foreach (var item in listFollower)
                 {
-                    var user = await _userInfoRepo.GetUserInfoById(item.IdFollower);
+                    var user = await _userInfoRepo.GetUserInfoById(item.IdFollowing);
                     if (user != null)
                     {
                         allFollower.Add(new FollowerModelView(user.Id, user.FullName, user.Avatar));

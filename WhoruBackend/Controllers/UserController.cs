@@ -34,7 +34,7 @@ namespace WhoruBackend.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> GetUserByName([FromQuery] string name)
+        public async Task<IActionResult> GetUserByName([FromBody] string name)
         {
             if(name == null)
             {

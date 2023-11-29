@@ -19,7 +19,7 @@ namespace WhoruBackend.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> ResetPassword([FromQuery] string email)
+        public async Task<IActionResult> ResetPassword([FromBody] string email)
         {
             if (email == null)
             {
@@ -102,7 +102,7 @@ namespace WhoruBackend.Controllers
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult>VerifyAccount([FromQuery]string code)
+        public async Task<IActionResult>VerifyAccount([FromBody]string code)
         {
             var reponse = await _LogService.ActiveAccount(code);
             return Ok(reponse);

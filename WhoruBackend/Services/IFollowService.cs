@@ -1,4 +1,5 @@
-﻿using WhoruBackend.ModelViews;
+﻿using WhoruBackend.Models;
+using WhoruBackend.ModelViews;
 using WhoruBackend.ModelViews.FollowModelViews;
 
 namespace WhoruBackend.Services

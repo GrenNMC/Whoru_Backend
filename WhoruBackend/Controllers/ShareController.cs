@@ -19,7 +19,7 @@ namespace WhoruBackend.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> SharePost([FromQuery] int idPost)
+        public async Task<IActionResult> SharePost([FromBody] int idPost)
         {
             if (idPost < 0)
                 return BadRequest();
@@ -33,7 +33,7 @@ namespace WhoruBackend.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> UnSharePost([FromQuery] int idPost)
+        public async Task<IActionResult> UnSharePost([FromBody] int idPost)
         {
             if (idPost < 0)
                 return BadRequest();
