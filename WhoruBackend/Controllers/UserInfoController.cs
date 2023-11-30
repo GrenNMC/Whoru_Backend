@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WhoruBackend.ModelViews.InfoModelViews;
 using WhoruBackend.Services;
@@ -38,25 +39,66 @@ namespace WhoruBackend.Controllers
             }
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
-        //[HttpPost]
-        //[Authorize]
-        //public async Task<IActionResult> UpdateInfo([FromBody] RequestUserInfoView request)
-        //{
-        //    if (request == null)
-        //        return BadRequest();
 
-        //    var response = await _userInfoService.Update(request);
-        //    if (response.Message == MessageConstant.NOT_FOUND)
-        //        return NotFound();
-        //    else
-        //    {
-        //        if (response.Message == MessageConstant.SYSTEM_ERROR)
-        //        {
-        //            return StatusCode(StatusCodes.Status500InternalServerError);
-        //        }
-        //        return Ok(response);
-        //    }
-        //}
+        [HttpPut]
+        [Authorize]
+        public async Task<IActionResult> UpdateBackground(IFormFile file)
+        {
+            if (file == null)
+                return BadRequest();
+
+            var response = await _userInfoService.UpdateBackground(file);
+            if (response.Message == MessageConstant.NOT_FOUND)
+                return NotFound();
+            else
+            {
+                if (response.Message == MessageConstant.SYSTEM_ERROR)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError);
+                }
+                return Ok(response);
+            }
+        }
+
+        [HttpPut]
+        [Authorize]
+        public async Task<IActionResult> UpdateAvatar( IFormFile file)
+        {
+            if (file == null)
+                return BadRequest();
+
+            var response = await _userInfoService.UpdateAvatar(file);
+            if (response.Message == MessageConstant.NOT_FOUND)
+                return NotFound();
+            else
+            {
+                if (response.Message == MessageConstant.SYSTEM_ERROR)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError);
+                }
+                return Ok(response);
+            }
+        }
+
+        [HttpPut]
+        [Authorize]
+        public async Task<IActionResult> UpdateInfo([FromBody]RequestUserInfoView request)
+        {
+            if (request == null)
+                return BadRequest();
+
+            var response = await _userInfoService.Update(request);
+            if (response.Message == MessageConstant.NOT_FOUND)
+                return NotFound();
+            else
+            {
+                if (response.Message == MessageConstant.SYSTEM_ERROR)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError);
+                }
+                return Ok(response);
+            }
+        }
 
         [HttpGet]
         [Authorize]

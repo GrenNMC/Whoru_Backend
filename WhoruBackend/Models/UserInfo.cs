@@ -10,13 +10,12 @@ namespace WhoruBackend.Models
         public int Id { get; set; }
         public string? FullName { get; set; }
         public string? Avatar { get; set; }
+        public string? AvtName {  get; set; }
         public string? Backround { get; set; }
-        // Contact 
-        // Description
-        // Working at
-        // Sturdy at
-        // Story
-        // 
+        public string? BackroundName { get; set; }
+        public string? Description { get; set; }
+        public string? WorkingAt { get; set; }
+        public string? StudyAt {  get; set; }
 
         // Foreign keys
         public int? UserId { get; set; }

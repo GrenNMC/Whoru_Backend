@@ -14,8 +14,43 @@ namespace WhoruBackend.Utilities.Constants
         private readonly string authEmail = "luci1luv187@gmail.com";
         private readonly string authPassword = "nhut12345678";
 
+        public async Task<string> FeedImageUrl(IFormFile file)
+        {
+            string repo = "Images";
+            return await ImageURL(repo, file);
+        }
 
-        public async void DeleteImage(FeedImage image)
+        public async Task<string> AvatarImageUrl(IFormFile file)
+        {
+            string repo = "Avatars";
+            return await ImageURL(repo, file);
+        }
+
+        public async Task<string> BackgroundImageUrl(IFormFile file)
+        {
+            string repo = "Backgrounds";
+            return await ImageURL(repo, file);
+        }
+
+        public async Task DeleteFeedImageUrl(FeedImage image)
+        {
+            string repo = "Images";
+            await DeleteImage(repo, image.ImageName);
+        }
+
+        public async Task DeleteAvatarImageUrl(string name)
+        {
+            string repo = "Avatars";
+            await DeleteImage(repo, name);
+        }
+
+        public async Task DeleteBackgroundImageUrl(string name)
+        {
+            string repo = "Backgrounds";
+            await DeleteImage(repo, name);
+        }
+
+        private async Task DeleteImage(string repo ,string name)
         {
             var auth = new FirebaseAuthProvider(new FirebaseConfig(apiKey));
             var firebaseAuth = await auth.SignInWithEmailAndPasswordAsync(authEmail, authPassword);
@@ -29,13 +64,13 @@ namespace WhoruBackend.Utilities.Constants
                     AuthTokenAsyncFactory = () => Task.FromResult(firebaseAuth.FirebaseToken),
                     ThrowOnCancel = true
                 }
-                ).Child("Images")
-                .Child(image.ImageName)
+                ).Child(repo)
+                .Child(name)
                 .DeleteAsync();
 
             await task;
         }
-        public async Task<string> ImageURL(IFormFile file)
+        private async Task<string> ImageURL(string repo,IFormFile file)
         {
 
             Stream fileStream;
@@ -52,7 +87,7 @@ namespace WhoruBackend.Utilities.Constants
                     AuthTokenAsyncFactory = () => Task.FromResult(firebaseAuth.FirebaseToken),
                     ThrowOnCancel = true
                 }
-                ).Child("Images")
+                ).Child(repo)
                 .Child(file.FileName)
                 .PutAsync(fileStream, cancellation.Token);
 

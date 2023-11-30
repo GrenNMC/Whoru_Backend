@@ -213,7 +213,13 @@ namespace WhoruBackend.Data
             {
                 Id = 1,
                 FullName = "Nguyen Minh Cuong",
-                Avatar = "Link hinh anh :>",
+                Avatar = "https://firebasestorage.googleapis.com/v0/b/whoru-2f115.appspot.com/o/Avatars%2Fdefault-avatar.jpg?alt=media&token=7721df77-f806-41c7-bcfe-2aae9acc98c7",
+                Backround = "https://firebasestorage.googleapis.com/v0/b/whoru-2f115.appspot.com/o/Backgrounds%2Fdefault-background.jpg?alt=media&token=e99f5f3d-9b05-4594-a233-f839204e56e6",
+                AvtName = "default-avatar",
+                BackroundName = "default-backround",
+                Description = "Lonely",
+                WorkingAt ="HCMUTE",
+                StudyAt = "HCMUTE",
                 UserId = 1
             };
             modelBuilder.Entity<UserInfo>().HasData(userInfo);
@@ -222,7 +228,13 @@ namespace WhoruBackend.Data
             {
                 Id = 2,
                 FullName = "Nguyen Minh Nhut",
-                Avatar = "Link hinh anh :>",
+                Avatar = "https://firebasestorage.googleapis.com/v0/b/whoru-2f115.appspot.com/o/Avatars%2Fdefault-avatar.jpg?alt=media&token=7721df77-f806-41c7-bcfe-2aae9acc98c7",
+                Backround = "https://firebasestorage.googleapis.com/v0/b/whoru-2f115.appspot.com/o/Backgrounds%2Fdefault-background.jpg?alt=media&token=e99f5f3d-9b05-4594-a233-f839204e56e6",
+                AvtName = "default-avatar",
+                BackroundName = "default-backround",
+                Description = "Naive",
+                WorkingAt = "HCMUTE",
+                StudyAt = "HCMUTE",
                 UserId = 2
             };
             modelBuilder.Entity<UserInfo>().HasData(userInfo2);

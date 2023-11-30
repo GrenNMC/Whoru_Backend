@@ -65,7 +65,7 @@ namespace WhoruBackend.Controllers
             return CreatedAtAction(nameof(GetUserByName),user.UserName);
         }
 
-        [HttpPost]
+        [HttpPut]
         [Authorize]
         public IActionResult Update([FromBody] UpdateUserModelView updatedUser)
         {    

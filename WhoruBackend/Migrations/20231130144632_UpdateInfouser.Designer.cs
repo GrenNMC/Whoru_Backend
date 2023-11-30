@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using WhoruBackend.Data;
@@ -11,9 +12,11 @@ using WhoruBackend.Data;
 namespace WhoruBackend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231130144632_UpdateInfouser")]
+    partial class UpdateInfouser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -223,16 +226,16 @@ namespace WhoruBackend.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedDate = new DateTime(2023, 11, 30, 17, 27, 14, 330, DateTimeKind.Utc).AddTicks(7504),
+                            CreatedDate = new DateTime(2023, 11, 30, 14, 46, 32, 543, DateTimeKind.Utc).AddTicks(6351),
                             RoleName = "Admin",
-                            UpdatedDate = new DateTime(2023, 11, 30, 17, 27, 14, 330, DateTimeKind.Utc).AddTicks(7508)
+                            UpdatedDate = new DateTime(2023, 11, 30, 14, 46, 32, 543, DateTimeKind.Utc).AddTicks(6356)
                         },
                         new
                         {
                             Id = 2,
-                            CreatedDate = new DateTime(2023, 11, 30, 17, 27, 14, 330, DateTimeKind.Utc).AddTicks(7510),
+                            CreatedDate = new DateTime(2023, 11, 30, 14, 46, 32, 543, DateTimeKind.Utc).AddTicks(6357),
                             RoleName = "User",
-                            UpdatedDate = new DateTime(2023, 11, 30, 17, 27, 14, 330, DateTimeKind.Utc).AddTicks(7511)
+                            UpdatedDate = new DateTime(2023, 11, 30, 14, 46, 32, 543, DateTimeKind.Utc).AddTicks(6357)
                         });
                 });
 
@@ -310,26 +313,26 @@ namespace WhoruBackend.Migrations
                         {
                             Id = 1,
                             ActiveCode = "412002",
-                            CreatedDate = new DateTime(2023, 11, 30, 17, 27, 14, 330, DateTimeKind.Utc).AddTicks(7569),
+                            CreatedDate = new DateTime(2023, 11, 30, 14, 46, 32, 543, DateTimeKind.Utc).AddTicks(6405),
                             Email = "nmc0401@gmail.com",
                             IsDisabled = false,
-                            Password = "AQAQJwAA7A+ZNEIDKb7UYtKCg3ecL8J7kmAuTdXdCV8Q1TnEfZXhnAr5Fce9SnQ1zLu99x/O",
+                            Password = "AQAQJwAAlh9MXl11pzTCc2Bqq2l0R4bJeJJThPB3rBsZsoxQYHAZZsoPIi14s1kkgrpqXkW2",
                             Phone = "0769395658",
                             RoleId = 1,
-                            UpdatedDate = new DateTime(2023, 11, 30, 17, 27, 14, 330, DateTimeKind.Utc).AddTicks(7569),
+                            UpdatedDate = new DateTime(2023, 11, 30, 14, 46, 32, 543, DateTimeKind.Utc).AddTicks(6406),
                             UserName = "Admin"
                         },
                         new
                         {
                             Id = 2,
                             ActiveCode = "412222",
-                            CreatedDate = new DateTime(2023, 11, 30, 17, 27, 14, 351, DateTimeKind.Utc).AddTicks(1601),
+                            CreatedDate = new DateTime(2023, 11, 30, 14, 46, 32, 553, DateTimeKind.Utc).AddTicks(2553),
                             Email = "20110455@gmail.com",
                             IsDisabled = false,
-                            Password = "AQAQJwAACBy/l1qQEVwjedqvm/yN9FTmzeHlbk2PJX7tG2kAY5ljmH+SJofy3hPS29r3JDct",
+                            Password = "AQAQJwAA8/rowujA/y5qWNP8xnYZWtMI9UA3J88jAVKluxXIge9dqCdcR6oLmVmLNquBSXDf",
                             Phone = "0769395658",
                             RoleId = 1,
-                            UpdatedDate = new DateTime(2023, 11, 30, 17, 27, 14, 351, DateTimeKind.Utc).AddTicks(1605),
+                            UpdatedDate = new DateTime(2023, 11, 30, 14, 46, 32, 553, DateTimeKind.Utc).AddTicks(2557),
                             UserName = "admin_2"
                         });
                 });
@@ -345,13 +348,7 @@ namespace WhoruBackend.Migrations
                     b.Property<string>("Avatar")
                         .HasColumnType("text");
 
-                    b.Property<string>("AvtName")
-                        .HasColumnType("text");
-
                     b.Property<string>("Backround")
-                        .HasColumnType("text");
-
-                    b.Property<string>("BackroundName")
                         .HasColumnType("text");
 
                     b.Property<string>("Description")
@@ -380,10 +377,7 @@ namespace WhoruBackend.Migrations
                         new
                         {
                             Id = 1,
-                            Avatar = "https://firebasestorage.googleapis.com/v0/b/whoru-2f115.appspot.com/o/Avatars%2Fdefault-avatar.jpg?alt=media&token=7721df77-f806-41c7-bcfe-2aae9acc98c7",
-                            AvtName = "default-avatar",
-                            Backround = "https://firebasestorage.googleapis.com/v0/b/whoru-2f115.appspot.com/o/Backgrounds%2Fdefault-background.jpg?alt=media&token=e99f5f3d-9b05-4594-a233-f839204e56e6",
-                            BackroundName = "default-backround",
+                            Avatar = "Link hinh anh :>",
                             Description = "Lonely",
                             FullName = "Nguyen Minh Cuong",
                             StudyAt = "HCMUTE",
@@ -393,10 +387,7 @@ namespace WhoruBackend.Migrations
                         new
                         {
                             Id = 2,
-                            Avatar = "https://firebasestorage.googleapis.com/v0/b/whoru-2f115.appspot.com/o/Avatars%2Fdefault-avatar.jpg?alt=media&token=7721df77-f806-41c7-bcfe-2aae9acc98c7",
-                            AvtName = "default-avatar",
-                            Backround = "https://firebasestorage.googleapis.com/v0/b/whoru-2f115.appspot.com/o/Backgrounds%2Fdefault-background.jpg?alt=media&token=e99f5f3d-9b05-4594-a233-f839204e56e6",
-                            BackroundName = "default-backround",
+                            Avatar = "Link hinh anh :>",
                             Description = "Naive",
                             FullName = "Nguyen Minh Nhut",
                             StudyAt = "HCMUTE",

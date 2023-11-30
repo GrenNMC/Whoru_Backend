@@ -32,7 +32,7 @@ namespace WhoruBackend.Repositorys.Implement
                     foreach(var file in files)
                     {
                         UploadImageToStorage storage = new UploadImageToStorage();
-                        string url = await storage.ImageURL(file);
+                        string url = await storage.FeedImageUrl(file);
                         FeedImage image = new FeedImage
                         {
                             FeedId = feed.Id,
@@ -67,7 +67,7 @@ namespace WhoruBackend.Repositorys.Implement
                     UploadImageToStorage storage = new UploadImageToStorage();
                     foreach (FeedImage img in listImg)
                     {
-                        storage.DeleteImage(img);
+                        _ = storage.DeleteFeedImageUrl(img);
                         _dbContext.FeedImages.Remove(img);
                     }
                 }
