@@ -42,7 +42,7 @@ namespace WhoruBackend.Controllers
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> ChangePassword([FromQuery] string newPassword)
+        public async Task<IActionResult> ChangePassword([FromBody] string newPassword)
         {
             if(newPassword == null)
             {
