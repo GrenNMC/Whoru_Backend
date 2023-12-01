@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using WhoruBackend.ModelViews.FeedModelViews;
 using WhoruBackend.Services;
 using WhoruBackend.Services.Implement;
@@ -57,16 +58,22 @@ namespace WhoruBackend.Controllers
 
         [Authorize]
         [HttpGet]
-        public IActionResult GetAllPost()
+        public async Task<IActionResult> GetAllPost()
         {
-            return Ok();
+            var list = await _feedService.GetAllFeed();
+            if (list.Count <= 0)
+                return NotFound();
+            return Ok(list);
         }
 
         [Authorize]
         [HttpPost]
-        public IActionResult GetAllPostByUserId([FromBody] int id)
+        public async  Task<IActionResult> GetAllPostByUserId([FromBody] int id)
         {
-            return Ok();
+            var list = await _feedService.GetAllFeedByUserId(id);
+            if (list.Count <= 0)
+                return NotFound();
+            return Ok(list);
         }
     }
 }

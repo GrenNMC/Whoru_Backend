@@ -1,5 +1,6 @@
 ﻿using Azure;
 using WhoruBackend.ModelViews;
+using WhoruBackend.ModelViews.FeedModelViews;
 
 namespace WhoruBackend.Services
 {
@@ -7,5 +8,7 @@ namespace WhoruBackend.Services
     {
         public Task<ResponseView> Create(int userId, string status, List<IFormFile> files);
         public Task<ResponseView> Delete(int id);
+        public Task<List<ResponseAllFeedModelView>?> GetAllFeed();
+        public Task<List<ResponseAllFeedModelView>?> GetAllFeedByUserId(int id);
     }
 }

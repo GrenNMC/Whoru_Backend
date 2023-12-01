@@ -1,5 +1,6 @@
 ﻿using WhoruBackend.Models;
 using WhoruBackend.ModelViews;
+using WhoruBackend.ModelViews.FeedModelViews;
 using WhoruBackend.Repositorys;
 using WhoruBackend.Utilities.Constants;
 
@@ -43,6 +44,16 @@ namespace WhoruBackend.Services.Implement
             }
             var response = await _feedRepo.Delete(feed);
             return response;
+        }
+
+        public async Task<List<ResponseAllFeedModelView>?> GetAllFeed()
+        {
+            return await _feedRepo.GetAllFeed();
+        }
+
+        public async Task<List<ResponseAllFeedModelView>?> GetAllFeedByUserId(int id)
+        {
+            return await _feedRepo.GetAllFeedByUserId(id);
         }
     }
 }

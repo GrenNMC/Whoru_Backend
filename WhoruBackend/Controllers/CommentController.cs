@@ -22,7 +22,7 @@ namespace WhoruBackend.Controllers
         public async Task<IActionResult> GetAllCommentByFeedId(int feedId)
         {
             var list = await _commentService.GetAllCommentByFeedId(feedId);
-            if(list == null)
+            if(list.Count <= 0)
             {
                 return NotFound();
             }

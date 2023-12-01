@@ -3,6 +3,7 @@ using Serilog;
 using WhoruBackend.Data;
 using WhoruBackend.Models;
 using WhoruBackend.ModelViews;
+using WhoruBackend.ModelViews.FeedModelViews;
 using WhoruBackend.Utilities.Constants;
 
 namespace WhoruBackend.Repositorys.Implement
@@ -94,6 +95,82 @@ namespace WhoruBackend.Repositorys.Implement
             catch(Exception e) 
             {
                 Log.Error(e.Message);
+                return null;
+            }
+        }
+
+        public async Task<List<ResponseAllFeedModelView>?> GetAllFeed()
+        {
+            try {
+                List<ResponseAllFeedModelView> listResult = new List<ResponseAllFeedModelView> ();
+               
+                var list = await _dbContext.Feeds.ToListAsync();
+                //list.Sort((item1, item2) => item1.Date.Value.CompareTo(item2.Date.Value));
+                
+                if (list != null)
+                {
+                    foreach (var item in list)
+                    {
+                        var user = await _dbContext.UserInfos.Where(s => s.Id == item.UserInfoId).FirstOrDefaultAsync();
+                        var listImage = await _dbContext.FeedImages.Where(s => s.FeedId == item.Id).ToListAsync();
+                        int likeCount = await _dbContext.Likes.Where(s => s.FeedId == item.Id).CountAsync();
+                        int commentCount = await _dbContext.Comments.Where(s => s.FeedId == item.Id).CountAsync();
+                        int shareCount = await _dbContext.Shares.Where(s => s.FeedId == item.Id).CountAsync();
+                        List<string> listImgs = new List<string>();
+                        if (listImage != null) {
+                            foreach (var image in listImage)
+                            {
+                                listImgs.Add(image.Url);
+                            }
+                        }
+                        ResponseAllFeedModelView response = new ResponseAllFeedModelView(item.Id,item.Status,listImgs,user.Id,user.FullName,user.Avatar,likeCount,commentCount,shareCount);
+                        listResult.Add(response);
+                    }
+                    return listResult;
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+                return null;
+            }
+        }
+
+        public async Task<List<ResponseAllFeedModelView>?> GetAllFeedByUserId(int id)
+        {
+            try {
+                List<ResponseAllFeedModelView> listResult = new List<ResponseAllFeedModelView>();
+
+                var list = await _dbContext.Feeds.Where(s => s.UserId == id).ToListAsync();
+
+                if (list != null)
+                {
+                    foreach (var item in list)
+                    {
+                        var user = await _dbContext.UserInfos.Where(s => s.Id == item.UserInfoId).FirstOrDefaultAsync();
+                        var listImage = await _dbContext.FeedImages.Where(s => s.FeedId == item.Id).ToListAsync();
+                        int likeCount = await _dbContext.Likes.Where(s => s.FeedId == item.Id).CountAsync();
+                        int commentCount = await _dbContext.Comments.Where(s => s.FeedId == item.Id).CountAsync();
+                        int shareCount = await _dbContext.Shares.Where(s => s.FeedId == item.Id).CountAsync();
+                        List<string> listImgs = new List<string>();
+                        if (listImage != null)
+                        {
+                            foreach (var image in listImage)
+                            {
+                                listImgs.Add(image.Url);
+                            }
+                        }
+                        ResponseAllFeedModelView response = new ResponseAllFeedModelView(item.Id, item.Status, listImgs, user.Id, user.FullName, user.Avatar, likeCount, commentCount, shareCount);
+                        listResult.Add(response);
+                    }
+                    return listResult;
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
                 return null;
             }
         }
