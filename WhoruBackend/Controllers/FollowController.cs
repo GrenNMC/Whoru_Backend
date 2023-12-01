@@ -55,7 +55,7 @@ namespace WhoruBackend.Controllers
         public async Task<IActionResult> GetAllFollower()
         {
             var list = await _followService.GetAllFollower();
-            if (list == null)
+            if (list.Count <= 0)
                 return NotFound();
             return Ok(list);
         }
@@ -65,7 +65,7 @@ namespace WhoruBackend.Controllers
         public async Task<IActionResult> GetAllFollowing()
         {
             var list = await _followService.GetAllFollowing();
-            if (list == null)
+            if (list.Count <= 0)
                 return NotFound();
             return Ok(list);
         }

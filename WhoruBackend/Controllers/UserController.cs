@@ -25,7 +25,7 @@ namespace WhoruBackend.Controllers
         [Authorize]
         public async Task<IActionResult> GetAll() {
             var list = await _userService.GetAll();
-            if (list == null)
+            if (list.Count <= 0)
             {
                 return NotFound();
             }
