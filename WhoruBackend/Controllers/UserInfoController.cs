@@ -100,7 +100,7 @@ namespace WhoruBackend.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         [Authorize]
         public async Task<IActionResult> GetInfoByName([FromBody] string name)
         {
@@ -111,6 +111,24 @@ namespace WhoruBackend.Controllers
 
             var info = await _userInfoService.GetUserInfoByName(name);    
             if(info == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(info);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> GetInfoById([FromBody] int id)
+        {
+            if (id < 0 )
+            {
+                return BadRequest();
+            }
+
+            var info = await _userInfoService.GetUserInfoById(id);
+            if (info == null)
             {
                 return NotFound();
             }

@@ -12,5 +12,6 @@ namespace WhoruBackend.Services
         public Task<ResponseView> Create(RegisterView user);
         public Task<int> GetIdByToken();
         public Task<User?> GetUserByName(string name);
+        public Task<User?> GetUserById(int id);
     }
 }

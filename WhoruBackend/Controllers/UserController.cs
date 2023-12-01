@@ -32,7 +32,7 @@ namespace WhoruBackend.Controllers
             return Ok(list);
         }
 
-        [HttpGet]
+        [HttpPost]
         [Authorize]
         public async Task<IActionResult> GetUserByName([FromBody] string name)
         {
@@ -47,6 +47,23 @@ namespace WhoruBackend.Controllers
             }
             return Ok(user);
         }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> GetUserById([FromBody] int id)
+        {
+            if (id < 0)
+            {
+                return BadRequest();
+            }
+            var user = await _userService.GetUserById(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return Ok(user);
+        }
+
 
         [HttpPost]
         [AllowAnonymous]

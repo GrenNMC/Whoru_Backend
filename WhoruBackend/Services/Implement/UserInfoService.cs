@@ -49,6 +49,11 @@ namespace WhoruBackend.Services.Implement
             return new ResponseView(MessageConstant.EXISTED);
         }
 
+        public async Task<UserInfo?> GetUserInfoById(int id)
+        {
+            return await _userInfoRepo.GetUserInfoById(id);
+        }
+
         public async Task<UserInfo?> GetUserInfoByName(string userName)
         {
             return await _userInfoRepo.GetUserInfoByName(userName);

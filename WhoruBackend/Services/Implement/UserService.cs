@@ -61,6 +61,12 @@ namespace WhoruBackend.Services.Implement
             return id;
         }
 
+        public async Task<User?> GetUserById(int id)
+        {
+            var user = await _userRepo.GetUserById(id);
+            return user;
+        }
+
         public async Task<User?> GetUserByName(string name)
         {
             var user = await _userRepo.GetUserByName(name);

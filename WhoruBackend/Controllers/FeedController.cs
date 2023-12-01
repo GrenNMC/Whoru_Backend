@@ -54,5 +54,19 @@ namespace WhoruBackend.Controllers
                 return Ok(response);
             }
         }
+
+        [Authorize]
+        [HttpGet]
+        public IActionResult GetAllPost()
+        {
+            return Ok();
+        }
+
+        [Authorize]
+        [HttpPost]
+        public IActionResult GetAllPostByUserId([FromBody] int id)
+        {
+            return Ok();
+        }
     }
 }

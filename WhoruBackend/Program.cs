@@ -43,7 +43,7 @@ services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 // Add services to the container.
-services.AddDbContext<ApplicationDbContext>(option => option.UseNpgsql(builder.Configuration.GetConnectionString("WhoruDbConnectionString")));
+services.AddDbContext<ApplicationDbContext>(option => option.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnectionString")));
 
 services.AddControllers().AddJsonOptions(s => s.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
@@ -55,6 +55,7 @@ services.AddScoped<IUserInfoService, UserInfoService>();
 services.AddScoped<IFollowService, FollowService>();
 services.AddScoped<ILikeService, LikeService>();
 services.AddScoped<IShareService, ShareService>();
+services.AddScoped<ICommentService, CommentService>();
 
 // Register Repository
 services.AddScoped<IUserRepository, UserRepositoty>();
@@ -65,6 +66,8 @@ services.AddScoped<IUserInfoRepository, UserInfoRepository>();
 services.AddScoped<IFollowRepository, FollowRepository>();
 services.AddScoped<ILikeRepository, LikeRepository>();
 services.AddScoped<IShareRepository, ShareRepository>();
+services.AddScoped<ICommentRepository, CommentRepository>();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 services.AddEndpointsApiExplorer();
 services.AddHttpContextAccessor();
