@@ -110,7 +110,7 @@ namespace WhoruBackend.Services.Implement
                 User? user = await _userRepo.GetUserByName(view.UserName);
                 if (user == null)
                 {
-                    return new(MessageConstant.USER_NOT_FOUND);
+                    return new(MessageConstant.NOT_FOUND);
                 }
                 var checkPassword = new PasswordHasher().Verify(view.Password, user.Password);
                 if (checkPassword == false)
