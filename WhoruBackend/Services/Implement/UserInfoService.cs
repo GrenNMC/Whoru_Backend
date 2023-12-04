@@ -49,14 +49,24 @@ namespace WhoruBackend.Services.Implement
             return new ResponseView(MessageConstant.EXISTED);
         }
 
-        public async Task<UserInfo?> GetUserInfoById(int id)
+        public async Task<ResponseInfoView?> GetUserInfoById(int id)
         {
-            return await _userInfoRepo.GetUserInfoById(id);
+            var userInfo = await _userInfoRepo.GetUserInfoById(id);
+            if (userInfo == null)
+            {
+                return null;
+            }
+            return new ResponseInfoView(userInfo.Id,userInfo.FullName,userInfo.Avatar,userInfo.Backround,userInfo.Description,userInfo.WorkingAt,userInfo.StudyAt);
         }
 
-        public async Task<UserInfo?> GetUserInfoByName(string userName)
+        public async Task<ResponseInfoView?> GetUserInfoByName(string userName)
         {
-            return await _userInfoRepo.GetUserInfoByName(userName);
+            var userInfo = await _userInfoRepo.GetUserInfoByName(userName);
+            if (userInfo == null)
+            {
+                return null;
+            }
+            return new ResponseInfoView(userInfo.Id, userInfo.FullName, userInfo.Avatar, userInfo.Backround, userInfo.Description, userInfo.WorkingAt, userInfo.StudyAt);
         }
 
         public async Task<ResponseView> Update(RequestUserInfoView request)
