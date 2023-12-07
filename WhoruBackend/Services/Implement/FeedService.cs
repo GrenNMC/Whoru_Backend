@@ -10,11 +10,13 @@ namespace WhoruBackend.Services.Implement
     {
         private readonly IFeedRepository _feedRepo;
         private readonly IUserInfoRepository _infoRepo;
+        private readonly IUserService _userService;
 
-        public FeedService(IFeedRepository feedRepo, IUserInfoRepository infoRepo)
+        public FeedService(IFeedRepository feedRepo, IUserInfoRepository infoRepo, IUserService userService)
         {
             _feedRepo = feedRepo;
             _infoRepo = infoRepo;
+            _userService = userService;
         }
 
         public async Task<ResponseView> Create(int userId, string status, List<IFormFile> files)
@@ -48,12 +50,16 @@ namespace WhoruBackend.Services.Implement
 
         public async Task<List<ResponseAllFeedModelView>?> GetAllFeed()
         {
-            return await _feedRepo.GetAllFeed();
+            var id = await _userService.GetIdByToken();
+            int authUser = await _infoRepo.GetInfoByUserId(id);
+            return await _feedRepo.GetAllFeed(authUser);
         }
 
         public async Task<List<ResponseAllFeedModelView>?> GetAllFeedByUserId(int id)
         {
-            return await _feedRepo.GetAllFeedByUserId(id);
+            var idUser = await _userService.GetIdByToken();
+            int authUser = await _infoRepo.GetInfoByUserId(idUser);
+            return await _feedRepo.GetAllFeedByUserId(id, authUser);
         }
     }
 }

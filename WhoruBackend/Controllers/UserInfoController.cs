@@ -7,7 +7,7 @@ using WhoruBackend.Utilities.Constants;
 
 namespace WhoruBackend.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/v1/[controller]s/[action]")]
     [ApiController]
     public class UserInfoController: ControllerBase
     {
