@@ -86,12 +86,22 @@ services.AddSwaggerGen(options =>
     options.OperationFilter<SecurityRequirementsOperationFilter>();
 });
 
-services.AddSignalR();
-//var allowPolicy = "AllowAll";
-//services.AddCors(options =>
-//{
-//    options.AddPolicy(allowPolicy, p => p.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().AllowCredentials());
-//});
+var allowPolicy = "AllowAll";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(allowPolicy,
+        configure => configure.WithOrigins("https://localhost:7175")
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials()
+    );
+});
+
+services.AddSignalR(hubOptions => { 
+    hubOptions.EnableDetailedErrors = true; 
+    hubOptions.KeepAliveInterval = TimeSpan.FromSeconds(10); 
+    hubOptions.HandshakeTimeout = TimeSpan.FromSeconds(5); 
+});
 //Register Serilog
 //Log.Logger = new LoggerConfiguration().WriteTo.File("Logs/logs.txt", rollingInterval: RollingInterval.Day).CreateLogger();
 //builder.Host.UseSerilog();
@@ -124,7 +134,7 @@ if (app.Environment.IsDevelopment())
 app.UseSerilogRequestLogging();
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseCors(allowPolicy);
 app.MapControllers();
 app.MapHub<ChatHub>("/chatHub");
 app.Run();
