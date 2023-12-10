@@ -2,11 +2,13 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Microsoft.Owin.Cors;
 using Serilog;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
 using System.Text.Json.Serialization;
 using WhoruBackend.Data;
+using WhoruBackend.Hubs;
 using WhoruBackend.Repositorys;
 using WhoruBackend.Repositorys.Implement;
 using WhoruBackend.Services;
@@ -56,7 +58,7 @@ services.AddScoped<IFollowService, FollowService>();
 services.AddScoped<ILikeService, LikeService>();
 services.AddScoped<IShareService, ShareService>();
 services.AddScoped<ICommentService, CommentService>();
-
+services.AddScoped<IChatService, ChatService>();
 // Register Repository
 services.AddScoped<IUserRepository, UserRepositoty>();
 services.AddScoped<IlogRepository, LogRepository>();
@@ -67,7 +69,7 @@ services.AddScoped<IFollowRepository, FollowRepository>();
 services.AddScoped<ILikeRepository, LikeRepository>();
 services.AddScoped<IShareRepository, ShareRepository>();
 services.AddScoped<ICommentRepository, CommentRepository>();
-
+services.AddScoped<IChatRepository, ChatRepository>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 services.AddEndpointsApiExplorer();
 services.AddHttpContextAccessor();
@@ -84,6 +86,12 @@ services.AddSwaggerGen(options =>
     options.OperationFilter<SecurityRequirementsOperationFilter>();
 });
 
+services.AddSignalR();
+//var allowPolicy = "AllowAll";
+//services.AddCors(options =>
+//{
+//    options.AddPolicy(allowPolicy, p => p.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().AllowCredentials());
+//});
 //Register Serilog
 //Log.Logger = new LoggerConfiguration().WriteTo.File("Logs/logs.txt", rollingInterval: RollingInterval.Day).CreateLogger();
 //builder.Host.UseSerilog();
@@ -105,17 +113,18 @@ builder.Host.UseSerilog((context, config) =>
 
 
 var app = builder.Build();
-
+//app.UseCors(allowPolicy);
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 app.UseSerilogRequestLogging();
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
+app.MapHub<ChatHub>("/chatHub");
 app.Run();

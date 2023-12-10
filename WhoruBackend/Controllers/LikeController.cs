@@ -32,5 +32,12 @@ namespace WhoruBackend.Controllers
                 return NotFound();
             return Ok(response);
         }
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult GetAllLikedUser([FromBody] int idPost)
+        {
+            return Ok();
+        }
     }
 }

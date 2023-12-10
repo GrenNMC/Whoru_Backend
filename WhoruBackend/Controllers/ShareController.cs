@@ -44,5 +44,12 @@ namespace WhoruBackend.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             return Ok(str);
         }
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult GetAllSharedUser([FromBody] int idPost)
+        {
+            return Ok();
+        }
     }
 }
