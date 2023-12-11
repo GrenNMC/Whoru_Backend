@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WhoruBackend.ModelViews;
+using WhoruBackend.ModelViews.InfoModelViews;
 using WhoruBackend.Repositorys;
 using WhoruBackend.Utilities.Constants;
 
@@ -16,6 +17,11 @@ namespace WhoruBackend.Services.Implement
             _shareRepo = shareRepo;
             _userService = userService;
             _feedRepo = feedRepo;
+        }
+
+        public async Task<List<ResponseListUser>?> GetAllUser(int idFeed)
+        {
+            return await _shareRepo.GetAllUser(idFeed);
         }
 
         public async Task<ResponseView> SharePost(int idPost)

@@ -35,9 +35,16 @@ namespace WhoruBackend.Controllers
 
         [HttpPost]
         [Authorize]
-        public IActionResult GetAllLikedUser([FromBody] int idPost)
+        public  async Task<IActionResult> GetAllLikedUser([FromBody] int idPost)
         {
-            return Ok();
+            if (idPost < 0)
+            {
+                return BadRequest();
+            }
+            var list = await _likeService.GetAllUser(idPost);
+            if (list == null)
+                return NotFound();
+            return Ok(list);
         }
     }
 }

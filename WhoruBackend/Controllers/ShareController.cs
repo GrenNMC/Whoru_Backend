@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using WhoruBackend.Repositorys;
 using WhoruBackend.Services;
+using WhoruBackend.Services.Implement;
 using WhoruBackend.Utilities.Constants;
 
 namespace WhoruBackend.Controllers
@@ -47,9 +48,16 @@ namespace WhoruBackend.Controllers
 
         [HttpPost]
         [Authorize]
-        public IActionResult GetAllSharedUser([FromBody] int idPost)
+        public async Task<IActionResult> GetAllSharedUser([FromBody] int idPost)
         {
-            return Ok();
+            if (idPost < 0)
+            {
+                return BadRequest();
+            }
+            var list = await _shareService.GetAllUser(idPost);
+            if (list == null)
+                return NotFound();
+            return Ok(list);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using WhoruBackend.Models;
 using WhoruBackend.ModelViews;
+using WhoruBackend.ModelViews.InfoModelViews;
 using WhoruBackend.Repositorys;
 using WhoruBackend.Utilities.Constants;
 
@@ -18,6 +19,11 @@ namespace WhoruBackend.Services.Implement
             _infoRepo = infoRepo;
             _userService = userService;
             _likeRepo = likeRepo;
+        }
+
+        public async Task<List<ResponseListUser>?> GetAllUser(int idFeed)
+        {
+            return await _likeRepo.GetAllUser(idFeed);
         }
 
         public async Task<ResponseView> LikeFeed(int idFeed)

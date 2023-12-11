@@ -35,12 +35,5 @@ namespace WhoruBackend.Controllers
         {
             return Ok();
         }
-
-        [HttpDelete]
-        [Authorize]
-        public IActionResult DeleteAllChat()
-        {
-            return Ok();
-        }
     }
 }
