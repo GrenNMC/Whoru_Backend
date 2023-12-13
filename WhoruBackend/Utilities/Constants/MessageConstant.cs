@@ -25,5 +25,7 @@ namespace WhoruBackend.Utilities.Constants
         public static string ACTIVE_SUCCESS = "Your account is now active";
         public static string CREATE_POST_SUCCESS = "Your Feed create success";
         public static string CHANGE_PASSWORD_SUCCESS = "Your password has changed";
+        public static string IMAGE = "Image";
+        public static string MESSAGE = "Message";
     }
 }

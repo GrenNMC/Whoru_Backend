@@ -3,7 +3,9 @@ using Serilog;
 using WhoruBackend.Data;
 using WhoruBackend.Models;
 using WhoruBackend.ModelViews;
+using WhoruBackend.ModelViews.InfoModelViews;
 using WhoruBackend.Utilities.Constants;
+using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
 namespace WhoruBackend.Repositorys.Implement
 {
@@ -89,6 +91,28 @@ namespace WhoruBackend.Repositorys.Implement
             }
             catch (Exception ex)
             {
+                Log.Error(ex.Message);
+                return null;
+            }
+        }
+
+        public async Task<List<ResponseListUser>?> SearchUser(string keyWord)
+        {
+            try
+            {
+                var listUser = await _dbContext.UserInfos.ToListAsync();
+                if(listUser.Count() != 0) {
+                    List<ResponseListUser> list = new List<ResponseListUser>();
+                    foreach (var item in listUser)
+                    {
+                        if (item.FullName.IndexOf(keyWord, StringComparison.OrdinalIgnoreCase) >= 0)
+                            list.Add(new ResponseListUser(item.Id, item.FullName, item.Avatar));
+                    }
+                    return list;
+                }
+                return null;
+            }
+            catch(Exception ex) {
                 Log.Error(ex.Message);
                 return null;
             }

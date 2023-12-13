@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Microsoft.Owin.Cors;
 using Serilog;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;

@@ -10,6 +10,8 @@ namespace WhoruBackend.Models
         public int Id { get; set; }
         public DateTime? Date { get; set; }
         public string? Message { get; set; }
+        public string? Type {  get; set; }
+        public bool? IsSeen {  get; set; }
 
         //Khoa ngoai
         public int? UserSend { get; set; }

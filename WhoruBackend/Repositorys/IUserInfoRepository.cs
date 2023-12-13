@@ -1,6 +1,7 @@
 ﻿using Azure;
 using WhoruBackend.Models;
 using WhoruBackend.ModelViews;
+using WhoruBackend.ModelViews.InfoModelViews;
 
 namespace WhoruBackend.Repositorys
 {
@@ -11,5 +12,6 @@ namespace WhoruBackend.Repositorys
         public Task<UserInfo?> GetUserInfoById(int userId);
         public Task<ResponseView> Create(UserInfo user);
         public Task<ResponseView> Update(UserInfo user);
+        public Task<List<ResponseListUser>?> SearchUser(string keyWord);
     }
 }

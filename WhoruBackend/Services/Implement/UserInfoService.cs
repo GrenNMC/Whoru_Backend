@@ -59,14 +59,10 @@ namespace WhoruBackend.Services.Implement
             return new ResponseInfoView(userInfo.Id,userInfo.FullName,userInfo.Avatar,userInfo.Backround,userInfo.Description,userInfo.WorkingAt,userInfo.StudyAt);
         }
 
-        public async Task<ResponseInfoView?> GetUserInfoByName(string userName)
+        public async Task<List<ResponseListUser>?> GetUserInfoByName(string userName)
         {
-            var userInfo = await _userInfoRepo.GetUserInfoByName(userName);
-            if (userInfo == null)
-            {
-                return null;
-            }
-            return new ResponseInfoView(userInfo.Id, userInfo.FullName, userInfo.Avatar, userInfo.Backround, userInfo.Description, userInfo.WorkingAt, userInfo.StudyAt);
+            var userInfo = await _userInfoRepo.SearchUser(userName);
+            return userInfo;
         }
 
         public async Task<ResponseView> Update(RequestUserInfoView request)

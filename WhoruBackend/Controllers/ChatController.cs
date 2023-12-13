@@ -1,6 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
+using WhoruBackend.Services;
+using WhoruBackend.Services.Implement;
+using WhoruBackend.Utilities.Constants;
 
 namespace WhoruBackend.Controllers
 {
@@ -8,32 +12,43 @@ namespace WhoruBackend.Controllers
     [Route("api/v1/[controller]s/[action]")]
     public class ChatController : ControllerBase
     {
-        [Authorize]
-        [HttpPost]
-        public IActionResult SendChat()
+        private readonly IChatService _chatService;
+
+        public ChatController(IChatService chatService)
         {
-            return Ok();
+            _chatService = chatService;
         }
 
         [Authorize]
         [HttpGet]
-        public IActionResult GetAllChatUser()
+        public async Task<IActionResult> GetAllChatUser()
         {
-            return Ok();
+            var list = await _chatService.GetAllUser();
+            if (list == null)
+                return NotFound();
+            return Ok(list);
         }
 
         [HttpPost]
         [Authorize]
-        public IActionResult GetAllChat()
+        public async Task<IActionResult> GetAllChat([FromBody] int idUser)
         {
-            return Ok();
+            var list = await _chatService.GetAllChat(idUser);
+            if (list == null)
+                return NotFound();
+            return Ok(list);
         }
 
         [HttpDelete]
         [Authorize]
-        public IActionResult DeleteChat()
+        public async Task<IActionResult> DeleteChat([FromBody] int idChat)
         {
-            return Ok();
+            var response = await _chatService.DeleteChat(idChat);
+            if (response.Message == MessageConstant.NOT_FOUND)
+                return NotFound();
+            if (response.Message == MessageConstant.SYSTEM_ERROR)
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            return Ok(response.Message);
         }
     }
 }
