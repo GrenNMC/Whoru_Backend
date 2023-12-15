@@ -4,6 +4,7 @@ using WhoruBackend.ModelViews;
 using WhoruBackend.ModelViews.LogModelViews;
 using WhoruBackend.ModelViews.UserModelViews;
 using WhoruBackend.Services;
+using WhoruBackend.Services.Implement;
 using WhoruBackend.Utilities.Constants;
 
 namespace WhoruBackend.Controllers
@@ -13,10 +14,11 @@ namespace WhoruBackend.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
-
-        public UserController(IUserService userService)
+        private readonly ILogService _logService;
+        public UserController(IUserService userService, ILogService logService)
         {
             _userService = userService;
+            _logService = logService;
         }
 
         [HttpGet]
@@ -45,6 +47,7 @@ namespace WhoruBackend.Controllers
             {
                 return NotFound();
             }
+
             return Ok(user);
         }
 
@@ -79,7 +82,8 @@ namespace WhoruBackend.Controllers
             {
                 return BadRequest(register.Message);
             }
-            return CreatedAtAction(nameof(GetUserByName),user.UserName);
+            var response = await _logService.Login(new LoginView(user.UserName,user.Password));
+            return CreatedAtAction(nameof(GetUserByName), response);
         }
 
         [HttpPut]
