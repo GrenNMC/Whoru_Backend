@@ -19,7 +19,7 @@ namespace WhoruBackend.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> GetAllCommentByFeedId(int feedId)
+        public async Task<IActionResult> GetAllCommentByFeedId([FromBody] int feedId)
         {
             var list = await _commentService.GetAllCommentByFeedId(feedId);
             if(list.Count <= 0)
@@ -31,7 +31,7 @@ namespace WhoruBackend.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> GetCommentById(int id)
+        public async Task<IActionResult> GetCommentById([FromBody] int id)
         {
             var comment = await _commentService.FindCommentById(id);
             if(comment == null)
