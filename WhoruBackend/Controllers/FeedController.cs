@@ -75,5 +75,23 @@ namespace WhoruBackend.Controllers
                 return NotFound();
             return Ok(list);
         }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> SearchPost([FromBody] string keyWord)
+        {
+            if (keyWord == null)
+            {
+                return BadRequest();
+            }
+
+            var info = await _feedService.SearchFeed(keyWord);
+            if (info == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(info);
+        }
     }
 }

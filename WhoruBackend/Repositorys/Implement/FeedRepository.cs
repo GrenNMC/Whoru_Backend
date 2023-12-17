@@ -186,5 +186,53 @@ namespace WhoruBackend.Repositorys.Implement
                 return null;
             }
         }
+
+        public async Task<List<ResponseAllFeedModelView>?> SearchFeed(string keyWord, int authUser)
+        {
+            try
+            {
+                List<ResponseAllFeedModelView> listResult = new List<ResponseAllFeedModelView>();
+
+                var list = await _dbContext.Feeds.ToListAsync();
+
+                if (list != null)
+                {
+                    foreach (var item in list)
+                    {
+                        if (item.Status.IndexOf(keyWord, StringComparison.OrdinalIgnoreCase) >= 0)
+                        {
+                            bool islike = false;
+                            var like = await _dbContext.Likes.Where(s => s.UserId == authUser && s.FeedId == item.Id).FirstOrDefaultAsync();
+                            if (like != null)
+                            {
+                                islike = true;
+                            }
+                            var user = await _dbContext.UserInfos.Where(s => s.Id == item.UserInfoId).FirstOrDefaultAsync();
+                            var listImage = await _dbContext.FeedImages.Where(s => s.FeedId == item.Id).ToListAsync();
+                            int likeCount = await _dbContext.Likes.Where(s => s.FeedId == item.Id).CountAsync();
+                            int commentCount = await _dbContext.Comments.Where(s => s.FeedId == item.Id).CountAsync();
+                            int shareCount = await _dbContext.Shares.Where(s => s.FeedId == item.Id).CountAsync();
+                            List<string> listImgs = new List<string>();
+                            if (listImage != null)
+                            {
+                                foreach (var image in listImage)
+                                {
+                                    listImgs.Add(image.Url);
+                                }
+                            }
+                            ResponseAllFeedModelView response = new ResponseAllFeedModelView(item.Id, item.Status, listImgs, user.Id, user.FullName, user.Avatar, islike, likeCount, commentCount, shareCount);
+                            listResult.Add(response);
+                        }
+                    }
+                    return listResult;
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+                return null;
+            }
+        }
     }
 }

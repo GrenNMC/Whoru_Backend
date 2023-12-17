@@ -13,5 +13,6 @@ namespace WhoruBackend.Repositorys
         public Task<ResponseView> Create(UserInfo user);
         public Task<ResponseView> Update(UserInfo user);
         public Task<List<ResponseListUser>?> SearchUser(string keyWord);
+        public Task<ResponseInfoView?> GetUserInfo(int userId, int idAuthor);
     }
 }

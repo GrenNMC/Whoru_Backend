@@ -34,22 +34,22 @@ namespace WhoruBackend.Controllers
             return Ok(list);
         }
 
-        [HttpPost]
-        [Authorize]
-        public async Task<IActionResult> GetUserByName([FromBody] string name)
-        {
-            if(name == null)
-            {
-                return BadRequest();
-            }
-            var user = await _userService.GetUserByName(name);
-            if (user == null)
-            {
-                return NotFound();
-            }
+        //[HttpPost]
+        //[Authorize]
+        //public async Task<IActionResult> GetUserByName([FromBody] string name)
+        //{
+        //    if(name == null)
+        //    {
+        //        return BadRequest();
+        //    }
+        //    var user = await _userService.GetUserByName(name);
+        //    if (user == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return Ok(user);
-        }
+        //    return Ok(user);
+        //}
 
         [HttpPost]
         [Authorize]
@@ -83,7 +83,7 @@ namespace WhoruBackend.Controllers
                 return BadRequest(register.Message);
             }
             var response = await _logService.Login(new LoginView(user.UserName,user.Password));
-            return CreatedAtAction(nameof(GetUserByName), response);
+            return CreatedAtAction(nameof(GetUserById), response);
         }
 
         [HttpPut]

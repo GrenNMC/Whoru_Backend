@@ -10,5 +10,6 @@ namespace WhoruBackend.Services
         public Task<ResponseView> Delete(int id);
         public Task<List<ResponseAllFeedModelView>?> GetAllFeed();
         public Task<List<ResponseAllFeedModelView>?> GetAllFeedByUserId(int id);
+        public Task<List<ResponseAllFeedModelView>?> SearchFeed(string keyWord);
     }
 }

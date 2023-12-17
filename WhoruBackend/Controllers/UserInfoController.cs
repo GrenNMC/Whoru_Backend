@@ -31,7 +31,7 @@ namespace WhoruBackend.Controllers
             var request = await _userInfoService.Create(userInfoView);
             if(request.Message == MessageConstant.CREATE_SUCCESS)
             {
-                return CreatedAtAction(nameof(GetInfoByName),userInfoView.FullName);
+                return CreatedAtAction(nameof(GetInfoById),userInfoView.FullName);
             }
             if(request.Message == MessageConstant.EXISTED)
             {
@@ -102,7 +102,7 @@ namespace WhoruBackend.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> GetInfoByName([FromBody] string name)
+        public async Task<IActionResult> SearchUser([FromBody] string name)
         {
             if(name == null)
             {

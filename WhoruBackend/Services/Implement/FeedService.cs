@@ -61,5 +61,12 @@ namespace WhoruBackend.Services.Implement
             int authUser = await _infoRepo.GetInfoByUserId(idUser);
             return await _feedRepo.GetAllFeedByUserId(id, authUser);
         }
+
+        public async Task<List<ResponseAllFeedModelView>?> SearchFeed(string keyWord)
+        {
+            var idUser = await _userService.GetIdByToken();
+            int authUser = await _infoRepo.GetInfoByUserId(idUser);
+            return await _feedRepo.SearchFeed(keyWord, authUser);
+        }
     }
 }

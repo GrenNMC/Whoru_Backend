@@ -11,5 +11,6 @@ namespace WhoruBackend.Repositorys
         public Task<ResponseView> Delete(Feed feed);
         public Task<List<ResponseAllFeedModelView>?> GetAllFeed(int authUser);
         public Task<List<ResponseAllFeedModelView>?> GetAllFeedByUserId(int id,int authUser);
+        public Task<List<ResponseAllFeedModelView>?> SearchFeed(string keyWord, int authUser);
     }
 }

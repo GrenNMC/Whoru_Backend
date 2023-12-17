@@ -55,6 +55,35 @@ namespace WhoruBackend.Repositorys.Implement
             }
         }
 
+        public async Task<ResponseInfoView?> GetUserInfo(int userId, int idAuthor)
+        {
+            try
+            {
+                var info = await _dbContext.UserInfos.FirstOrDefaultAsync(s => s.Id == userId);
+                if (info == null)
+                {
+                    return null;
+                }
+                var followerCount = await _dbContext.Follows.Where(s => s.IdFollowing == userId).CountAsync();
+                var followingCount = await _dbContext.Follows.Where(s => s.IdFollower == userId).CountAsync();
+                if (userId == idAuthor)
+                {
+                    return new ResponseInfoView(info.Id, info.FullName, info.Avatar, info.Backround, info.Description, info.WorkingAt, info.StudyAt, followerCount, followingCount);
+                }
+                var follow = await _dbContext.Follows.Where(s => s.IdFollower == idAuthor && s.IdFollowing == userId).FirstOrDefaultAsync();
+                if (follow == null)
+                {
+                    return new ResponseInfoView(info.Id, info.FullName, info.Avatar, info.Backround, info.Description, info.WorkingAt, info.StudyAt, followerCount,followingCount,false);
+                }
+                return new ResponseInfoView(info.Id, info.FullName, info.Avatar, info.Backround, info.Description, info.WorkingAt, info.StudyAt, followerCount, followingCount, true); ;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+                return null;
+            }
+        }
+
         public async Task<UserInfo?> GetUserInfoById(int userId)
         {
             try
