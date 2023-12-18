@@ -14,7 +14,7 @@ namespace WhoruBackend.Utilities.Emails
             var mail = new MailMessage();
             mail.From = new MailAddress(configuration.GetValue<string>("SMTPEmailConfiguration:RootAddress") ?? "", configuration.GetValue<string>("SMTPEmailConfiguration:Sender"));
             mail.To.Add(new MailAddress(address));
-            mail.Body = "<div style=\"font-size: 20px;\">Mật khẩu mới của bạn là: </div>\r" +
+            mail.Body = "<div style=\"font-size: 20px;\">Mã xác thực tài khoản của bạn là: </div>\r" +
                 "\n <div style=\"color: red; font-size: 30px;\">" + password + "</div>\r"+
                 "<div style =\"font-size: 18px;\">Vui lòng đăng nhập bằng mật khẩu trên và vào trang cá nhân để đổi mật khẩu!</div>\r";
             mail.IsBodyHtml = true;
@@ -39,7 +39,7 @@ namespace WhoruBackend.Utilities.Emails
             var mail = new MailMessage();
             mail.From = new MailAddress(configuration.GetValue<string>("SMTPEmailConfiguration:RootAddress") ?? "", configuration.GetValue<string>("SMTPEmailConfiguration:Sender"));
             mail.To.Add(new MailAddress(address));
-            mail.Body = "<div style=\"font-size: 20px;\">Mã xác nhận của bạn là: </div>\r" +
+            mail.Body = "<div style=\"font-size: 20px;\">Mã xác nhận kích hoạt tài khoản của bạn là: </div>\r" +
                 "\n <div style=\"color: red; font-size: 30px;\">" + code + "</div>\r";
             mail.IsBodyHtml = true;
             mail.Subject = "Mã xác nhận tài khoản";

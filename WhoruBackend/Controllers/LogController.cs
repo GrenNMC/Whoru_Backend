@@ -19,7 +19,7 @@ namespace WhoruBackend.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> ResetPassword([FromBody] string email)
+        public async Task<IActionResult> ForgotPassword([FromBody] string email)
         {
             if (email == null)
             {
@@ -84,28 +84,36 @@ namespace WhoruBackend.Controllers
             return Ok(response);
         }
 
-        [Authorize]
         [HttpGet]
-        public async Task<IActionResult> SendCodeByMail()
+        public async Task<IActionResult> SendCodeByMail([FromBody] int id)
         {
-            var reponse = await _LogService.SendCodeByMail();
+            var reponse = await _LogService.SendCodeByMail(id);
             return Ok(reponse);
         }
 
-        [Authorize]
         [HttpGet]
-        public async Task<IActionResult> SendCodeBySMS()
+        public async Task<IActionResult> SendCodeBySMS([FromBody] int id)
         {
-            var reponse = await _LogService.SendCodeBySMS();
+            var reponse = await _LogService.SendCodeBySMS(id);
             return Ok(reponse);
         }
 
-        [Authorize]
         [HttpPost]
-        public async Task<IActionResult>VerifyAccount([FromBody]string code)
+        public async Task<IActionResult>VerifyAccount([FromBody]VerifyLogger logger)
         {
-            var reponse = await _LogService.ActiveAccount(code);
-            return Ok(reponse);
+            if (logger == null)
+                return BadRequest();
+            var reponse = await _LogService.ActiveAccount(logger.IdUser.GetValueOrDefault(), logger.Code);
+            if (reponse.Message == MessageConstant.NOT_FOUND)
+                return NotFound();
+            else
+            {
+                if (reponse.Message == MessageConstant.VALIDATE_FAILED)
+                    return BadRequest(reponse.Message);
+                if (reponse.Message == MessageConstant.SYSTEM_ERROR)
+                    return StatusCode(StatusCodes.Status500InternalServerError);
+                return Ok(reponse);
+            }
         }
     }
 }

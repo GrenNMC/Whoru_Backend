@@ -29,11 +29,10 @@ namespace WhoruBackend.Services.Implement
         }
 
 
-        public async Task<ResponseView> ActiveAccount(string code)
+        public async Task<ResponseView> ActiveAccount(int id ,string code)
         {
             try
             {
-                int id = await _userService.GetIdByToken();
                 User? user = await _userRepo.GetUserById(id);
                 if (user == null)
                 {
@@ -44,7 +43,8 @@ namespace WhoruBackend.Services.Implement
                 {
                     user.IsDisabled = false;
                     await _userRepo.UpdateUser(user);
-                    return new ResponseView(MessageConstant.ACTIVE_SUCCESS);
+                    var token = await CreateToken(user);
+                    return new ResponseView(token);
                 }
                 //user.ActiveCode = string.Empty;
                 //await _userRepo.UpdateUser(user);
@@ -56,12 +56,11 @@ namespace WhoruBackend.Services.Implement
                 return new ResponseView(MessageConstant.SYSTEM_ERROR);
             }
         }
-        public  async Task<ResponseView> SendCodeByMail()
+        public  async Task<ResponseView> SendCodeByMail(int idUser)
         {
             try
             {
-                int id = await _userService.GetIdByToken();
-                User? user = await _userRepo.GetUserById(id);
+                User? user = await _userRepo.GetUserById(idUser);
                 if (user == null)
                 {
                     return new ResponseView(MessageConstant.NOT_FOUND);
@@ -85,12 +84,11 @@ namespace WhoruBackend.Services.Implement
             }
         }
 
-        public async Task<ResponseView> SendCodeBySMS()
+        public async Task<ResponseView> SendCodeBySMS(int idUser)
         {
             try
             {
-                int id = await _userService.GetIdByToken();
-                User? user = await _userRepo.GetUserById(id);
+                User? user = await _userRepo.GetUserById(idUser);
                 if (user == null)
                 {
                     return new ResponseView(MessageConstant.NOT_FOUND);
@@ -112,37 +110,17 @@ namespace WhoruBackend.Services.Implement
                 {
                     return new(MessageConstant.NOT_FOUND);
                 }
+                if(user.IsDisabled == true)
+                {
+                    return new(user.Id, MessageConstant.LOGIN_SUCCESS, user.UserName, null, user.IsDisabled);
+                }
                 var checkPassword = new PasswordHasher().Verify(view.Password, user.Password);
                 if (checkPassword == false)
                 {
                     return new(MessageConstant.WRONG_PASSWORD);
                 }
-                //mã hóa key
-                var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-                //ký vào key đã mã hóa
-                var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-                string role = await _roleRepo.GetRoleName(user.RoleId);
-                var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Role, role),
-                    new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(ClaimTypes.Email, user.Email),
-                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                };
-                //tạo token
-                var token = new JwtSecurityToken
-                    (
-                        issuer: _configuration["Jwt:Issuer"],
-                        audience: _configuration["Jwt:Audience"],
-                        expires: DateTime.Now.AddHours(1),
-                        signingCredentials: credentials,
-                        claims: claims
-                    );
-                //sinh ra chuỗi token với các thông số ở trên
-                var UserToken = new JwtSecurityTokenHandler().WriteToken(token);
-                //Có thể tạo claims chứa thông tin người dùng (nếu cần)
-                return new(user.Id, MessageConstant.LOGIN_SUCCESS, user.UserName, UserToken, user.IsDisabled);
+                var token = await CreateToken(user);
+                return new(user.Id, MessageConstant.LOGIN_SUCCESS, user.UserName, token, user.IsDisabled);
             }
             catch (Exception e)
             {
@@ -171,6 +149,34 @@ namespace WhoruBackend.Services.Implement
                 return new(MessageConstant.SYSTEM_ERROR);
             }
         }
+        private async Task<string> CreateToken(User user)
+        {
+            //mã hóa key
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            //ký vào key đã mã hóa
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            string role = await _roleRepo.GetRoleName(user.RoleId);
+            var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Role, role),
+                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                };
+            //tạo token
+            var token = new JwtSecurityToken
+                (
+                    issuer: _configuration["Jwt:Issuer"],
+                    audience: _configuration["Jwt:Audience"],
+                    expires: DateTime.Now.AddHours(1),
+                    signingCredentials: credentials,
+                    claims: claims
+                );
+            //sinh ra chuỗi token với các thông số ở trên
+            var UserToken = new JwtSecurityTokenHandler().WriteToken(token);
+            return UserToken;
+        }
 
         public async Task<ResponseView> ResetPassword(string mail)
         {
@@ -185,7 +191,7 @@ namespace WhoruBackend.Services.Implement
                 VerifyEmail email = new VerifyEmail();
                 ValidateCodeProvider provider = new ValidateCodeProvider();
                 string newPass = provider.ValidateCode(8);
-                user.Password = new PasswordHasher().HashToString(newPass);
+                user.ActiveCode = newPass;
                 await _userRepo.UpdateUser(user);
                 email.ResetPassword(mail, newPass);
                 return new ResponseView(MessageConstant.CODE_SENT);
