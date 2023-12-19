@@ -27,5 +27,6 @@ namespace WhoruBackend.Utilities.Constants
         public static string CHANGE_PASSWORD_SUCCESS = "Your password has changed";
         public static string IMAGE = "Image";
         public static string MESSAGE = "Message";
+        public static string Room = "Room";
     }
 }

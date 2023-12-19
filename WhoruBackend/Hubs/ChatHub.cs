@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using WhoruBackend.Services;
 using WhoruBackend.Utilities.Constants;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace WhoruBackend.Hubs
 {
@@ -16,13 +17,13 @@ namespace WhoruBackend.Hubs
 
         public override async Task OnConnectedAsync()
         {
-            await Clients.Caller.SendAsync("ReceviedMessage", $"{Context.ConnectionId} has connected");
+            await Clients.Caller.SendAsync("ReceviedNotification", $"{Context.ConnectionId} has connected");
         }
 
         public async Task Online(int idUser)
         {
             onlineUser.Add(Context.ConnectionId, idUser);
-            await Clients.Caller.SendAsync("ReceviedMessage", $"{Context.ConnectionId} has online");
+            await Clients.Caller.SendAsync("ReceviedNotification", $"{Context.ConnectionId} has online");
         }
 
         public override Task OnDisconnectedAsync(Exception? exception)
@@ -36,7 +37,7 @@ namespace WhoruBackend.Hubs
             var isOnline = onlineUser.ContainsValue(Receiver);
             if (isOnline)
             {
-                await Clients.Client(GetConnectionId(Receiver)).SendAsync(Message);
+                await Clients.Client(GetConnectionId(Receiver)).SendAsync("ReceiveMessage",Message);
                 //Lưu DB
                 await _chatService.SendChat(Sender, Receiver, Message,MessageConstant.MESSAGE,true);
             }
@@ -52,7 +53,7 @@ namespace WhoruBackend.Hubs
             var link = await storage.ChatImageUrl(Image);
             if (isOnline)
             {
-                await Clients.Client(GetConnectionId(Receiver)).SendAsync(link);
+                await Clients.Client(GetConnectionId(Receiver)).SendAsync("ReceiveImage", link);
                 //Lưu DB
                 await _chatService.SendChat(Sender, Receiver, link, Image.FileName, true);
             }
@@ -68,6 +69,11 @@ namespace WhoruBackend.Hubs
                     return item.Key;
             }
             return string.Empty;
+        }
+        public async Task SendSignal(int Sender, int Receiver, string signal, string groupName)
+        {
+            await _chatService.SendChat(Sender, Receiver, "Call video", MessageConstant.Room, true);
+            await Clients.Client(GetConnectionId(Receiver)).SendAsync("ReceiveSignal", Context.ConnectionId, signal);
         }
     }
 }
