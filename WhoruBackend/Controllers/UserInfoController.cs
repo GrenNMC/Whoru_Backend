@@ -104,9 +104,9 @@ namespace WhoruBackend.Controllers
         [Authorize]
         public async Task<IActionResult> SearchUser([FromBody] string name)
         {
-            if(name == null)
+            if(name == string.Empty)
             {
-                return BadRequest();
+                return NotFound();
             }
 
             var info = await _userInfoService.GetUserInfoByName(name);    

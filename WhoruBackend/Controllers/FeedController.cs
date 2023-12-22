@@ -80,9 +80,9 @@ namespace WhoruBackend.Controllers
         [HttpPost]
         public async Task<IActionResult> SearchPost([FromBody] string keyWord)
         {
-            if (keyWord == null)
+            if (keyWord == string.Empty)
             {
-                return BadRequest();
+                return NotFound();
             }
 
             var info = await _feedService.SearchFeed(keyWord);
