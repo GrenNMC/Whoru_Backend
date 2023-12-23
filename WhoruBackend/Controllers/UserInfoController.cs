@@ -1,6 +1,7 @@
 ﻿using Azure.Core;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WhoruBackend.ModelViews;
 using WhoruBackend.ModelViews.InfoModelViews;
 using WhoruBackend.Services;
 using WhoruBackend.Utilities.Constants;
@@ -42,7 +43,7 @@ namespace WhoruBackend.Controllers
 
         [HttpPut]
         [Authorize]
-        public async Task<IActionResult> UpdateBackground(IFormFile file)
+        public async Task<IActionResult> UpdateBackground([FromForm] IFormFile file)
         {
             if (file == null)
                 return BadRequest();
@@ -62,7 +63,7 @@ namespace WhoruBackend.Controllers
 
         [HttpPut]
         [Authorize]
-        public async Task<IActionResult> UpdateAvatar( IFormFile file)
+        public async Task<IActionResult> UpdateAvatar([FromForm] IFormFile file)
         {
             if (file == null)
                 return BadRequest();

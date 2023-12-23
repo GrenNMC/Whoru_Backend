@@ -70,7 +70,7 @@ namespace WhoruBackend.Hubs
             }
             return string.Empty;
         }
-        public async Task SendSignal(int Sender, int Receiver, string signal, string groupName)
+        public async Task SendSignal(int Sender, int Receiver, string signal)
         {
             await _chatService.SendChat(Sender, Receiver, "Call video", MessageConstant.Room, true);
             await Clients.Client(GetConnectionId(Receiver)).SendAsync("ReceiveSignal", Context.ConnectionId, signal);

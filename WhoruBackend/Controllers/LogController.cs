@@ -84,14 +84,14 @@ namespace WhoruBackend.Controllers
             return Ok(response);
         }
 
-        [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> SendCodeByMail([FromBody] int id)
         {
             var reponse = await _LogService.SendCodeByMail(id);
             return Ok(reponse);
         }
 
-        [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> SendCodeBySMS([FromBody] int id)
         {
             var reponse = await _LogService.SendCodeBySMS(id);

@@ -19,13 +19,15 @@ namespace WhoruBackend.Services.Implement
         private readonly IConfiguration _configuration;
         private readonly IRoleRepository _roleRepo;
         private readonly IUserService _userService;
+        private readonly IUserInfoRepository _userInfoRepo;
 
-        public LogService(IlogRepository logRepo, IUserRepository userRepo, IConfiguration configuration, IRoleRepository roleRepository, IUserService userService)
+        public LogService(IlogRepository logRepo, IUserRepository userRepo, IConfiguration configuration, IRoleRepository roleRepository, IUserService userService,IUserInfoRepository userInfo)
         {
             _userRepo = userRepo;
             _roleRepo = roleRepository;
             _configuration = configuration;
             _userService = userService;
+            _userInfoRepo = userInfo;
         }
 
 
@@ -110,17 +112,20 @@ namespace WhoruBackend.Services.Implement
                 {
                     return new(MessageConstant.NOT_FOUND);
                 }
-                if(user.IsDisabled == true)
-                {
-                    return new(user.Id, MessageConstant.LOGIN_SUCCESS, user.UserName, null, user.IsDisabled);
-                }
                 var checkPassword = new PasswordHasher().Verify(view.Password, user.Password);
                 if (checkPassword == false)
                 {
                     return new(MessageConstant.WRONG_PASSWORD);
                 }
+                var info = await _userInfoRepo.GetInfoByUserId(user.Id);
+                if (user.IsDisabled == true)
+                {
+                    return new(user.Id, info, MessageConstant.LOGIN_SUCCESS, user.UserName, null, user.IsDisabled);
+                }
+
                 var token = await CreateToken(user);
-                return new(user.Id, MessageConstant.LOGIN_SUCCESS, user.UserName, token, user.IsDisabled);
+                return new(user.Id, info, MessageConstant.LOGIN_SUCCESS, user.UserName, token, user.IsDisabled);
+
             }
             catch (Exception e)
             {
