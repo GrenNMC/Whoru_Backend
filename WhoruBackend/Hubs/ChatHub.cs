@@ -37,7 +37,7 @@ namespace WhoruBackend.Hubs
             var isOnline = onlineUser.ContainsValue(Receiver);
             if (isOnline)
             {
-                await Clients.Client(GetConnectionId(Receiver)).SendAsync("ReceiveMessage",Message,Sender);
+                await Clients.Client(GetConnectionId(Receiver)).SendAsync("ReceiveMessage",Message,Sender,Receiver);
                 //Lưu DB
                 await _chatService.SendChat(Sender, Receiver, Message,MessageConstant.MESSAGE,true);
             }
@@ -53,7 +53,7 @@ namespace WhoruBackend.Hubs
             var link = await storage.ChatImageUrl(Image);
             if (isOnline)
             {
-                await Clients.Client(GetConnectionId(Receiver)).SendAsync("ReceiveImage", link, Sender);
+                await Clients.Client(GetConnectionId(Receiver)).SendAsync("ReceiveImage", link, Sender, Receiver);
                 //Lưu DB
                 await _chatService.SendChat(Sender, Receiver, link, Image.FileName, true);
             }
@@ -73,7 +73,7 @@ namespace WhoruBackend.Hubs
         public async Task SendSignal(int Sender, int Receiver, string signal)
         {
             await _chatService.SendChat(Sender, Receiver, "Call video", MessageConstant.Room, true);
-            await Clients.Client(GetConnectionId(Receiver)).SendAsync("ReceiveSignal", Context.ConnectionId, signal, Sender);
+            await Clients.Client(GetConnectionId(Receiver)).SendAsync("ReceiveSignal", Context.ConnectionId, signal, Sender, Receiver);
         }
     }
 }
