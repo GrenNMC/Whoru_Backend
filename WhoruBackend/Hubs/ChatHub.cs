@@ -75,7 +75,8 @@ namespace WhoruBackend.Hubs
         public async Task SendSignal(int Sender, int Receiver, string Type)
         {
             await _chatService.SendChat(Sender, Receiver, "Call video", MessageConstant.Room, true);
-            await Clients.Client(GetConnectionId(Receiver)).SendAsync("ReceiveSignal", Sender,Receiver, Type);
+            var info =await _infoService.GetUserInfo(Sender);
+            await Clients.Client(GetConnectionId(Receiver)).SendAsync("ReceiveSignal", Sender,info.FullName,info.Avatar,Receiver, Type);
         }
         public async Task SendOffer(int Sender, int Receiver, string ConnectionString) 
         {
