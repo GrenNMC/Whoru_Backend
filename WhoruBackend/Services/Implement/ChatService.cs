@@ -9,10 +9,12 @@ namespace WhoruBackend.Services.Implement
     {
         private readonly IChatRepository _chatRepo;
         private readonly IUserService _userService;
-        public ChatService(IChatRepository chatRepo, IUserService userService)
+        private readonly IUserInfoRepository _userInfoRepo;
+        public ChatService(IChatRepository chatRepo, IUserService userService, IUserInfoRepository userInfo)
         {
             _chatRepo = chatRepo;
             _userService = userService;
+            _userInfoRepo = userInfo;
         }
 
         public Task<ResponseView> DeleteChat(int id)
@@ -23,7 +25,8 @@ namespace WhoruBackend.Services.Implement
         public async Task<List<ListChatModelView>?> GetAllChat(int idUser)
         {
             int id = await _userService.GetIdByToken();
-            return await _chatRepo.GetAllChat(id,idUser);
+            int idSender = await _userInfoRepo.GetInfoByUserId(id);
+            return await _chatRepo.GetAllChat(idSender, idUser);
         }
 
         public async Task<List<UserChatModelView>?> GetAllUser()
