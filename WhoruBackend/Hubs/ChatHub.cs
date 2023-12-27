@@ -8,11 +8,13 @@ namespace WhoruBackend.Hubs
     public class ChatHub: Hub
     {
         private readonly IChatService _chatService;
+        private readonly IUserInfoService _infoService;
         private readonly static Dictionary<string, int> onlineUser = new Dictionary<string, int>();
 
-        public ChatHub(IChatService chatService)
+        public ChatHub(IChatService chatService, IUserInfoService infoService)
         {
             _chatService = chatService;
+            _infoService = infoService;
         }
 
         public override async Task OnConnectedAsync()
@@ -70,14 +72,14 @@ namespace WhoruBackend.Hubs
             }
             return string.Empty;
         }
-        public async Task SendSignal(int Sender, int Receiver, string signal)
+        public async Task SendSignal(int Sender, int Receiver, string Type)
         {
             await _chatService.SendChat(Sender, Receiver, "Call video", MessageConstant.Room, true);
-            await Clients.Client(GetConnectionId(Receiver)).SendAsync("ReceiveSignal", Context.ConnectionId, signal, Sender, Receiver);
+            await Clients.Client(GetConnectionId(Receiver)).SendAsync("ReceiveSignal", Sender,Receiver, Type);
         }
-        public async Task SendOffer(int Sender, int Receiver) 
+        public async Task SendOffer(int Sender, int Receiver, string ConnectionString) 
         {
-            await Clients.Client(GetConnectionId(Sender)).SendAsync("ReceiveOffer", $"{Receiver} accepted offer from {Sender}");
+            await Clients.Client(GetConnectionId(Sender)).SendAsync("ReceiveOffer", Sender, Receiver, ConnectionString);
         }
     }
 }
