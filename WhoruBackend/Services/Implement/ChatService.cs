@@ -32,7 +32,8 @@ namespace WhoruBackend.Services.Implement
         public async Task<List<UserChatModelView>?> GetAllUser()
         {
             int id = await _userService.GetIdByToken();
-            return await _chatRepo.GetAllUser(id);
+            int idSender = await _userInfoRepo.GetInfoByUserId(id);
+            return await _chatRepo.GetAllUser(idSender);
         }
 
         public async Task SendChat(int Sender, int Receiver, string Message, string Type, bool IsSeen)
