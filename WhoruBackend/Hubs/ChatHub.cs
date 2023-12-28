@@ -10,7 +10,7 @@ namespace WhoruBackend.Hubs
         private readonly IChatService _chatService;
         private readonly IUserInfoService _infoService;
         private readonly static Dictionary<string, int> onlineUser = new Dictionary<string, int>();
-
+        private readonly static Dictionary<string, int> isCalling = new Dictionary<string, int>();
         public ChatHub(IChatService chatService, IUserInfoService infoService)
         {
             _chatService = chatService;
@@ -31,6 +31,7 @@ namespace WhoruBackend.Hubs
         public override Task OnDisconnectedAsync(Exception? exception)
         {
             onlineUser.Remove(Context.ConnectionId);
+            isCalling.Remove(Context.ConnectionId);
             return base.OnDisconnectedAsync(exception);
         }
 
@@ -74,13 +75,26 @@ namespace WhoruBackend.Hubs
         }
         public async Task SendSignal(int Sender, int Receiver, string Type)
         {
-            await _chatService.SendChat(Sender, Receiver, "Call video", MessageConstant.Room, true);
-            var info =await _infoService.GetUserInfo(Sender);
-            await Clients.Client(GetConnectionId(Receiver)).SendAsync("ReceiveSignal", Sender,info.FullName,info.Avatar,Receiver, Type);
+            //var isCall = isCalling.ContainsValue(Receiver);
+            //if (isCall) 
+            //{
+            //    await Clients.Caller.SendAsync("ReceiveSignal", "Receiver is calling");
+            //}
+            //else
+            //{
+                var info = await _infoService.GetUserInfo(Sender);
+                await Clients.Client(GetConnectionId(Receiver)).SendAsync("ReceiveSignal", Sender, info.FullName, info.Avatar, Receiver, Type);
+            //}
         }
         public async Task SendOffer(int Sender, int Receiver, string ConnectionString) 
         {
+            await _chatService.SendChat(Sender, Receiver, "Call video", MessageConstant.Room, true);
+            isCalling.Add(Context.ConnectionId, Sender);
             await Clients.Client(GetConnectionId(Sender)).SendAsync("ReceiveOffer", Sender, Receiver, ConnectionString);
+        }
+        public async Task SendCandidate(int Sender, int Receiver, string Candidate)
+        {
+            await Clients.Client(GetConnectionId(Sender)).SendAsync("ReceiveCandidate", Sender, Receiver, Candidate);
         }
     }
 }
