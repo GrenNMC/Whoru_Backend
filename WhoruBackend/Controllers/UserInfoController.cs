@@ -43,7 +43,7 @@ namespace WhoruBackend.Controllers
 
         [HttpPut]
         [Authorize]
-        public async Task<IActionResult> UpdateBackground([FromForm] IFormFile file)
+        public async Task<IActionResult> UpdateBackground( IFormFile file)
         {
             if (file == null)
                 return BadRequest();
@@ -63,7 +63,7 @@ namespace WhoruBackend.Controllers
 
         [HttpPut]
         [Authorize]
-        public async Task<IActionResult> UpdateAvatar([FromForm] IFormFile file)
+        public async Task<IActionResult> UpdateAvatar( IFormFile file)
         {
             if (file == null)
                 return BadRequest();
