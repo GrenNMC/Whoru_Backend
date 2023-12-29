@@ -75,7 +75,7 @@ namespace WhoruBackend.Services.Implement
                     email.SendMail(user.Email, code);
                     user.ActiveCode = code;
                     await _userRepo.UpdateUser(user);
-                    return new ResponseView(MessageConstant.CODE_SENT);
+                    return new ResponseView(user.Id.ToString());
                 }
                 return new ResponseView(MessageConstant.EMAIL_NOT_CONFIRMED);
             }
@@ -199,7 +199,7 @@ namespace WhoruBackend.Services.Implement
                 user.ActiveCode = newPass;
                 await _userRepo.UpdateUser(user);
                 email.ResetPassword(mail, newPass);
-                return new ResponseView(MessageConstant.CODE_SENT);
+                return new ResponseView(user.Id.ToString());
             }
             catch (Exception e)
             {
