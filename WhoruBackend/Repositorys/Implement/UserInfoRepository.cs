@@ -18,22 +18,24 @@ namespace WhoruBackend.Repositorys.Implement
             _dbContext = dbContext;
         }
 
-        public async Task<ResponseView> Create(UserInfo user)
+        public async Task<int> Create(UserInfo user)
         {
             try
             {
                 if(user == null) 
                 {
-                    return new ResponseView(MessageConstant.NO_DATA_REQUEST);
+                    return -2;
                 }
                 await _dbContext.UserInfos.AddAsync(user);
                 await _dbContext.SaveChangesAsync();
-                return new ResponseView(MessageConstant.CREATE_SUCCESS);
+                //return new ResponseView(MessageConstant.CREATE_SUCCESS);
+                return user.Id;
             }
             catch (Exception ex)
             {
                 Log.Error(ex.Message);
-                return new ResponseView(MessageConstant.SYSTEM_ERROR);
+                //return new ResponseView(MessageConstant.SYSTEM_ERROR);
+                return -3;
             }
         }
 

@@ -30,11 +30,11 @@ namespace WhoruBackend.Controllers
                 return BadRequest();
             }
             var request = await _userInfoService.Create(userInfoView);
-            if(request.Message == MessageConstant.CREATE_SUCCESS)
+            if(request > 0)
             {
-                return CreatedAtAction(nameof(GetInfoById),userInfoView.FullName);
+                return CreatedAtAction(nameof(GetInfoById),request);
             }
-            if(request.Message == MessageConstant.EXISTED)
+            if(request == -1)
             {
                 return BadRequest();
             }

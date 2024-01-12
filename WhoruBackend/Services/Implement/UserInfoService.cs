@@ -22,11 +22,12 @@ namespace WhoruBackend.Services.Implement
             _config = config;
         }
 
-        public async Task<ResponseView> Create(RequestUserInfoView request)
+        public async Task<int> Create(RequestUserInfoView request)
         {
             if (request == null)
             {
-                return new ResponseView(MessageConstant.NO_DATA_REQUEST);
+                //return new ResponseView(MessageConstant.NO_DATA_REQUEST);
+                return 0;
             }
             int userId = await _userService.GetIdByToken();
             int info = await _userInfoRepo.GetInfoByUserId(userId);
@@ -46,7 +47,8 @@ namespace WhoruBackend.Services.Implement
                 };                
                 return await _userInfoRepo.Create(user);
             }
-            return new ResponseView(MessageConstant.EXISTED);
+            // return new ResponseView(MessageConstant.EXISTED);
+            return -1;
         }
 
         public async Task<UserInfo?> GetUserInfo(int id)
