@@ -1,4 +1,5 @@
-﻿using WhoruBackend.Models;
+﻿using System.Runtime;
+using WhoruBackend.Models;
 using WhoruBackend.ModelViews;
 using WhoruBackend.ModelViews.InfoModelViews;
 using WhoruBackend.Repositorys;

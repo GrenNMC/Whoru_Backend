@@ -11,12 +11,13 @@ namespace WhoruBackend.Services.Implement
         private readonly ICommentRepository _commentRepo;
         private readonly IUserService _userService;
         private readonly IFeedRepository _feedRepo;
-
-        public CommentService(ICommentRepository commentRepo, IUserService userService, IFeedRepository feedRepo)
+        private readonly IUserInfoRepository _userInfoRepo;
+        public CommentService(ICommentRepository commentRepo, IUserService userService, IFeedRepository feedRepo, IUserInfoRepository userInfoRepo)
         {
             _commentRepo = commentRepo;
             _userService = userService;
             _feedRepo = feedRepo;
+            _userInfoRepo = userInfoRepo;
         }
 
         public async Task<ResponseView> Create(CommentModelView comment)
@@ -32,12 +33,13 @@ namespace WhoruBackend.Services.Implement
                 return new(MessageConstant.NOT_FOUND);
             }
             var userId = await _userService.GetIdByToken();
+            var infoId = await _userInfoRepo.GetInfoByUserId(userId);
             Comment newComment = new Comment
             {
                 FeedId = comment.IdFeed,
                 Date = DateTime.UtcNow,
                 Message = comment.Content,
-                UserId = userId,
+                UserId = infoId,
             };
             var response = await _commentRepo.Create(newComment);
             return response;
@@ -76,8 +78,6 @@ namespace WhoruBackend.Services.Implement
             {
                 return new(MessageConstant.NO_DATA_REQUEST);
             }
-
-            var userId = await _userService.GetIdByToken();
             var updatedComment = await _commentRepo.FindCommentById(comment.IdComment);
             if(updatedComment == null)
                 return new(MessageConstant.NOT_FOUND);

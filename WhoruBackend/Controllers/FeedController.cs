@@ -68,7 +68,7 @@ namespace WhoruBackend.Controllers
 
         [Authorize]
         [HttpPost]
-        public async  Task<IActionResult> GetAllPostByUserId([FromBody] int id)
+        public async  Task<IActionResult> GetAllPostById([FromBody] int id)
         {
             var list = await _feedService.GetAllFeedByUserId(id);
             if (list.Count <= 0)

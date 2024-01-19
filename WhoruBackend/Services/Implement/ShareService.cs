@@ -11,12 +11,13 @@ namespace WhoruBackend.Services.Implement
         private readonly IShareRepository _shareRepo;
         private readonly IUserService _userService;
         private readonly IFeedRepository _feedRepo;
-
-        public ShareService(IShareRepository shareRepo, IUserService userService, IFeedRepository feedRepo)
+        private readonly IUserInfoRepository _userInfoRepo;
+        public ShareService(IShareRepository shareRepo, IUserService userService, IFeedRepository feedRepo,IUserInfoRepository infoRepository)
         {
             _shareRepo = shareRepo;
             _userService = userService;
             _feedRepo = feedRepo;
+            _userInfoRepo = infoRepository;
         }
 
         public async Task<List<ResponseListUser>?> GetAllUser(int idFeed)
@@ -30,7 +31,8 @@ namespace WhoruBackend.Services.Implement
             var feed = await _feedRepo.FindFeedById(idPost);
             if(feed != null)
             {
-                var response = await _shareRepo.ShareFeed(idUser, idPost);
+                var idInfo = await _userInfoRepo.GetInfoByUserId(idUser);
+                var response = await _shareRepo.ShareFeed(idInfo, idPost);
                 return new(response.Message);
             }
             return new(MessageConstant.NOT_FOUND);
@@ -42,7 +44,8 @@ namespace WhoruBackend.Services.Implement
             var feed = await _feedRepo.FindFeedById(idPost);
             if (feed != null)
             {
-                var response = await _shareRepo.UnShareFeed(idUser, idPost);
+                var idInfo = await _userInfoRepo.GetInfoByUserId(idUser);
+                var response = await _shareRepo.UnShareFeed(idInfo, idPost);
                 return new(response.Message);
             }
             return new(MessageConstant.NOT_FOUND);

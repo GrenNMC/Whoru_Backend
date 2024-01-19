@@ -59,7 +59,8 @@ namespace WhoruBackend.Services.Implement
         public async Task<ResponseInfoView?> GetUserInfoById(int id)
         {
             int idUser = await _userService.GetIdByToken();
-            return await _userInfoRepo.GetUserInfo(id,idUser);
+            int idInfo = await _userInfoRepo.GetInfoByUserId(idUser);
+            return await _userInfoRepo.GetUserInfo(id, idInfo);
         }
 
         public async Task<List<ResponseListUser>?> GetUserInfoByName(string userName)

@@ -148,7 +148,7 @@ namespace WhoruBackend.Repositorys.Implement
             try {
                 List<ResponseAllFeedModelView> listResult = new List<ResponseAllFeedModelView>();
 
-                var list = await _dbContext.Feeds.Where(s => s.UserId == id).ToListAsync();
+                var list = await _dbContext.Feeds.Where(s => s.UserInfoId == id).ToListAsync();
 
                 if (list != null)
                 {
