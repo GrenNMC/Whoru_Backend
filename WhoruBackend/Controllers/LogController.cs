@@ -42,13 +42,13 @@ namespace WhoruBackend.Controllers
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> ChangePassword([FromBody] string newPassword)
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePassModelView view)
         {
-            if(newPassword == null)
+            if(view.pass == null || view.prePass == null)
             {
                 return BadRequest();
             }
-            var response = await _LogService.ChangePassword(newPassword);
+            var response = await _LogService.ChangePassword(view.pass, view.prePass);
 
             if (response.Message == MessageConstant.SYSTEM_ERROR)
             {
@@ -99,20 +99,39 @@ namespace WhoruBackend.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> VerifyPass([FromBody] VerifyPasswordModelView view)
+        {
+            if (view == null)
+                return BadRequest();
+            var response = await _LogService.VerifyPass(view.email, view.code);
+
+            if (response.Message == MessageConstant.NOT_FOUND)
+                return NotFound();
+            else
+            {
+                if (response.Message == MessageConstant.VALIDATE_FAILED)
+                    return BadRequest(response.Message);
+                if (response.Message == MessageConstant.SYSTEM_ERROR)
+                    return StatusCode(StatusCodes.Status500InternalServerError);
+                return Ok(response);
+            }
+        }
+
+        [HttpPost]
         public async Task<IActionResult>VerifyAccount([FromBody]VerifyLogger logger)
         {
             if (logger == null)
                 return BadRequest();
-            var reponse = await _LogService.ActiveAccount(logger.IdUser.GetValueOrDefault(), logger.Code);
-            if (reponse.Message == MessageConstant.NOT_FOUND)
+            var response = await _LogService.ActiveAccount(logger.IdUser.GetValueOrDefault(), logger.Code);
+            if (response.Message == MessageConstant.NOT_FOUND)
                 return NotFound();
             else
             {
-                if (reponse.Message == MessageConstant.VALIDATE_FAILED)
-                    return BadRequest(reponse.Message);
-                if (reponse.Message == MessageConstant.SYSTEM_ERROR)
+                if (response.Message == MessageConstant.VALIDATE_FAILED)
+                    return BadRequest(response.Message);
+                if (response.Message == MessageConstant.SYSTEM_ERROR)
                     return StatusCode(StatusCodes.Status500InternalServerError);
-                return Ok(reponse);
+                return Ok(response);
             }
         }
     }

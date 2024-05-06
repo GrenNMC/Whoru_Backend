@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -134,7 +135,7 @@ namespace WhoruBackend.Services.Implement
             }
         }
 
-        public async Task<ResponseView> ChangePassword(string pass)
+        public async Task<ResponseView> ChangePassword(string pass, string prePass)
         {
             try
             {
@@ -144,9 +145,17 @@ namespace WhoruBackend.Services.Implement
                 {
                     return new ResponseView(MessageConstant.NOT_FOUND);
                 }
-                user.Password = new PasswordHasher().HashToString(pass);
-                await _userRepo.UpdateUser(user);
-                return new ResponseView(MessageConstant.CHANGE_PASSWORD_SUCCESS);
+                var checkPassword = new PasswordHasher().Verify(prePass, user.Password);
+                if(checkPassword == true)
+                {
+                    user.Password = new PasswordHasher().HashToString(pass);
+                    await _userRepo.UpdateUser(user);
+                    return new ResponseView(MessageConstant.CHANGE_PASSWORD_SUCCESS);
+                }
+                else
+                {
+                    return new ResponseView(MessageConstant.OLD_PASS_INCORRECT);
+                }
             }
             catch(Exception e)
             {
@@ -182,7 +191,34 @@ namespace WhoruBackend.Services.Implement
             var UserToken = new JwtSecurityTokenHandler().WriteToken(token);
             return UserToken;
         }
+        public async Task<ResponseView> VerifyPass(string mail, string code)
+        {
+            try
+            {
+                User? user = await _userRepo.GetUserByMail(mail);
+                if (user == null)
+                {
+                    return new(MessageConstant.NOT_FOUND);
+                }
+                if (user.ActiveCode != code) 
+                {
+                    return new(MessageConstant.VALIDATE_FAILED);
+                }
 
+                VerifyEmail email = new VerifyEmail();
+                ValidateCodeProvider provider = new ValidateCodeProvider();
+                string newPass = provider.ValidateCode(8);
+                user.Password = new PasswordHasher().HashToString(newPass); ;
+                await _userRepo.UpdateUser(user);
+                email.ResetPassword(mail, newPass);
+                return new ResponseView(user.Id.ToString());
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.Message);
+                return new(MessageConstant.SYSTEM_ERROR);
+            }
+        }
         public async Task<ResponseView> ResetPassword(string mail)
         {
             try
@@ -195,10 +231,10 @@ namespace WhoruBackend.Services.Implement
 
                 VerifyEmail email = new VerifyEmail();
                 ValidateCodeProvider provider = new ValidateCodeProvider();
-                string newPass = provider.ValidateCode(8);
-                user.ActiveCode = newPass;
+                string newCode = provider.ValidateCode(8);
+                user.ActiveCode = newCode;
                 await _userRepo.UpdateUser(user);
-                email.ResetPassword(mail, newPass);
+                email.SendVerifyCode(mail, newCode);
                 return new ResponseView(user.Id.ToString());
             }
             catch (Exception e)

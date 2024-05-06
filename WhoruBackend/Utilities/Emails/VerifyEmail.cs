@@ -5,7 +5,30 @@ namespace WhoruBackend.Utilities.Emails
 {
     public class VerifyEmail
     {
+        public async void SendVerifyCode(string address, string code)
+        {
+            var configuration = new ConfigurationManager();
+            configuration.AddJsonFile("appsettings.json");
 
+            var mail = new MailMessage();
+            mail.From = new MailAddress(configuration.GetValue<string>("SMTPEmailConfiguration:RootAddress") ?? "", configuration.GetValue<string>("SMTPEmailConfiguration:Sender"));
+            mail.To.Add(new MailAddress(address));
+            mail.Body = "<div style=\"font-size: 20px;\">Mã xác nhận RESET mật khẩu của bạn là: </div>\r" +
+                "\n <div style=\"color: red; font-size: 30px;\">" + code + "</div>\r" +
+                "<div style =\"font-size: 18px;\">Vui lòng vào ứng dụng để xác nhận để thực hiện việc RESET mật khẩu!</div>\r";
+            mail.IsBodyHtml = true;
+            mail.Subject = "Mã xác nhận RESET mật khẩu";
+
+            var smtp = new SmtpClient();
+            smtp.Host = configuration.GetValue<string>("SMTPEmailConfiguration:Host") ?? "";
+            smtp.Port = configuration.GetValue<int>("SMTPEmailConfiguration:Port");
+            smtp.EnableSsl = configuration.GetValue<bool>("SMTPEmailConfiguration:EnableSSL");
+            smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+            smtp.UseDefaultCredentials = false;
+            smtp.Credentials = new NetworkCredential(configuration.GetValue<string>("SMTPEmailConfiguration:RootAddress"), configuration.GetValue<string>("SMTPEmailConfiguration:Password"));
+            smtp.SendCompleted += Smtp_SendCompleted;
+            await smtp.SendMailAsync(mail);
+        }
         public async void ResetPassword(string address,string password)
         {
             var configuration = new ConfigurationManager();
@@ -14,11 +37,11 @@ namespace WhoruBackend.Utilities.Emails
             var mail = new MailMessage();
             mail.From = new MailAddress(configuration.GetValue<string>("SMTPEmailConfiguration:RootAddress") ?? "", configuration.GetValue<string>("SMTPEmailConfiguration:Sender"));
             mail.To.Add(new MailAddress(address));
-            mail.Body = "<div style=\"font-size: 20px;\">Mã xác thực tài khoản của bạn là: </div>\r" +
+            mail.Body = "<div style=\"font-size: 20px;\">Mật khẩu mới của bạn là: </div>\r" +
                 "\n <div style=\"color: red; font-size: 30px;\">" + password + "</div>\r"+
                 "<div style =\"font-size: 18px;\">Vui lòng đăng nhập bằng mật khẩu trên và vào trang cá nhân để đổi mật khẩu!</div>\r";
             mail.IsBodyHtml = true;
-            mail.Subject = "Reset mật khẩu người dùng";
+            mail.Subject = "Mật khẩu mới người dùng";
 
             var smtp = new SmtpClient();
             smtp.Host = configuration.GetValue<string>("SMTPEmailConfiguration:Host") ?? "";

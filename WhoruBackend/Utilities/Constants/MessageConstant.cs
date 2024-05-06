@@ -14,6 +14,7 @@ namespace WhoruBackend.Utilities.Constants
         public static string CREATE_SUCCESS = "Create success";
         public static string UPDATE_SUCCESS = "Update success";
         public static string DELETE_SUCCESS = "Delete success";
+        public static string OLD_PASS_INCORRECT = "Old password is incorrect";
         public static string VALIDATE_FAILED = "Validate failed";
         public static string EMAIL_NOT_CONFIRMED = "Email is not confirmed";
         public static string CODE_NOT_ENTER = "Code not enter";
