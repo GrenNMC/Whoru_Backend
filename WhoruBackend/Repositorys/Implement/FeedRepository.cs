@@ -129,7 +129,7 @@ namespace WhoruBackend.Repositorys.Implement
                                 listImgs.Add(image.Url);
                             }
                         }
-                        ResponseAllFeedModelView response = new ResponseAllFeedModelView(item.Id,item.Status,listImgs,user.Id,user.FullName,user.Avatar,islike,likeCount,commentCount,shareCount);
+                        ResponseAllFeedModelView response = new ResponseAllFeedModelView(item.Id,item.Status,item.Date,listImgs,user.Id,user.FullName,user.Avatar,islike,likeCount,commentCount,shareCount);
                         listResult.Add(response);
                     }
                     return listResult;
@@ -173,7 +173,7 @@ namespace WhoruBackend.Repositorys.Implement
                                 listImgs.Add(image.Url);
                             }
                         }
-                        ResponseAllFeedModelView response = new ResponseAllFeedModelView(item.Id, item.Status, listImgs, user.Id, user.FullName, user.Avatar,islike, likeCount, commentCount, shareCount);
+                        ResponseAllFeedModelView response = new ResponseAllFeedModelView(item.Id, item.Status,item.Date, listImgs, user.Id, user.FullName, user.Avatar,islike, likeCount, commentCount, shareCount);
                         listResult.Add(response);
                     }
                     return listResult;
@@ -220,7 +220,7 @@ namespace WhoruBackend.Repositorys.Implement
                                     listImgs.Add(image.Url);
                                 }
                             }
-                            ResponseAllFeedModelView response = new ResponseAllFeedModelView(item.Id, item.Status, listImgs, user.Id, user.FullName, user.Avatar, islike, likeCount, commentCount, shareCount);
+                            ResponseAllFeedModelView response = new ResponseAllFeedModelView(item.Id, item.Status, item.Date,listImgs, user.Id, user.FullName, user.Avatar, islike, likeCount, commentCount, shareCount);
                             listResult.Add(response);
                         }
                     }

@@ -57,13 +57,20 @@ namespace WhoruBackend.Controllers
         }
 
         [Authorize]
-        [HttpGet]
-        public async Task<IActionResult> GetAllPost()
+        [HttpPost]
+        public async Task<IActionResult> GetAllPost([FromBody] int page)
         {
-            var list = await _feedService.GetAllFeed();
+            var list = await _feedService.GetAllFeed(page);
             if (list.Count <= 0)
                 return NotFound();
             return Ok(list);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public IActionResult GetFeedById([FromBody] int feedId)
+        {
+            return Ok();
         }
 
         [Authorize]

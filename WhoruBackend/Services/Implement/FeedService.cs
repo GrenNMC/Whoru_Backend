@@ -3,6 +3,7 @@ using WhoruBackend.ModelViews;
 using WhoruBackend.ModelViews.FeedModelViews;
 using WhoruBackend.Repositorys;
 using WhoruBackend.Utilities.Constants;
+using PagedList;
 
 namespace WhoruBackend.Services.Implement
 {
@@ -48,11 +49,19 @@ namespace WhoruBackend.Services.Implement
             return response;
         }
 
-        public async Task<List<ResponseAllFeedModelView>?> GetAllFeed()
+        public async Task<List<ResponseAllFeedModelView>?> GetAllFeed(int page)
         {
+            int pageSize = 10;
             var id = await _userService.GetIdByToken();
             int authUser = await _infoRepo.GetInfoByUserId(id);
-            return await _feedRepo.GetAllFeed(authUser);
+            var listFeed = await _feedRepo.GetAllFeed(authUser);
+
+            var sortedFeeds = listFeed.OrderByDescending(f => f.Date)
+                               .ThenByDescending(f => f.LikesCount);
+
+            var result = sortedFeeds.ToPagedList(page, pageSize).ToList();
+
+            return result;
         }
 
         public async Task<List<ResponseAllFeedModelView>?> GetAllFeedByUserId(int id)
