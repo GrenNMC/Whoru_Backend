@@ -19,13 +19,13 @@ namespace WhoruBackend.Hubs
 
         public override async Task OnConnectedAsync()
         {
-            await Clients.Caller.SendAsync("ReceviedNotification", $"{Context.ConnectionId} has connected");
+            await Clients.Caller.SendAsync("Notification", $"{Context.ConnectionId} has connected");
         }
 
         public async Task Online(int idUser)
         {
             onlineUser.Add(Context.ConnectionId, idUser);
-            await Clients.Caller.SendAsync("ReceviedNotification", $"{Context.ConnectionId} has online");
+            await Clients.Caller.SendAsync("Notification", $"{Context.ConnectionId} has online");
         }
 
         public override Task OnDisconnectedAsync(Exception? exception)
@@ -41,11 +41,7 @@ namespace WhoruBackend.Hubs
             if (isOnline)
             {
                 await Clients.Client(GetConnectionId(Receiver)).SendAsync("ReceiveMessage",Message,Sender,Receiver);
-                //Lưu DB
-                await _chatService.SendChat(Sender, Receiver, Message,MessageConstant.MESSAGE,true);
             }
-            //Lưu DB
-            else 
                 await _chatService.SendChat(Sender, Receiver, Message, MessageConstant.MESSAGE, false);
         }
 
