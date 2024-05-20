@@ -9,6 +9,12 @@ namespace WhoruBackend.Hubs
     {
         private readonly INotificationService _notiService;
         private readonly static Dictionary<string, int> onlineUser = new Dictionary<string, int>();
+
+        public NotificationHub(INotificationService notiService)
+        {
+            _notiService = notiService;
+        }
+
         public override async Task OnConnectedAsync()
         {
             await Clients.Caller.SendAsync("Notification", $"{Context.ConnectionId} has connected");

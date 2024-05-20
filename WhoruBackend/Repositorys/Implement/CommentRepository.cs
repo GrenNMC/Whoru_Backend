@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Firebase.Auth;
+using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 using WhoruBackend.Data;
 using WhoruBackend.Models;
@@ -11,10 +13,11 @@ namespace WhoruBackend.Repositorys.Implement
     public class CommentRepository : ICommentRepository
     {
         private readonly ApplicationDbContext _DbContext;
-
-        public CommentRepository(ApplicationDbContext dbContext)
+        private readonly IFeedRepository _FeedRepository;
+        public CommentRepository(ApplicationDbContext dbContext, IFeedRepository feedRepository)
         {
             _DbContext = dbContext;
+            _FeedRepository = feedRepository;
         }
 
         public async Task<ResponseView> Create(Comment comment)
@@ -23,6 +26,18 @@ namespace WhoruBackend.Repositorys.Implement
             {
                 _DbContext.Comments.Add(comment);
                 await _DbContext.SaveChangesAsync();
+
+                var receiver = await _FeedRepository.FindFeedById(comment.FeedId);
+                // URL của SignalR hub
+                var hubUrl = "ws://whorubackend20240510001558.azurewebsites.net/notificationHub";
+
+                // Tạo một kết nối tới hub
+                var connection = new HubConnectionBuilder().WithUrl(hubUrl).Build();
+                // Kết nối tới hub
+                await connection.StartAsync();
+                await connection.InvokeAsync("SendNotification", comment.UserId, receiver.UserInfoId, comment.UserId + " has commented your feed");
+                await connection.StopAsync();
+
                 return new ResponseView(MessageConstant.CREATE_SUCCESS);
             }
             catch (Exception ex)

@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Firebase.Auth;
+using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 using WhoruBackend.Data;
 using WhoruBackend.Models;
@@ -12,10 +14,12 @@ namespace WhoruBackend.Repositorys.Implement
     {
         private readonly ApplicationDbContext _DbContext;
         private readonly IUserInfoRepository _UserInfoRepo;
-        public LikeRepository(ApplicationDbContext dbContext, IUserInfoRepository userInfoRepo)
+        private readonly IFeedRepository _FeedRepository;
+        public LikeRepository(ApplicationDbContext dbContext, IUserInfoRepository userInfoRepo, IFeedRepository feedRepository)
         {
             _DbContext = dbContext;
             _UserInfoRepo = userInfoRepo;
+            _FeedRepository = feedRepository;
         }
 
         public async Task<ResponseView> LikeFeed(int idUser ,int idFeed)
@@ -32,6 +36,16 @@ namespace WhoruBackend.Repositorys.Implement
                     };
                     _DbContext.Likes.Add(likefeed);
                     await _DbContext.SaveChangesAsync();
+                    var idReceiver = await _FeedRepository.FindFeedById(idFeed);
+                    // URL của SignalR hub
+                    var hubUrl = "ws://whorubackend20240510001558.azurewebsites.net/notificationHub";
+
+                    // Tạo một kết nối tới hub
+                    var connection = new HubConnectionBuilder().WithUrl(hubUrl).Build();
+                    // Kết nối tới hub
+                    await connection.StartAsync();
+                    await connection.InvokeAsync("SendNotification", idUser,idReceiver.UserInfoId, idUser+" has liked your feed");
+                    await connection.StopAsync();
                     return new(MessageConstant.OK);
                 }
                 else

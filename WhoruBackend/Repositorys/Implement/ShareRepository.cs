@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 using WhoruBackend.Data;
 using WhoruBackend.Models;
@@ -12,10 +13,12 @@ namespace WhoruBackend.Repositorys.Implement
     {
         private readonly ApplicationDbContext _DbContext;
         private readonly IUserInfoRepository _InfoRepo;
-        public ShareRepository(ApplicationDbContext dbContext, IUserInfoRepository infoRepo)
+        private readonly IFeedRepository _FeedRepository;
+        public ShareRepository(ApplicationDbContext dbContext, IUserInfoRepository infoRepo, IFeedRepository feedRepository)
         {
             _DbContext = dbContext;
             _InfoRepo = infoRepo;
+            _FeedRepository = feedRepository;
         }
 
         public async Task<List<ResponseListUser>?> GetAllUser(int idFeed)
@@ -58,6 +61,18 @@ namespace WhoruBackend.Repositorys.Implement
                     };
                     _DbContext.Shares.Add(share);
                     await _DbContext.SaveChangesAsync();
+
+                    var receiver = await _FeedRepository.FindFeedById(idFeed);
+                    // URL của SignalR hub
+                    var hubUrl = "ws://whorubackend20240510001558.azurewebsites.net/notificationHub";
+
+                    // Tạo một kết nối tới hub
+                    var connection = new HubConnectionBuilder().WithUrl(hubUrl).Build();
+                    // Kết nối tới hub
+                    await connection.StartAsync();
+                    await connection.InvokeAsync("SendNotification", idUser, receiver.UserInfoId, idUser + " has shared your feed");
+                    await connection.StopAsync();
+
                     return new(MessageConstant.OK);
                 }
                 return new(MessageConstant.EXISTED);

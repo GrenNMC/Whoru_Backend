@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using WhoruBackend.Hubs;
 using WhoruBackend.Repositorys;
 using WhoruBackend.Services;
 using WhoruBackend.Utilities.Constants;
