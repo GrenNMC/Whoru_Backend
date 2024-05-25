@@ -35,7 +35,8 @@ namespace WhoruBackend.Services.Implement
         public async Task<List<FollowerModelView>?> GetAllFollower()
         {
             int idUser = await _userService.GetIdByToken();
-            List<FollowerModelView>? list = await _followRepo.GetAllFollower(idUser);
+            int id = await _userInfoRepo.GetInfoByUserId(idUser);
+            List<FollowerModelView>? list = await _followRepo.GetAllFollower(id);
             if(list == null)
             {
                 return null;
@@ -46,7 +47,8 @@ namespace WhoruBackend.Services.Implement
         public async Task<List<FollowerModelView>?> GetAllFollowing()
         {
             int idUser = await _userService.GetIdByToken();
-            List<FollowerModelView>? list = await _followRepo.GetAllFollowing(idUser);
+            int id = await _userInfoRepo.GetInfoByUserId(idUser);
+            List<FollowerModelView>? list = await _followRepo.GetAllFollowing(id);
             if (list == null)
             {
                 return null;

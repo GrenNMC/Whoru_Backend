@@ -77,7 +77,8 @@ namespace WhoruBackend.Services.Implement
             {
                 return new(MessageConstant.NOT_FOUND);
             }
-            UserInfo? userInfo = await _userInfoRepo.GetUserInfoByName(user.UserName);
+            var idInfo = await _userInfoRepo.GetInfoByUserId(idUser);
+            UserInfo? userInfo = await _userInfoRepo.GetUserInfoById(idInfo);
             if (userInfo == null)
                 return new(MessageConstant.NOT_FOUND);
 
@@ -98,7 +99,8 @@ namespace WhoruBackend.Services.Implement
             {
                 return new(MessageConstant.NOT_FOUND);
             }
-            UserInfo? userInfo = await _userInfoRepo.GetUserInfoByName(user.UserName);
+            var idInfo = await _userInfoRepo.GetInfoByUserId(idUser);
+            UserInfo? userInfo = await _userInfoRepo.GetUserInfoById(idInfo);
             if (userInfo == null)
                 return new(MessageConstant.NOT_FOUND);
             UploadImageToStorage storage = new UploadImageToStorage();
@@ -125,7 +127,8 @@ namespace WhoruBackend.Services.Implement
             {
                 return new(MessageConstant.NOT_FOUND);
             }
-            UserInfo? userInfo = await _userInfoRepo.GetUserInfoByName(user.UserName);
+            var idInfo = await _userInfoRepo.GetInfoByUserId(idUser);
+            UserInfo? userInfo = await _userInfoRepo.GetUserInfoById(idInfo);
             if (userInfo == null)
                 return new(MessageConstant.NOT_FOUND);
             UploadImageToStorage storage = new UploadImageToStorage();
