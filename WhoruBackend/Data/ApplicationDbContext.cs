@@ -18,6 +18,7 @@ namespace WhoruBackend.Data
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Chat> Chats { get; set; }
+        public DbSet<Story> Stories { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
 
@@ -48,6 +49,11 @@ namespace WhoruBackend.Data
                 .HasOne(s => s.UserInfo)
                 .WithMany(s => s.Feeds)
                 .HasForeignKey(s => s.UserInfoId)
+                .OnDelete(DeleteBehavior.SetNull);
+            modelBuilder.Entity<Story>()
+                .HasOne(s => s.User)
+                .WithMany(s => s.Stories)
+                .HasForeignKey(s => s.UserId)
                 .OnDelete(DeleteBehavior.SetNull);
             modelBuilder.Entity<FeedImage>()
                 .HasOne(s => s.Feed)

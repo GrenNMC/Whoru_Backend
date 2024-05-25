@@ -32,6 +32,12 @@ namespace WhoruBackend.Utilities.Constants
             return await ImageURL(repo, file);
         }
 
+        public async Task<string> StoryImageUrl(IFormFile file)
+        {
+            string repo = "Stories";
+            return await ImageURL(repo, file);
+        }
+
         public async Task<string> ChatImageUrl(IFormFile file)
         {
             string repo = "Chats";
@@ -47,6 +53,12 @@ namespace WhoruBackend.Utilities.Constants
         public async Task DeleteAvatarImageUrl(string name)
         {
             string repo = "Avatars";
+            await DeleteImage(repo, name);
+        }
+
+        public async Task DeleteStoryImageUrl(string name)
+        {
+            string repo = "Stories";
             await DeleteImage(repo, name);
         }
 
