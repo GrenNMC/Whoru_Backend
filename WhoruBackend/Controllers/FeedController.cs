@@ -68,16 +68,9 @@ namespace WhoruBackend.Controllers
 
         [Authorize]
         [HttpPost]
-        public IActionResult GetFeedById([FromBody] int feedId)
+        public async  Task<IActionResult> GetAllPostById([FromBody] FindFeedModelView view)
         {
-            return Ok();
-        }
-
-        [Authorize]
-        [HttpPost]
-        public async  Task<IActionResult> GetAllPostById([FromBody] int id)
-        {
-            var list = await _feedService.GetAllFeedByUserId(id);
+            var list = await _feedService.GetAllFeedByUserId(view.id,view.page);
             if (list.Count <= 0)
                 return NotFound();
             return Ok(list);
@@ -85,14 +78,14 @@ namespace WhoruBackend.Controllers
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> SearchPost([FromBody] string keyWord)
+        public async Task<IActionResult> SearchPost([FromBody] SearchFeedModelView view)
         {
-            if (keyWord == string.Empty)
+            if (view.keyword == string.Empty)
             {
                 return NotFound();
             }
 
-            var info = await _feedService.SearchFeed(keyWord);
+            var info = await _feedService.SearchFeed(view.keyword,view.page);
             if (info == null)
             {
                 return NotFound();

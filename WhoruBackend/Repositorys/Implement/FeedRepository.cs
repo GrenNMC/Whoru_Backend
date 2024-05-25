@@ -149,7 +149,12 @@ namespace WhoruBackend.Repositorys.Implement
                 List<ResponseAllFeedModelView> listResult = new List<ResponseAllFeedModelView>();
 
                 var list = await _dbContext.Feeds.Where(s => s.UserInfoId == id).ToListAsync();
-
+                var listShared = await _dbContext.Shares.Where(s => s.UserId == id).ToListAsync(); 
+                foreach(var item in listShared)
+                {
+                    var feed = await _dbContext.Feeds.Where(s => s.Id == item.FeedId).FirstOrDefaultAsync();
+                    list.Add(feed);
+                }
                 if (list != null)
                 {
                     foreach (var item in list)

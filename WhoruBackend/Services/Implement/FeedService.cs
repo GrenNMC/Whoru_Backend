@@ -64,18 +64,25 @@ namespace WhoruBackend.Services.Implement
             return result;
         }
 
-        public async Task<List<ResponseAllFeedModelView>?> GetAllFeedByUserId(int id)
+        public async Task<List<ResponseAllFeedModelView>?> GetAllFeedByUserId(int id, int page)
         {
             var idUser = await _userService.GetIdByToken();
             int authUser = await _infoRepo.GetInfoByUserId(idUser);
-            return await _feedRepo.GetAllFeedByUserId(id, authUser);
+
+            var list = await _feedRepo.GetAllFeedByUserId(id, authUser);
+            var sortedFeeds = list.OrderByDescending(f => f.Date);
+            var result = sortedFeeds.ToPagedList(page, 10).ToList();
+
+            return result;
         }
 
-        public async Task<List<ResponseAllFeedModelView>?> SearchFeed(string keyWord)
+        public async Task<List<ResponseAllFeedModelView>?> SearchFeed(string keyWord, int page)
         {
             var idUser = await _userService.GetIdByToken();
             int authUser = await _infoRepo.GetInfoByUserId(idUser);
-            return await _feedRepo.SearchFeed(keyWord, authUser);
+            var list = await _feedRepo.SearchFeed(keyWord, authUser);
+            var result = list.ToPagedList(page, 10).ToList();
+            return result;
         }
     }
 }
