@@ -1,4 +1,5 @@
-﻿using WhoruBackend.Models;
+﻿using PagedList;
+using WhoruBackend.Models;
 using WhoruBackend.ModelViews;
 using WhoruBackend.ModelViews.ChatModelViews;
 using WhoruBackend.Repositorys;
@@ -22,18 +23,22 @@ namespace WhoruBackend.Services.Implement
             return _chatRepo.DeleteChat(id);
         }
 
-        public async Task<List<ListChatModelView>?> GetAllChat(int idUser)
+        public async Task<List<ListChatModelView>?> GetAllChat(int idUser, int page)
         {
             int id = await _userService.GetIdByToken();
             int idSender = await _userInfoRepo.GetInfoByUserId(id);
-            return await _chatRepo.GetAllChat(idSender, idUser);
+            var listUser = await _chatRepo.GetAllChat(idSender, idUser);
+            var result = listUser.ToPagedList(page, 10).ToList();
+            return result;
         }
 
-        public async Task<List<UserChatModelView>?> GetAllUser()
+        public async Task<List<UserChatModelView>?> GetAllUser(int page)
         {
             int id = await _userService.GetIdByToken();
             int idSender = await _userInfoRepo.GetInfoByUserId(id);
-            return await _chatRepo.GetAllUser(idSender);
+            var listUser = await _chatRepo.GetAllUser(idSender);
+            var result = listUser.ToPagedList(page, 10).ToList();
+            return result;
         }
 
         public async Task SendChat(int Sender, int Receiver, string Message, string Type, bool IsSeen)

@@ -10,6 +10,6 @@ namespace WhoruBackend.Services
         public Task<ResponseView> Update(UpdateCommentModelView comment);
         public Task<ResponseView> Delete(int id);
         public Task<Comment?> FindCommentById(int id);
-        public Task<List<ResponseAllCommentFromFeed>?> GetAllCommentByFeedId(int id);
+        public Task<List<ResponseAllCommentFromFeed>?> GetAllCommentByFeedId(int id, int page);
     }
 }

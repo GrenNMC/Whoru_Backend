@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
+using WhoruBackend.ModelViews.ChatModelViews;
 using WhoruBackend.Services;
 using WhoruBackend.Services.Implement;
 using WhoruBackend.Utilities.Constants;
@@ -20,10 +21,10 @@ namespace WhoruBackend.Controllers
         }
 
         [Authorize]
-        [HttpGet]
-        public async Task<IActionResult> GetAllChatUser()
+        [HttpPost]
+        public async Task<IActionResult> GetAllChatUser([FromBody] int page)
         {
-            var list = await _chatService.GetAllUser();
+            var list = await _chatService.GetAllUser(page);
             if (list == null)
                 return NotFound();
             return Ok(list);
@@ -31,9 +32,9 @@ namespace WhoruBackend.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> GetAllChat([FromBody] int idUser)
+        public async Task<IActionResult> GetAllChat([FromBody] GetAllChatModelView view)
         {
-            var list = await _chatService.GetAllChat(idUser);
+            var list = await _chatService.GetAllChat(view.IdUser, view.Page);
             if (list == null)
                 return NotFound();
             return Ok(list);

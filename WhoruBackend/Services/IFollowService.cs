@@ -8,8 +8,8 @@ namespace WhoruBackend.Services
     {
         public Task<ResponseView> FollowUser(int idUser);
         public Task<ResponseView> UnFollowUser(int idUser);
-        public Task<List<FollowerModelView>?> GetAllFollower();
-        public Task<List<FollowerModelView>?> GetAllFollowing();
+        public Task<List<FollowerModelView>?> GetAllFollower(int page);
+        public Task<List<FollowerModelView>?> GetAllFollowing(int page);
 
     }
 }

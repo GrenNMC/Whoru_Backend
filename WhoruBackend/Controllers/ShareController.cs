@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WhoruBackend.ModelViews.FeedModelViews;
 using WhoruBackend.Repositorys;
 using WhoruBackend.Services;
 using WhoruBackend.Services.Implement;
@@ -48,13 +49,13 @@ namespace WhoruBackend.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> GetAllSharedUser([FromBody] int idPost)
+        public async Task<IActionResult> GetAllSharedUser([FromBody] GetAllReactModelView view)
         {
-            if (idPost < 0)
+            if (view.IdPost < 0)
             {
                 return BadRequest();
             }
-            var list = await _shareService.GetAllUser(idPost);
+            var list = await _shareService.GetAllUser(view.IdPost,view.Page);
             if (list == null)
                 return NotFound();
             return Ok(list);

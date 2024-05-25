@@ -7,6 +7,6 @@ namespace WhoruBackend.Services
     {
         public Task<ResponseView> SharePost(int idPost);
         public Task<ResponseView> UnSharePost(int idPost);
-        public Task<List<ResponseListUser>?> GetAllUser(int idFeed);
+        public Task<List<ResponseListUser>?> GetAllUser(int idFeed,int page);
     }
 }

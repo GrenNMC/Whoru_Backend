@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PagedList;
 using WhoruBackend.ModelViews;
 using WhoruBackend.ModelViews.InfoModelViews;
 using WhoruBackend.Repositorys;
@@ -20,9 +21,11 @@ namespace WhoruBackend.Services.Implement
             _userInfoRepo = infoRepository;
         }
 
-        public async Task<List<ResponseListUser>?> GetAllUser(int idFeed)
+        public async Task<List<ResponseListUser>?> GetAllUser(int idFeed, int page)
         {
-            return await _shareRepo.GetAllUser(idFeed);
+            var list = await _shareRepo.GetAllUser(idFeed);
+            var result = list.ToPagedList(page, 10).ToList();
+            return result;
         }
 
         public async Task<ResponseView> SharePost(int idPost)

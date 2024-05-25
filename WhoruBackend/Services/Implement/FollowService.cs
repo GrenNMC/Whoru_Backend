@@ -1,4 +1,5 @@
-﻿using WhoruBackend.Models;
+﻿using PagedList;
+using WhoruBackend.Models;
 using WhoruBackend.ModelViews;
 using WhoruBackend.ModelViews.FollowModelViews;
 using WhoruBackend.Repositorys;
@@ -32,7 +33,7 @@ namespace WhoruBackend.Services.Implement
             return response;
         }
 
-        public async Task<List<FollowerModelView>?> GetAllFollower()
+        public async Task<List<FollowerModelView>?> GetAllFollower(int page)
         {
             int idUser = await _userService.GetIdByToken();
             int id = await _userInfoRepo.GetInfoByUserId(idUser);
@@ -41,10 +42,12 @@ namespace WhoruBackend.Services.Implement
             {
                 return null;
             }
-            return list;
+            var result = list.ToPagedList(page, 10).ToList();
+
+            return result;
         }
 
-        public async Task<List<FollowerModelView>?> GetAllFollowing()
+        public async Task<List<FollowerModelView>?> GetAllFollowing(int page)
         {
             int idUser = await _userService.GetIdByToken();
             int id = await _userInfoRepo.GetInfoByUserId(idUser);
@@ -53,7 +56,8 @@ namespace WhoruBackend.Services.Implement
             {
                 return null;
             }
-            return list;
+            var result = list.ToPagedList(page, 10).ToList();
+            return result;
         }
 
         public async Task<ResponseView> UnFollowUser(int idUser)

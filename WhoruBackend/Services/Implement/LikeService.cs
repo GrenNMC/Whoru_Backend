@@ -1,4 +1,5 @@
-﻿using System.Runtime;
+﻿using PagedList;
+using System.Runtime;
 using WhoruBackend.Models;
 using WhoruBackend.ModelViews;
 using WhoruBackend.ModelViews.InfoModelViews;
@@ -22,9 +23,11 @@ namespace WhoruBackend.Services.Implement
             _likeRepo = likeRepo;
         }
 
-        public async Task<List<ResponseListUser>?> GetAllUser(int idFeed)
+        public async Task<List<ResponseListUser>?> GetAllUser(int idFeed, int page)
         {
-            return await _likeRepo.GetAllUser(idFeed);
+            var list = await _likeRepo.GetAllUser(idFeed);
+            var result = list.ToPagedList(page, 10).ToList();
+            return result;
         }
 
         public async Task<ResponseView> LikeFeed(int idFeed)

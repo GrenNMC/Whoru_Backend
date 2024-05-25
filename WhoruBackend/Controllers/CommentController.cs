@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using WhoruBackend.Models;
 using WhoruBackend.ModelViews.CommentModelViews;
+using WhoruBackend.ModelViews.FeedModelViews;
 using WhoruBackend.Services;
 using WhoruBackend.Utilities.Constants;
 
@@ -19,9 +20,9 @@ namespace WhoruBackend.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> GetAllCommentByFeedId([FromBody] int feedId)
+        public async Task<IActionResult> GetAllCommentByFeedId([FromBody] GetAllReactModelView view)
         {
-            var list = await _commentService.GetAllCommentByFeedId(feedId);
+            var list = await _commentService.GetAllCommentByFeedId(view.IdPost, view.Page);
             if(list.Count <= 0)
             {
                 return NotFound();

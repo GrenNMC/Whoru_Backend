@@ -1,4 +1,5 @@
-﻿using WhoruBackend.Models;
+﻿using PagedList;
+using WhoruBackend.Models;
 using WhoruBackend.ModelViews;
 using WhoruBackend.ModelViews.CommentModelViews;
 using WhoruBackend.Repositorys;
@@ -64,12 +65,14 @@ namespace WhoruBackend.Services.Implement
             return await _commentRepo.FindCommentById(id);
         }
 
-        public async Task<List<ResponseAllCommentFromFeed>?> GetAllCommentByFeedId(int id)
+        public async Task<List<ResponseAllCommentFromFeed>?> GetAllCommentByFeedId(int id, int page)
         {
             var feed = await _feedRepo.FindFeedById(id);
             if(feed == null)
                 return null;
-            return await _commentRepo.GetAllCommentFromFeed(id);
+            var list = await _commentRepo.GetAllCommentFromFeed(id);
+            var result = list.ToPagedList(page, 10).ToList();
+            return result;
         }
 
         public async Task<ResponseView> Update(UpdateCommentModelView comment)

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using WhoruBackend.Hubs;
+using WhoruBackend.ModelViews.FeedModelViews;
 using WhoruBackend.Repositorys;
 using WhoruBackend.Services;
 using WhoruBackend.Utilities.Constants;
@@ -37,13 +38,13 @@ namespace WhoruBackend.Controllers
 
         [HttpPost]
         [Authorize]
-        public  async Task<IActionResult> GetAllLikedUser([FromBody] int idPost)
+        public  async Task<IActionResult> GetAllLikedUser([FromBody] GetAllReactModelView view)
         {
-            if (idPost < 0)
+            if (view.IdPost < 0)
             {
                 return BadRequest();
             }
-            var list = await _likeService.GetAllUser(idPost);
+            var list = await _likeService.GetAllUser(view.IdPost, view.Page);
             if (list == null)
                 return NotFound();
             return Ok(list);

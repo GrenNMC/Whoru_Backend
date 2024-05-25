@@ -50,21 +50,21 @@ namespace WhoruBackend.Controllers
             return Ok(response);
         }
 
-        [HttpGet]
+        [HttpPost]
         [Authorize]
-        public async Task<IActionResult> GetAllFollower()
+        public async Task<IActionResult> GetAllFollower([FromBody] int page)
         {
-            var list = await _followService.GetAllFollower();
+            var list = await _followService.GetAllFollower(page);
             if (list.Count <= 0)
                 return NotFound();
             return Ok(list);
         }
 
-        [HttpGet]
+        [HttpPost]
         [Authorize]
-        public async Task<IActionResult> GetAllFollowing()
+        public async Task<IActionResult> GetAllFollowing([FromBody] int page)
         {
-            var list = await _followService.GetAllFollowing();
+            var list = await _followService.GetAllFollowing(page);
             if (list.Count <= 0)
                 return NotFound();
             return Ok(list);

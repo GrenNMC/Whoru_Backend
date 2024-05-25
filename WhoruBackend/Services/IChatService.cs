@@ -7,7 +7,7 @@ namespace WhoruBackend.Services
     {
         public Task SendChat(int Sender, int Receiver, string Message, string Type, bool IsSeen);
         public Task<ResponseView> DeleteChat(int id);
-        public Task<List<UserChatModelView>?> GetAllUser();
-        public Task<List<ListChatModelView>?> GetAllChat(int idUser);
+        public Task<List<UserChatModelView>?> GetAllUser(int page);
+        public Task<List<ListChatModelView>?> GetAllChat(int idUser,int page);
     }
 }

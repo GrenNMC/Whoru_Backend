@@ -1,4 +1,5 @@
 ﻿using Azure.Core;
+using PagedList;
 using WhoruBackend.Models;
 using WhoruBackend.ModelViews;
 using WhoruBackend.ModelViews.InfoModelViews;
@@ -63,10 +64,11 @@ namespace WhoruBackend.Services.Implement
             return await _userInfoRepo.GetUserInfo(id, idInfo);
         }
 
-        public async Task<List<ResponseListUser>?> GetUserInfoByName(string userName)
+        public async Task<List<ResponseListUser>?> GetUserInfoByName(string userName, int page)
         {
             var userInfo = await _userInfoRepo.SearchUser(userName);
-            return userInfo;
+            var result = userInfo.ToPagedList(page, 10).ToList();
+            return result;
         }
 
         public async Task<ResponseView> Update(RequestUserInfoView request)

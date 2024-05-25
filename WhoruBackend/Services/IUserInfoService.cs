@@ -6,7 +6,7 @@ namespace WhoruBackend.Services
 {
     public interface IUserInfoService
     {
-        public Task<List<ResponseListUser>?> GetUserInfoByName(string userName);
+        public Task<List<ResponseListUser>?> GetUserInfoByName(string userName, int page);
         public Task<ResponseInfoView?> GetUserInfoById(int id);
         public Task<UserInfo?> GetUserInfo(int id);
         public Task<int> Create(RequestUserInfoView request);

@@ -1,7 +1,7 @@
 ﻿using Azure.Core;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WhoruBackend.ModelViews;
+using WhoruBackend.ModelViews.UserModelViews;
 using WhoruBackend.ModelViews.InfoModelViews;
 using WhoruBackend.Services;
 using WhoruBackend.Utilities.Constants;
@@ -103,14 +103,14 @@ namespace WhoruBackend.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> SearchUser([FromBody] string name)
+        public async Task<IActionResult> SearchUser([FromBody] SearchInfoModelView view)
         {
-            if(name == string.Empty)
+            if(view.keyword == string.Empty)
             {
                 return NotFound();
             }
 
-            var info = await _userInfoService.GetUserInfoByName(name);    
+            var info = await _userInfoService.GetUserInfoByName(view.keyword,view.page);    
             if(info == null)
             {
                 return NotFound();
