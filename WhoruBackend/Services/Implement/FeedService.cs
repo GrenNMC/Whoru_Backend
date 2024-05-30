@@ -76,6 +76,24 @@ namespace WhoruBackend.Services.Implement
             return result;
         }
 
+        public async Task<List<ResponseAllFeedModelView>?> GetAllSharedPost(int idUser, int page)
+        {
+            var id = await _userService.GetIdByToken();
+            int authUser = await _infoRepo.GetInfoByUserId(id);
+            var list = await _feedRepo.GetAllSharedPost(idUser, authUser);
+            var sortedFeeds = list.OrderByDescending(f => f.Date);
+            var result = sortedFeeds.ToPagedList(page, 10).ToList();
+            return result;
+        }
+
+        public async Task<ResponseAllFeedModelView?> GetFeedById(int idPost)
+        {
+            var idUser = await _userService.GetIdByToken();
+            int authUser = await _infoRepo.GetInfoByUserId(idUser);
+            var feed = await _feedRepo.GetFeedById(idPost, authUser);
+            return feed;
+        }
+
         public async Task<List<ResponseAllFeedModelView>?> SearchFeed(string keyWord, int page)
         {
             var idUser = await _userService.GetIdByToken();

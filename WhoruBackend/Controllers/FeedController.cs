@@ -66,11 +66,34 @@ namespace WhoruBackend.Controllers
             return Ok(list);
         }
 
+
         [Authorize]
         [HttpPost]
         public async  Task<IActionResult> GetAllPostById([FromBody] FindFeedModelView view)
         {
             var list = await _feedService.GetAllFeedByUserId(view.id,view.page);
+            if (list.Count <= 0)
+                return NotFound();
+            return Ok(list);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> GetPostById([FromBody] int postId)
+        {
+            var feed = await _feedService.GetFeedById(postId);
+            if (feed == null)
+            {
+                return NotFound();
+            }
+            return Ok(feed);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> GetAllSharedPost([FromBody] FindFeedModelView view)
+        {
+            var list = await _feedService.GetAllSharedPost(view.id, view.page);
             if (list.Count <= 0)
                 return NotFound();
             return Ok(list);

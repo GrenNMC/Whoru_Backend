@@ -4,7 +4,7 @@
     {
         public int IdFeed { get; set; }
         public string Content { get; set; }
-        public DateTime? Date { get; set; }
+        public string? Date { get; set; }
         public List<string> ListImages { get; set; }
         public int IdUser { get; set; }
         public string FullName { get; set; }
@@ -14,7 +14,7 @@
         public int CommentsCount {  get; set; }
         public int SharesCount { get; set; }
 
-        public ResponseAllFeedModelView(int idFeed, string content,DateTime? date, List<string> listImages, int idUser, string fullName, string avatar,bool isLike, int likesCount, int commentsCount, int sharesCount)
+        public ResponseAllFeedModelView(int idFeed, string content,string? date, List<string> listImages, int idUser, string fullName, string avatar,bool isLike, int likesCount, int commentsCount, int sharesCount)
         {
             IdFeed = idFeed;
             Content = content;

@@ -70,7 +70,8 @@ namespace WhoruBackend.Repositorys.Implement
                     List<ListChatModelView> result = new List<ListChatModelView>();
                     foreach (var chat in list)
                     {
-                        ListChatModelView objChat = new ListChatModelView(chat.Id, chat.Date, chat.Message, chat.UserSend, chat.UserReceive, chat.Type);
+                        string date = chat.Date.Value.ToString("H:mm dd/MM/yyyy");
+                        ListChatModelView objChat = new ListChatModelView(chat.Id, date, chat.Message, chat.UserSend, chat.UserReceive, chat.Type);
                         result.Add(objChat);
                     }
                     return result;

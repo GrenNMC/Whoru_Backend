@@ -21,6 +21,13 @@ namespace WhoruBackend.Controllers
 
         [HttpPost]
         [Authorize]
+        public IActionResult SharePostToUser()
+        {
+            return Ok();
+        }
+
+        [HttpPost]
+        [Authorize]
         public async Task<IActionResult> SharePost([FromBody] int idPost)
         {
             if (idPost < 0)

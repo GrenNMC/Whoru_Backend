@@ -11,5 +11,7 @@ namespace WhoruBackend.Services
         public Task<List<ResponseAllFeedModelView>?> GetAllFeed(int page);
         public Task<List<ResponseAllFeedModelView>?> GetAllFeedByUserId(int id, int page);
         public Task<List<ResponseAllFeedModelView>?> SearchFeed(string keyWord, int page);
+        public Task<ResponseAllFeedModelView?> GetFeedById(int idPost);
+        public Task<List<ResponseAllFeedModelView>?> GetAllSharedPost(int idUser,int page);
     }
 }
