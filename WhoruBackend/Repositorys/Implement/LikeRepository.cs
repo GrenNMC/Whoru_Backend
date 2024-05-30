@@ -38,8 +38,8 @@ namespace WhoruBackend.Repositorys.Implement
                     await _DbContext.SaveChangesAsync();
                     var idReceiver = await _FeedRepository.FindFeedById(idFeed);
                     // URL của SignalR hub
-                    var hubUrl = "ws://whorubackend20240510001558.azurewebsites.net/notificationHub";
-
+                    //var hubUrl = "ws://whorubackend20240510001558.azurewebsites.net/notificationHub";
+                    var hubUrl = "wss://localhost:7175/notificationHub";
                     // Tạo một kết nối tới hub
                     var connection = new HubConnectionBuilder().WithUrl(hubUrl).Build();
                     // Kết nối tới hub
