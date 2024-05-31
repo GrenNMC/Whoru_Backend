@@ -26,7 +26,7 @@ namespace WhoruBackend.Repositorys.Implement
             {
                 _DbContext.Comments.Add(comment);
                 await _DbContext.SaveChangesAsync();
-
+                var info = await _DbContext.UserInfos.FirstOrDefaultAsync(s => s.Id == comment.UserId);
                 var receiver = await _FeedRepository.FindFeedById(comment.FeedId);
                 // URL của SignalR hub
                 //var hubUrl = "ws://whorubackend20240510001558.azurewebsites.net/notificationHub";
@@ -35,7 +35,7 @@ namespace WhoruBackend.Repositorys.Implement
                 var connection = new HubConnectionBuilder().WithUrl(hubUrl).Build();
                 // Kết nối tới hub
                 await connection.StartAsync();
-                await connection.InvokeAsync("SendNotification", comment.UserId, receiver.UserInfoId, comment.UserId + " has commented your feed");
+                await connection.InvokeAsync("SendNotification", comment.UserId, receiver.UserInfoId, info.FullName, info.Avatar, "Comment");
                 await connection.StopAsync();
 
                 return new ResponseView(MessageConstant.CREATE_SUCCESS);

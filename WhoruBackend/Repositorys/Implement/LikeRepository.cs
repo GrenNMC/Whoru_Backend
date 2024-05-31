@@ -29,6 +29,7 @@ namespace WhoruBackend.Repositorys.Implement
                 var like = await _DbContext.Likes.Where(s => s.FeedId == idFeed && s.UserId == idUser).FirstOrDefaultAsync();
                 if (like == null)
                 {
+                    var info = await _DbContext.UserInfos.FirstOrDefaultAsync(s => s.Id == idUser);
                     Like likefeed = new Like
                     {
                         FeedId = idFeed,
@@ -44,7 +45,7 @@ namespace WhoruBackend.Repositorys.Implement
                     var connection = new HubConnectionBuilder().WithUrl(hubUrl).Build();
                     // Kết nối tới hub
                     await connection.StartAsync();
-                    await connection.InvokeAsync("SendNotification", idUser,idReceiver.UserInfoId, idUser+" has liked your feed");
+                    await connection.InvokeAsync("SendNotification", idUser,idReceiver.UserInfoId, info.FullName,info.Avatar,"Like");
                     await connection.StopAsync();
                     return new(MessageConstant.OK);
                 }

@@ -38,15 +38,15 @@ namespace WhoruBackend.Hubs
             }
             return string.Empty;
         }
-        public async Task SendNotification(int Sender, int Receiver, string Notification)
+        public async Task SendNotification(int Sender, int Receiver,string NameSender, string AvatarSender, string Type)
         {
 
             var isOnline = onlineUser.ContainsValue(Receiver);
             if (isOnline)
             {
-                await Clients.Client(GetConnectionId(Receiver)).SendAsync("ReceiveNotification", Notification, Sender, Receiver);
+                await Clients.Client(GetConnectionId(Receiver)).SendAsync("ReceiveNotification", Sender, Receiver, NameSender, AvatarSender, Type);
             }
-            await _notiService.SendNotification(Sender, Receiver, Notification);
+            await _notiService.SendNotification(Sender, Receiver, Type);
         }
     }
 }

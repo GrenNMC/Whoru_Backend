@@ -53,6 +53,7 @@ namespace WhoruBackend.Repositorys.Implement
                 var sharePost = await _DbContext.Shares.Where(s => s.UserId == idUser && s.FeedId == idFeed).FirstOrDefaultAsync();
                 if (sharePost == null)
                 {
+                    var info = await _DbContext.UserInfos.FirstOrDefaultAsync(s => s.Id == idUser);
                     Share share = new Share
                     {
                         FeedId = idFeed,
@@ -70,7 +71,7 @@ namespace WhoruBackend.Repositorys.Implement
                     var connection = new HubConnectionBuilder().WithUrl(hubUrl).Build();
                     // Kết nối tới hub
                     await connection.StartAsync();
-                    await connection.InvokeAsync("SendNotification", idUser, receiver.UserInfoId, idUser + " has shared your feed");
+                    await connection.InvokeAsync("SendNotification", idUser, receiver.UserInfoId, info.FullName, info.Avatar, "Share");
                     await connection.StopAsync();
 
                     return new(MessageConstant.OK);
