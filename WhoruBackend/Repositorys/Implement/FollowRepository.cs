@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 using System.Collections.Generic;
 using WhoruBackend.Data;
@@ -33,6 +34,16 @@ namespace WhoruBackend.Repositorys.Implement
                     };
                     _DbContext.Follows.Add(response);
                     await _DbContext.SaveChangesAsync();
+                    var info = await _DbContext.UserInfos.FirstOrDefaultAsync(s => s.Id == idFollower);
+                    // URL của SignalR hub
+                    var hubUrl = "wss://whorubackend20240510001558.azurewebsites.net/notificationHub";
+                    //var hubUrl = "wss://localhost:7175/notificationHub";
+                    // Tạo một kết nối tới hub
+                    var connection = new HubConnectionBuilder().WithUrl(hubUrl).Build();
+                    // Kết nối tới hub
+                    await connection.StartAsync();
+                    await connection.InvokeAsync("SendNotification", idFollower, idUser, info.FullName, info.Avatar, "Follow");
+                    await connection.StopAsync();
                     return new(MessageConstant.CREATE_SUCCESS);
                 }
                 return new(MessageConstant.EXISTED);

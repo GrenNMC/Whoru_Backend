@@ -45,20 +45,13 @@ namespace WhoruBackend.Hubs
                 await _chatService.SendChat(Sender, Receiver, Message, MessageConstant.MESSAGE, false);
         }
 
-        public async Task SendImage(int Sender, int Receiver, IFormFile Image)
+        public async Task SendImage(int Sender, int Receiver, string ImageUrl)
         {
             var isOnline = onlineUser.ContainsValue(Receiver);
-            UploadImageToStorage storage = new UploadImageToStorage();
-            var link = await storage.ChatImageUrl(Image);
             if (isOnline)
             {
-                await Clients.Client(GetConnectionId(Receiver)).SendAsync("ReceiveImage", link, Sender, Receiver);
-                //Lưu DB
-                await _chatService.SendChat(Sender, Receiver, link, Image.FileName, true);
+                await Clients.Client(GetConnectionId(Receiver)).SendAsync("ReceiveImage", ImageUrl, Sender, Receiver);
             }
-            //Lưu DB
-            else
-                await _chatService.SendChat(Sender, Receiver, link, Image.FileName, false);
         }
         private string GetConnectionId(int idUser)
         {
