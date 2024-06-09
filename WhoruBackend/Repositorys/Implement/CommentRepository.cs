@@ -6,6 +6,7 @@ using WhoruBackend.Data;
 using WhoruBackend.Models;
 using WhoruBackend.ModelViews;
 using WhoruBackend.ModelViews.CommentModelViews;
+using WhoruBackend.Services;
 using WhoruBackend.Utilities.Constants;
 
 namespace WhoruBackend.Repositorys.Implement
@@ -14,10 +15,12 @@ namespace WhoruBackend.Repositorys.Implement
     {
         private readonly ApplicationDbContext _DbContext;
         private readonly IFeedRepository _FeedRepository;
-        public CommentRepository(ApplicationDbContext dbContext, IFeedRepository feedRepository)
+        private readonly INotificationService _notiService;
+        public CommentRepository(ApplicationDbContext dbContext, IFeedRepository feedRepository, INotificationService service)
         {
             _DbContext = dbContext;
             _FeedRepository = feedRepository;
+            _notiService = service;
         }
 
         public async Task<ResponseView> Create(Comment comment)
@@ -28,16 +31,21 @@ namespace WhoruBackend.Repositorys.Implement
                 await _DbContext.SaveChangesAsync();
                 var info = await _DbContext.UserInfos.FirstOrDefaultAsync(s => s.Id == comment.UserId);
                 var receiver = await _FeedRepository.FindFeedById(comment.FeedId);
-                // URL của SignalR hub
-                var hubUrl = "wss://whorubackend20240510001558.azurewebsites.net/notificationHub";
-                //var hubUrl = "wss://localhost:7175/notificationHub";
-                // Tạo một kết nối tới hub
-                var connection = new HubConnectionBuilder().WithUrl(hubUrl).Build();
-                // Kết nối tới hub
-                await connection.StartAsync();
-                await connection.InvokeAsync("SendNotification", comment.UserId, receiver.UserInfoId, info.FullName, info.Avatar, "Comment");
-                await connection.StopAsync();
 
+                if(comment.UserId != receiver.UserInfoId)
+                {
+
+                    // URL của SignalR hub
+                    //var hubUrl = "wss://whorubackend20240510001558.azurewebsites.net/notificationHub";
+                    var hubUrl = "wss://localhost:7175/notificationHub";
+                    // Tạo một kết nối tới hub
+                    var connection = new HubConnectionBuilder().WithUrl(hubUrl).Build();
+                    // Kết nối tới hub
+                    await connection.StartAsync();
+                    await connection.InvokeAsync("SendNotification", comment.UserId, receiver.UserInfoId, info.FullName, info.Avatar, "Comment");
+                    await connection.StopAsync();
+                    await _notiService.SendNotification(comment.UserId, receiver.UserInfoId.Value, "Comment");
+                }
                 return new ResponseView(MessageConstant.CREATE_SUCCESS);
             }
             catch (Exception ex)

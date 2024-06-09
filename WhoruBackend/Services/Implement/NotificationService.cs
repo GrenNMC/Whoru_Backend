@@ -28,7 +28,7 @@ namespace WhoruBackend.Services.Implement
              {
                 UserSend = Sender,
                 UserReceive = Receiver,
-                Date = DateTime.Now,
+                Date = DateTime.UtcNow,
                 Message = Notification
             };
             await _notificationRepo.CreateNotification(noti);

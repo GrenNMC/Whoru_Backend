@@ -46,7 +46,6 @@ namespace WhoruBackend.Hubs
             {
                 await Clients.Client(GetConnectionId(Receiver)).SendAsync("ReceiveNotification", Sender, Receiver, NameSender, AvatarSender, Type);
             }
-            await _notiService.SendNotification(Sender, Receiver, Type);
         }
     }
 }

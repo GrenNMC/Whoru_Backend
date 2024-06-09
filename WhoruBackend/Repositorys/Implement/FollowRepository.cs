@@ -6,6 +6,7 @@ using WhoruBackend.Data;
 using WhoruBackend.Models;
 using WhoruBackend.ModelViews;
 using WhoruBackend.ModelViews.FollowModelViews;
+using WhoruBackend.Services;
 using WhoruBackend.Utilities.Constants;
 
 namespace WhoruBackend.Repositorys.Implement
@@ -14,10 +15,12 @@ namespace WhoruBackend.Repositorys.Implement
     {
         private readonly IUserInfoRepository _userInfoRepo;
         private readonly ApplicationDbContext _DbContext;
-        public FollowRepository(IUserInfoRepository userRepo, ApplicationDbContext dbContext)
+        private readonly INotificationService _notiService;
+        public FollowRepository(IUserInfoRepository userRepo, ApplicationDbContext dbContext, INotificationService service)
         {
             _userInfoRepo = userRepo;
             _DbContext = dbContext;
+            _notiService = service;
         }
 
         public async Task<ResponseView> FollowUser(int idFollower, int idUser)
@@ -36,14 +39,15 @@ namespace WhoruBackend.Repositorys.Implement
                     await _DbContext.SaveChangesAsync();
                     var info = await _DbContext.UserInfos.FirstOrDefaultAsync(s => s.Id == idFollower);
                     // URL của SignalR hub
-                    var hubUrl = "wss://whorubackend20240510001558.azurewebsites.net/notificationHub";
-                    //var hubUrl = "wss://localhost:7175/notificationHub";
+                    //var hubUrl = "wss://whorubackend20240510001558.azurewebsites.net/notificationHub";
+                    var hubUrl = "wss://localhost:7175/notificationHub";
                     // Tạo một kết nối tới hub
                     var connection = new HubConnectionBuilder().WithUrl(hubUrl).Build();
                     // Kết nối tới hub
                     await connection.StartAsync();
                     await connection.InvokeAsync("SendNotification", idFollower, idUser, info.FullName, info.Avatar, "Follow");
                     await connection.StopAsync();
+                    await _notiService.SendNotification(idFollower, idUser, "Follow");
                     return new(MessageConstant.CREATE_SUCCESS);
                 }
                 return new(MessageConstant.EXISTED);

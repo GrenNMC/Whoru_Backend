@@ -2,10 +2,12 @@
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using System.Reflection;
 using WhoruBackend.Data;
 using WhoruBackend.Models;
 using WhoruBackend.ModelViews;
 using WhoruBackend.ModelViews.InfoModelViews;
+using WhoruBackend.Services;
 using WhoruBackend.Utilities.Constants;
 
 namespace WhoruBackend.Repositorys.Implement
@@ -15,11 +17,13 @@ namespace WhoruBackend.Repositorys.Implement
         private readonly ApplicationDbContext _DbContext;
         private readonly IUserInfoRepository _UserInfoRepo;
         private readonly IFeedRepository _FeedRepository;
-        public LikeRepository(ApplicationDbContext dbContext, IUserInfoRepository userInfoRepo, IFeedRepository feedRepository)
+        private readonly INotificationService _notiService;
+        public LikeRepository(ApplicationDbContext dbContext, IUserInfoRepository userInfoRepo, IFeedRepository feedRepository, INotificationService service)
         {
             _DbContext = dbContext;
             _UserInfoRepo = userInfoRepo;
             _FeedRepository = feedRepository;
+            _notiService = service;
         }
 
         public async Task<ResponseView> LikeFeed(int idUser ,int idFeed)
@@ -38,15 +42,19 @@ namespace WhoruBackend.Repositorys.Implement
                     _DbContext.Likes.Add(likefeed);
                     await _DbContext.SaveChangesAsync();
                     var idReceiver = await _FeedRepository.FindFeedById(idFeed);
-                    // URL của SignalR hub
-                    var hubUrl = "wss://whorubackend20240510001558.azurewebsites.net/notificationHub";
-                    //var hubUrl = "wss://localhost:7175/notificationHub";
-                    // Tạo một kết nối tới hub
-                    var connection = new HubConnectionBuilder().WithUrl(hubUrl).Build();
-                    // Kết nối tới hub
-                    await connection.StartAsync();
-                    await connection.InvokeAsync("SendNotification", idUser,idReceiver.UserInfoId, info.FullName,info.Avatar,"Like");
-                    await connection.StopAsync();
+                    if (idReceiver.UserInfoId.Value != idUser)
+                    {
+                        // URL của SignalR hub
+                        //var hubUrl = "wss://whorubackend20240510001558.azurewebsites.net/notificationHub";
+                        var hubUrl = "wss://localhost:7175/notificationHub";
+                        // Tạo một kết nối tới hub
+                        var connection = new HubConnectionBuilder().WithUrl(hubUrl).Build();
+                        // Kết nối tới hub
+                        await connection.StartAsync();
+                        await connection.InvokeAsync("SendNotification", idUser, idReceiver.UserInfoId.Value, info.FullName, info.Avatar, "Like");
+                        await connection.StopAsync();
+                        await _notiService.SendNotification(idUser, idReceiver.UserInfoId.Value, "Like");
+                    }
                     return new(MessageConstant.OK);
                 }
                 else
