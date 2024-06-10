@@ -61,8 +61,8 @@ namespace WhoruBackend.Controllers
             var Url = await storage.ChatImageUrl(view.File);
             await _chatService.SendChat(view.Sender, view.Receiver, Url, view.File.FileName, false);
             // URL của SignalR hub
-            //var hubUrl = "wss://whorubackend20240510001558.azurewebsites.net/chatHub";
-            var hubUrl = "wss://localhost:7175/chatHub";
+            var hubUrl = "wss://whorubackend20240510001558.azurewebsites.net/chatHub";
+            //var hubUrl = "wss://localhost:7175/chatHub";
             // Tạo một kết nối tới hub
             var connection = new HubConnectionBuilder().WithUrl(hubUrl).Build();
             // Kết nối tới hub

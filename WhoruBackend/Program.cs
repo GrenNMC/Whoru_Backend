@@ -60,6 +60,7 @@ services.AddScoped<ICommentService, CommentService>();
 services.AddScoped<IChatService, ChatService>();
 services.AddScoped<INotificationService, NotificationService>();
 services.AddScoped<IStoryService, StoryService>();
+services.AddScoped<ILocationService, LocationService>();
 // Register Repository
 services.AddScoped<IUserRepository, UserRepositoty>();
 services.AddScoped<IlogRepository, LogRepository>();
@@ -73,6 +74,7 @@ services.AddScoped<ICommentRepository, CommentRepository>();
 services.AddScoped<IChatRepository, ChatRepository>();
 services.AddScoped<INotificationRepository, NotificationRepository>();
 services.AddScoped<IStoryRepository, StoryRepository>();
+services.AddScoped<ILocationRepository, LocationRepository>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 services.AddEndpointsApiExplorer();
 services.AddHttpContextAccessor();
@@ -141,4 +143,5 @@ app.UseCors(allowPolicy);
 app.MapControllers();
 app.MapHub<ChatHub>("/chatHub");
 app.MapHub<NotificationHub>("/notificationHub");
+app.MapHub<LocationHub>("/locationnHub");
 app.Run();

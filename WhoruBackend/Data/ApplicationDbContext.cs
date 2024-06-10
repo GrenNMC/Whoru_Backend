@@ -19,6 +19,8 @@ namespace WhoruBackend.Data
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Chat> Chats { get; set; }
         public DbSet<Story> Stories { get; set; }
+        public DbSet<Location> Locations { get; set; }
+        public DbSet<FaceRecogNumber> FaceRecogNumbers { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
 
@@ -53,6 +55,16 @@ namespace WhoruBackend.Data
             modelBuilder.Entity<Story>()
                 .HasOne(s => s.User)
                 .WithMany(s => s.Stories)
+                .HasForeignKey(s => s.UserId)
+                .OnDelete(DeleteBehavior.SetNull);
+            modelBuilder.Entity<Location>()
+                .HasOne(s => s.UserInfo)
+                .WithOne(s => s.Location)
+                .HasForeignKey<Location>(s => s.UserId)
+                .OnDelete(DeleteBehavior.SetNull);
+            modelBuilder.Entity<FaceRecogNumber>()
+                .HasOne(s => s.UserInfo)
+                .WithMany(s => s.Embeddings)
                 .HasForeignKey(s => s.UserId)
                 .OnDelete(DeleteBehavior.SetNull);
             modelBuilder.Entity<FeedImage>()

@@ -33,5 +33,8 @@ namespace WhoruBackend.Models
         public List<Chat>? ReceiveChats { get; set; }
         public List<Comment>? Comments { get; set; }
         public List<Story>? Stories { get; set; }
+        public Location? Location { get; set; }
+        
+        public List<FaceRecogNumber>? Embeddings { get; set; }
     }
 }
