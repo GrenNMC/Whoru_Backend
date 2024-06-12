@@ -24,7 +24,7 @@ namespace WhoruBackend.Controllers
             if(file  != null)
             {
                 var response = await _storyService.Create(file.File);
-                return Ok(response);
+                return CreatedAtAction(nameof(GetStoryByUserId), response); ;
             }
             return BadRequest();
         }

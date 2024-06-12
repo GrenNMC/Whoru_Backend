@@ -7,7 +7,7 @@ namespace WhoruBackend.Repositorys
     public interface ILocationRepository
     {
         public Task UpdateLocation(int IdUser, double Long,double Lang);
-        public Task<List<UserLocationModelView>?> GetNearestUser(int id);
+        public Task<List<UserLocationModelView>?> GetNearestUser(int id, double size, List<int> onlineUser);
 
     }
 }

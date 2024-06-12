@@ -94,7 +94,7 @@ namespace WhoruBackend.Repositorys.Implement
                 foreach(var item in list)
                 {
                     var info = await _UserInfoRepository.GetUserInfoById((int)item.UserId);
-                    Results.Add(new StoryModelView(item.Id, info.FullName, info.Avatar, item.ImageUrl, item.Date));
+                    Results.Add(new StoryModelView(item.UserId.Value, info.FullName, info.Avatar, item.ImageUrl, item.Date.Value.ToString("H:mm dd/MM/yyyy")));
                 }
                 return Results;
             }

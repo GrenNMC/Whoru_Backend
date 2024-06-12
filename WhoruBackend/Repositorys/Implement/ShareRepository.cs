@@ -70,7 +70,7 @@ namespace WhoruBackend.Repositorys.Implement
                     if (receiver.UserInfoId != idUser)
                     {
                         // URL của SignalR hub
-                        var hubUrl = "wss://whorubackend20240510001558.azurewebsites.net/notificationHub";
+                        var hubUrl = "wss://whorubackend20240510001558.azurewebsites.net/appHub";
                         //var hubUrl = "wss://localhost:7175/notificationHub";
                         // Tạo một kết nối tới hub
                         var connection = new HubConnectionBuilder().WithUrl(hubUrl).Build();

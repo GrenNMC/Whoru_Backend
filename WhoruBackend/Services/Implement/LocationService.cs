@@ -12,9 +12,9 @@ namespace WhoruBackend.Services.Implement
             _locationRepo = locationRepo;
         }
 
-        public async Task<List<UserLocationModelView>?> GetNearestUser(int id)
+        public async Task<List<UserLocationModelView>?> GetNearestUser(int id, double size, List<int> onlineUser)
         {
-            return await _locationRepo.GetNearestUser(id);
+            return await _locationRepo.GetNearestUser(id, size, onlineUser);
         }
 
         public async Task UpdateLocation(int UserId, double Long, double Lang)

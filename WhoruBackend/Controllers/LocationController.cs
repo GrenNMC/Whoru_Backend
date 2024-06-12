@@ -8,11 +8,5 @@ namespace WhoruBackend.Controllers
     [ApiController]
     public class LocationController : ControllerBase
     {
-        [HttpPost]
-        [Authorize]
-        public IActionResult GetNearestUser()
-        {
-            return Ok();
-        }
     }
 }
