@@ -3,6 +3,7 @@ using PagedList;
 using WhoruBackend.Models;
 using WhoruBackend.ModelViews;
 using WhoruBackend.ModelViews.InfoModelViews;
+using WhoruBackend.ModelViews.UserModelViews;
 using WhoruBackend.Repositorys;
 using WhoruBackend.Utilities.Constants;
 
@@ -50,6 +51,18 @@ namespace WhoruBackend.Services.Implement
             }
             // return new ResponseView(MessageConstant.EXISTED);
             return -1;
+        }
+
+        public async Task<List<NumberRecogModelView>?> GetEmbeddedNumber()
+        {
+            return await _userInfoRepo.GetEmbeddedNumber();
+        }
+
+        public async Task<List<SuggestUserModelView>?> GetSuggestionFriendList(List<int> idList)
+        {
+            int idUser = await _userService.GetIdByToken();
+            int idInfo = await _userInfoRepo.GetInfoByUserId(idUser);
+            return await _userInfoRepo.GetSuggestionFriendList(idInfo, idList);
         }
 
         public async Task<UserInfo?> GetUserInfo(int id)
@@ -146,6 +159,17 @@ namespace WhoruBackend.Services.Implement
                 userInfo.BackroundName = file.FileName;
             }
             await _userInfoRepo.Update(userInfo);
+            return new(MessageConstant.OK);
+        }
+
+        public async Task<ResponseView> UpdateEmbededNumber(EmbeddingModelView embedding)
+        {
+            int idUser = await _userService.GetIdByToken();
+            int idInfo = await _userInfoRepo.GetInfoByUserId(idUser);
+            foreach (var item in embedding.Embedded) 
+            {
+                await _userInfoRepo.CreateEmbedding(idInfo, item);
+            }
             return new(MessageConstant.OK);
         }
     }

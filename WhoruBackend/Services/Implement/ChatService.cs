@@ -30,6 +30,7 @@ namespace WhoruBackend.Services.Implement
             var listUser = await _chatRepo.GetAllChat(idSender, idUser);
             var result = listUser.ToPagedList(page, 10).ToList();
             return result;
+
         }
 
         public async Task<List<UserChatModelView>?> GetAllUser(int page)

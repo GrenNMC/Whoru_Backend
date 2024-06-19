@@ -5,6 +5,7 @@ using WhoruBackend.ModelViews.UserModelViews;
 using WhoruBackend.ModelViews.InfoModelViews;
 using WhoruBackend.Services;
 using WhoruBackend.Utilities.Constants;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace WhoruBackend.Controllers
 {
@@ -135,6 +136,42 @@ namespace WhoruBackend.Controllers
             }
 
             return Ok(info);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> PostEmbeddingForUser([FromBody] EmbeddingModelView view)
+        {
+            if (view != null)
+            {
+                var response = await _userInfoService.UpdateEmbededNumber(view);
+                return Ok(response);
+            }
+            return BadRequest();
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetListEmbedding()
+        {
+            var response = await _userInfoService.GetEmbeddedNumber();
+            if(response != null)
+            {
+                return Ok(response);
+            }
+            return NotFound();
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> GetListSuggestions([FromBody] FriendshipSuggestionsModelView view)
+        {
+            var response = await _userInfoService.GetSuggestionFriendList(view.listIdUser);
+            if (response != null)
+            {
+                return Ok(response);
+            }
+            return NotFound();
         }
     }
 }

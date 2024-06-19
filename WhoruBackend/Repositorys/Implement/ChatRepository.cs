@@ -74,6 +74,7 @@ namespace WhoruBackend.Repositorys.Implement
                         ListChatModelView objChat = new ListChatModelView(chat.Id, date, chat.Message, chat.UserSend, chat.UserReceive, chat.Type);
                         result.Add(objChat);
                     }
+                    result.Reverse();
                     return result;
                 }
                 return null;

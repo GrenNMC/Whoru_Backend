@@ -2,6 +2,7 @@
 using WhoruBackend.Models;
 using WhoruBackend.ModelViews;
 using WhoruBackend.ModelViews.InfoModelViews;
+using WhoruBackend.ModelViews.UserModelViews;
 
 namespace WhoruBackend.Repositorys
 {
@@ -14,5 +15,8 @@ namespace WhoruBackend.Repositorys
         public Task<ResponseView> Update(UserInfo user);
         public Task<List<ResponseListUser>?> SearchUser(string keyWord);
         public Task<ResponseInfoView?> GetUserInfo(int userId, int idAuthor);
+        public Task CreateEmbedding(int idUser, double embeddingNumber);
+        public Task<List<NumberRecogModelView>?> GetEmbeddedNumber();
+        public Task<List<SuggestUserModelView>?> GetSuggestionFriendList(int idAuth, List<int> idList);
     }
 }

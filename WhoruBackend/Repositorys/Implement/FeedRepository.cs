@@ -113,12 +113,18 @@ namespace WhoruBackend.Repositorys.Implement
                     foreach (var item in list)
                     {
                         bool islike = false;
+                        bool isShare = false;
                         var user = await _dbContext.UserInfos.Where(s => s.Id == item.UserInfoId).FirstOrDefaultAsync();
                         var listImage = await _dbContext.FeedImages.Where(s => s.FeedId == item.Id).ToListAsync();
                         var like = await _dbContext.Likes.Where(s => s.UserId == authUser && s.FeedId == item.Id).FirstOrDefaultAsync();
                         if (like != null)
                         {
                             islike = true;
+                        }
+                        var share = await _dbContext.Shares.Where(s => s.UserId == authUser && s.FeedId == item.Id).FirstOrDefaultAsync();
+                        if( share != null)
+                        {
+                            isShare = true;
                         }
                         int likeCount = await _dbContext.Likes.Where(s => s.FeedId == item.Id).CountAsync();
                         int commentCount = await _dbContext.Comments.Where(s => s.FeedId == item.Id).CountAsync();
@@ -130,7 +136,7 @@ namespace WhoruBackend.Repositorys.Implement
                                 listImgs.Add(image.Url);
                             }
                         }
-                        ResponseAllFeedModelView response = new ResponseAllFeedModelView(item.Id,item.Status,item.Date.Value.ToString("H:mm dd/MM/yyyy"), listImgs,user.Id,user.FullName,user.Avatar,islike,likeCount,commentCount,shareCount);
+                        ResponseAllFeedModelView response = new ResponseAllFeedModelView(item.Id,item.Status,item.Date.Value.ToString("H:mm dd/MM/yyyy"), listImgs,user.Id,user.FullName,user.Avatar,islike,likeCount,commentCount,isShare,shareCount);
                         listResult.Add(response);
                     }
                     return listResult;
@@ -161,6 +167,7 @@ namespace WhoruBackend.Repositorys.Implement
                     foreach (var item in list)
                     {
                         bool islike = false;
+                        bool isShare = false;
                         var like = await _dbContext.Likes.Where(s => s.UserId == authUser && s.FeedId == item.Id).FirstOrDefaultAsync();
                         if (like != null)
                         {
@@ -170,6 +177,11 @@ namespace WhoruBackend.Repositorys.Implement
                         var listImage = await _dbContext.FeedImages.Where(s => s.FeedId == item.Id).ToListAsync();
                         int likeCount = await _dbContext.Likes.Where(s => s.FeedId == item.Id).CountAsync();
                         int commentCount = await _dbContext.Comments.Where(s => s.FeedId == item.Id).CountAsync();
+                        var share = await _dbContext.Shares.Where(s => s.UserId == authUser && s.FeedId == item.Id).FirstOrDefaultAsync();
+                        if (share != null)
+                        {
+                            isShare = true;
+                        }
                         int shareCount = await _dbContext.Shares.Where(s => s.FeedId == item.Id).CountAsync();
                         List<string> listImgs = new List<string>();
                         if (listImage != null)
@@ -179,7 +191,7 @@ namespace WhoruBackend.Repositorys.Implement
                                 listImgs.Add(image.Url);
                             }
                         }
-                        ResponseAllFeedModelView response = new ResponseAllFeedModelView(item.Id, item.Status,item.Date.Value.ToString("H:mm dd/MM/yyyy"), listImgs, user.Id, user.FullName, user.Avatar,islike, likeCount, commentCount, shareCount);
+                        ResponseAllFeedModelView response = new ResponseAllFeedModelView(item.Id, item.Status,item.Date.Value.ToString("H:mm dd/MM/yyyy"), listImgs, user.Id, user.FullName, user.Avatar,islike, likeCount, commentCount, isShare,shareCount);
                         listResult.Add(response);
                     }
                     return listResult;
@@ -210,6 +222,7 @@ namespace WhoruBackend.Repositorys.Implement
                     foreach (var item in list)
                     {
                         bool islike = false;
+                        bool isShare = false;
                         var like = await _dbContext.Likes.Where(s => s.UserId == authUser && s.FeedId == item.Id).FirstOrDefaultAsync();
                         if (like != null)
                         {
@@ -219,6 +232,11 @@ namespace WhoruBackend.Repositorys.Implement
                         var listImage = await _dbContext.FeedImages.Where(s => s.FeedId == item.Id).ToListAsync();
                         int likeCount = await _dbContext.Likes.Where(s => s.FeedId == item.Id).CountAsync();
                         int commentCount = await _dbContext.Comments.Where(s => s.FeedId == item.Id).CountAsync();
+                        var share = await _dbContext.Shares.Where(s => s.UserId == authUser && s.FeedId == item.Id).FirstOrDefaultAsync();
+                        if (share != null)
+                        {
+                            isShare = true;
+                        }
                         int shareCount = await _dbContext.Shares.Where(s => s.FeedId == item.Id).CountAsync();
                         List<string> listImgs = new List<string>();
                         if (listImage != null)
@@ -228,7 +246,7 @@ namespace WhoruBackend.Repositorys.Implement
                                 listImgs.Add(image.Url);
                             }
                         }
-                        ResponseAllFeedModelView response = new ResponseAllFeedModelView(item.Id, item.Status, item.Date.Value.ToString("H:mm dd/MM/yyyy"), listImgs, user.Id, user.FullName, user.Avatar, islike, likeCount, commentCount, shareCount);
+                        ResponseAllFeedModelView response = new ResponseAllFeedModelView(item.Id, item.Status, item.Date.Value.ToString("H:mm dd/MM/yyyy"), listImgs, user.Id, user.FullName, user.Avatar, islike, likeCount, commentCount,isShare, shareCount);
                         listResult.Add(response);
                     }
                     return listResult;
@@ -249,6 +267,7 @@ namespace WhoruBackend.Repositorys.Implement
                 var feed = await _dbContext.Feeds.FirstOrDefaultAsync(s => s.Id == postId);
                 if(feed != null)
                 {
+                    bool isShare = false;
                     bool islike = false;
                     var like = await _dbContext.Likes.Where(s => s.UserId == authUser && s.FeedId == postId).FirstOrDefaultAsync();
                     if (like != null)
@@ -259,6 +278,11 @@ namespace WhoruBackend.Repositorys.Implement
                     var listImage = await _dbContext.FeedImages.Where(s => s.FeedId == feed.Id).ToListAsync();
                     int likeCount = await _dbContext.Likes.Where(s => s.FeedId == feed.Id).CountAsync();
                     int commentCount = await _dbContext.Comments.Where(s => s.FeedId == feed.Id).CountAsync();
+                    var share = await _dbContext.Shares.Where(s => s.UserId == authUser && s.FeedId == postId).FirstOrDefaultAsync();
+                    if (share != null)
+                    {
+                        isShare = true;
+                    }
                     int shareCount = await _dbContext.Shares.Where(s => s.FeedId == feed.Id).CountAsync();
                     List<string> listImgs = new List<string>();
                     if (listImage != null)
@@ -268,7 +292,7 @@ namespace WhoruBackend.Repositorys.Implement
                             listImgs.Add(image.Url);
                         }
                     }
-                    ResponseAllFeedModelView response = new ResponseAllFeedModelView(feed.Id, feed.Status, feed.Date.Value.ToString("H:mm dd/MM/yyyy"), listImgs, user.Id, user.FullName, user.Avatar, islike, likeCount, commentCount, shareCount);
+                    ResponseAllFeedModelView response = new ResponseAllFeedModelView(feed.Id, feed.Status, feed.Date.Value.ToString("H:mm dd/MM/yyyy"), listImgs, user.Id, user.FullName, user.Avatar, islike, likeCount, commentCount, isShare, shareCount);
                     return response;
                 }
                 return null;
@@ -295,6 +319,7 @@ namespace WhoruBackend.Repositorys.Implement
                     {
                         if (item.Status.IndexOf(keyWord, StringComparison.OrdinalIgnoreCase) >= 0)
                         {
+                            bool isShare = false;
                             bool islike = false;
                             var like = await _dbContext.Likes.Where(s => s.UserId == authUser && s.FeedId == item.Id).FirstOrDefaultAsync();
                             if (like != null)
@@ -305,6 +330,11 @@ namespace WhoruBackend.Repositorys.Implement
                             var listImage = await _dbContext.FeedImages.Where(s => s.FeedId == item.Id).ToListAsync();
                             int likeCount = await _dbContext.Likes.Where(s => s.FeedId == item.Id).CountAsync();
                             int commentCount = await _dbContext.Comments.Where(s => s.FeedId == item.Id).CountAsync();
+                            var share = await _dbContext.Shares.Where(s => s.UserId == authUser && s.FeedId == item.Id).FirstOrDefaultAsync();
+                            if (share != null)
+                            {
+                                isShare = true;
+                            }
                             int shareCount = await _dbContext.Shares.Where(s => s.FeedId == item.Id).CountAsync();
                             List<string> listImgs = new List<string>();
                             if (listImage != null)
@@ -314,7 +344,7 @@ namespace WhoruBackend.Repositorys.Implement
                                     listImgs.Add(image.Url);
                                 }
                             }
-                            ResponseAllFeedModelView response = new ResponseAllFeedModelView(item.Id, item.Status, item.Date.Value.ToString("H:mm dd/MM/yyyy"), listImgs, user.Id, user.FullName, user.Avatar, islike, likeCount, commentCount, shareCount);
+                            ResponseAllFeedModelView response = new ResponseAllFeedModelView(item.Id, item.Status, item.Date.Value.ToString("H:mm dd/MM/yyyy"), listImgs, user.Id, user.FullName, user.Avatar, islike, likeCount, commentCount,isShare,shareCount);
                             listResult.Add(response);
                         }
                     }

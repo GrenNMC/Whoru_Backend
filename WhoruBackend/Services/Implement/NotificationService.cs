@@ -1,4 +1,5 @@
 ﻿using WhoruBackend.Models;
+using WhoruBackend.ModelViews.NotificationModelView;
 using WhoruBackend.Repositorys;
 
 namespace WhoruBackend.Services.Implement
@@ -15,7 +16,7 @@ namespace WhoruBackend.Services.Implement
             _userRepository = userInfoRepository;
         }
 
-        public async Task<List<Notification>?> GetAllNotification()
+        public async Task<List<NotificationModelView>?> GetAllNotification()
         {
             var idUser = await _userService.GetIdByToken();
             var id = await _userRepository.GetInfoByUserId(idUser);

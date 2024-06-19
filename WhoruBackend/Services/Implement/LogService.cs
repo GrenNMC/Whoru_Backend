@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json.Linq;
 using Serilog;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -104,6 +105,16 @@ namespace WhoruBackend.Services.Implement
                 return new ResponseView(MessageConstant.SYSTEM_ERROR);
             }
         }
+
+        public async Task<ResponseLoginView> RefreshToken()
+        {
+            int id = await _userService.GetIdByToken();
+            User? user = await _userRepo.GetUserById(id);
+            var info = await _userInfoRepo.GetInfoByUserId(id);
+            var token = await CreateToken(user);
+            return new(user.Id, info, MessageConstant.LOGIN_SUCCESS, user.UserName, token, user.IsDisabled);
+        }
+
         public async Task<ResponseLoginView> Login(LoginView view)
         {
             try
@@ -183,7 +194,7 @@ namespace WhoruBackend.Services.Implement
                 (
                     issuer: _configuration["Jwt:Issuer"],
                     audience: _configuration["Jwt:Audience"],
-                    expires: DateTime.Now.AddHours(1),
+                    expires: DateTime.Now.AddDays(30),
                     signingCredentials: credentials,
                     claims: claims
                 );

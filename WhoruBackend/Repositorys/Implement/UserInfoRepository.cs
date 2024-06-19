@@ -1,9 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Serilog;
+using System.Collections.Generic;
 using WhoruBackend.Data;
 using WhoruBackend.Models;
 using WhoruBackend.ModelViews;
 using WhoruBackend.ModelViews.InfoModelViews;
+using WhoruBackend.ModelViews.UserModelViews;
 using WhoruBackend.Utilities.Constants;
 using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
@@ -39,6 +41,48 @@ namespace WhoruBackend.Repositorys.Implement
             }
         }
 
+        public async Task CreateEmbedding(int idUser, double embeddingNumber)
+        {
+            try
+            {
+                FaceRecogNumber number = new FaceRecogNumber
+                {
+                    UserId = idUser,
+                    Embedding = embeddingNumber
+                };
+                _dbContext.FaceRecogNumbers.Add(number);
+                await _dbContext.SaveChangesAsync();
+            }
+            catch(Exception ex)
+            {
+                Log.Error(ex.Message);
+            }
+        }
+
+        public async Task<List<NumberRecogModelView>?> GetEmbeddedNumber()
+        {
+            try
+            {
+                var list = await _dbContext.FaceRecogNumbers.ToListAsync();
+                List<NumberRecogModelView> result = new List<NumberRecogModelView>();
+                // Nhóm theo UserId và tạo NumberRecogModelView
+                result = list.GroupBy(x => x.UserId)
+                                      .Select(g => new NumberRecogModelView
+                                      {
+                                          UserId = g.Key,
+                                          Embedding = g.Select(x => x.Embedding).ToList()
+                                      })
+                                      .ToList();
+
+                return result;
+            }
+            catch(Exception ex)
+            {
+                Log.Error(ex.Message);
+                return null;
+            }
+        }
+
         public async Task<int> GetInfoByUserId(int userId)
         {
             try
@@ -54,6 +98,33 @@ namespace WhoruBackend.Repositorys.Implement
             {
                 Log.Error(ex.Message);
                 return -1;
+            }
+        }
+
+        public async Task<List<SuggestUserModelView>?> GetSuggestionFriendList(int idAuth, List<int> idList)
+        {
+            try
+            {
+                List<SuggestUserModelView> listResult = new List<SuggestUserModelView> ();
+                foreach (var item in idList)
+                {
+                    var checkFollow = await _dbContext.Follows.FirstOrDefaultAsync(s => s.IdFollower == idAuth && s.IdFollowing == item);
+                    if(checkFollow == null)
+                    {
+                        var info = await _dbContext.UserInfos.FirstOrDefaultAsync(s => s.Id == item);
+                        listResult.Add(new SuggestUserModelView(item, info.FullName,info.Avatar));
+                    }
+                }
+                if(listResult.Count() == 0)
+                {
+                    return null;
+                }
+                return listResult;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+                return null;
             }
         }
 

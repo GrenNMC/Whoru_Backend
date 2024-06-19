@@ -13,5 +13,6 @@ namespace WhoruBackend.Services
         public Task<ResponseView> ChangePassword(string pass, string prePass);
         public Task<ResponseView> ResetPassword(string mail);
         public Task<ResponseView> VerifyPass(string mail, string code);
+        public Task<ResponseLoginView> RefreshToken();
     }
 }

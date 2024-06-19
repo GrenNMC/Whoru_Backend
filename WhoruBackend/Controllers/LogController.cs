@@ -85,18 +85,38 @@ namespace WhoruBackend.Controllers
         }
 
         [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> RefreshToken()
+        {
+            var response = await _LogService.RefreshToken();
+            if (response.Message == MessageConstant.NOT_FOUND)
+            {
+                return NotFound(response);
+            }
+            if (response.Message == MessageConstant.WRONG_PASSWORD)
+            {
+                return Unauthorized(response);
+            }
+            if (response.Message == MessageConstant.SYSTEM_ERROR)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            return Ok(response);
+        }
+
+        [HttpPost]
         public async Task<IActionResult> SendCodeByMail([FromBody] int id)
         {
             var reponse = await _LogService.SendCodeByMail(id);
             return Ok(reponse);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> SendCodeBySMS([FromBody] int id)
-        {
-            var reponse = await _LogService.SendCodeBySMS(id);
-            return Ok(reponse);
-        }
+        //[HttpPost]
+        //public async Task<IActionResult> SendCodeBySMS([FromBody] int id)
+        //{
+        //    var reponse = await _LogService.SendCodeBySMS(id);
+        //    return Ok(reponse);
+        //}
 
         [HttpPost]
         public async Task<IActionResult> VerifyPass([FromBody] VerifyPasswordModelView view)
