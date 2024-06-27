@@ -150,6 +150,36 @@ namespace WhoruBackend.Repositorys.Implement
             }
         }
 
+        private async Task<ResponseAllFeedModelView> GetModelView(int authUser, Feed item)
+        {
+            bool islike = false;
+            bool isShare = false;
+            var like = await _dbContext.Likes.Where(s => s.UserId == authUser && s.FeedId == item.Id).FirstOrDefaultAsync();
+            if (like != null)
+            {
+                islike = true;
+            }
+            var user = await _dbContext.UserInfos.Where(s => s.Id == item.UserInfoId).FirstOrDefaultAsync();
+            var listImage = await _dbContext.FeedImages.Where(s => s.FeedId == item.Id).ToListAsync();
+            int likeCount = await _dbContext.Likes.Where(s => s.FeedId == item.Id).CountAsync();
+            int commentCount = await _dbContext.Comments.Where(s => s.FeedId == item.Id).CountAsync();
+            var share = await _dbContext.Shares.Where(s => s.UserId == authUser && s.FeedId == item.Id).FirstOrDefaultAsync();
+            if (share != null)
+            {
+                isShare = true;
+            }
+            int shareCount = await _dbContext.Shares.Where(s => s.FeedId == item.Id).CountAsync();
+            List<string> listImgs = new List<string>();
+            if (listImage != null)
+            {
+                foreach (var image in listImage)
+                {
+                    listImgs.Add(image.Url);
+                }
+            }
+            ResponseAllFeedModelView response = new ResponseAllFeedModelView(item.Id, item.Status, item.Date.Value.ToString("H:mm dd/MM/yyyy"), listImgs, user.Id, user.FullName, user.Avatar, islike, likeCount, commentCount, isShare, shareCount);
+            return response;
+        }
         public async Task<List<ResponseAllFeedModelView>?> GetAllFeedByUserId(int id, int authUser)
         {
             try {
@@ -166,33 +196,37 @@ namespace WhoruBackend.Repositorys.Implement
                     List<ResponseAllFeedModelView> listResult = new List<ResponseAllFeedModelView>();
                     foreach (var item in list)
                     {
-                        bool islike = false;
-                        bool isShare = false;
-                        var like = await _dbContext.Likes.Where(s => s.UserId == authUser && s.FeedId == item.Id).FirstOrDefaultAsync();
-                        if (like != null)
+                        if(item.State == MessageConstant.PUBLIC)
                         {
-                            islike = true;
+                            var response = await GetModelView(authUser, item);
+                            listResult.Add(response);
                         }
-                        var user = await _dbContext.UserInfos.Where(s => s.Id == item.UserInfoId).FirstOrDefaultAsync();
-                        var listImage = await _dbContext.FeedImages.Where(s => s.FeedId == item.Id).ToListAsync();
-                        int likeCount = await _dbContext.Likes.Where(s => s.FeedId == item.Id).CountAsync();
-                        int commentCount = await _dbContext.Comments.Where(s => s.FeedId == item.Id).CountAsync();
-                        var share = await _dbContext.Shares.Where(s => s.UserId == authUser && s.FeedId == item.Id).FirstOrDefaultAsync();
-                        if (share != null)
+                        else
                         {
-                            isShare = true;
-                        }
-                        int shareCount = await _dbContext.Shares.Where(s => s.FeedId == item.Id).CountAsync();
-                        List<string> listImgs = new List<string>();
-                        if (listImage != null)
-                        {
-                            foreach (var image in listImage)
+                            if (item.State == MessageConstant.FOLLOWONLY)
                             {
-                                listImgs.Add(image.Url);
+                                var follow = await _dbContext.Follows.FirstOrDefaultAsync(s => s.IdFollower == authUser && s.IdFollowing == item.UserInfoId);
+                                if(follow != null)
+                                {
+                                    var response = await GetModelView(authUser, item);
+                                    listResult.Add(response);
+                                }
+                            }
+                            else
+                            {
+                                if (item.State == MessageConstant.FRIENDONLY)
+                                {
+                                    var follower = await _dbContext.Follows.FirstOrDefaultAsync(s => s.IdFollower == authUser && s.IdFollowing == item.UserInfoId);
+                                    var following = await _dbContext.Follows.FirstOrDefaultAsync(s => s.IdFollower == item.UserInfoId && s.IdFollowing == authUser);
+                                    if (follower != null && following != null)
+                                    {
+                                        var response = await GetModelView(authUser, item);
+                                        listResult.Add(response);
+                                    }
+                                }
                             }
                         }
-                        ResponseAllFeedModelView response = new ResponseAllFeedModelView(item.Id, item.Status,item.Date.Value.ToString("H:mm dd/MM/yyyy"), listImgs, user.Id, user.FullName, user.Avatar,islike, likeCount, commentCount, isShare,shareCount);
-                        listResult.Add(response);
+                        
                     }
                     return listResult;
                 }
@@ -221,32 +255,7 @@ namespace WhoruBackend.Repositorys.Implement
                     List<ResponseAllFeedModelView> listResult = new List<ResponseAllFeedModelView>();
                     foreach (var item in list)
                     {
-                        bool islike = false;
-                        bool isShare = false;
-                        var like = await _dbContext.Likes.Where(s => s.UserId == authUser && s.FeedId == item.Id).FirstOrDefaultAsync();
-                        if (like != null)
-                        {
-                            islike = true;
-                        }
-                        var user = await _dbContext.UserInfos.Where(s => s.Id == item.UserInfoId).FirstOrDefaultAsync();
-                        var listImage = await _dbContext.FeedImages.Where(s => s.FeedId == item.Id).ToListAsync();
-                        int likeCount = await _dbContext.Likes.Where(s => s.FeedId == item.Id).CountAsync();
-                        int commentCount = await _dbContext.Comments.Where(s => s.FeedId == item.Id).CountAsync();
-                        var share = await _dbContext.Shares.Where(s => s.UserId == authUser && s.FeedId == item.Id).FirstOrDefaultAsync();
-                        if (share != null)
-                        {
-                            isShare = true;
-                        }
-                        int shareCount = await _dbContext.Shares.Where(s => s.FeedId == item.Id).CountAsync();
-                        List<string> listImgs = new List<string>();
-                        if (listImage != null)
-                        {
-                            foreach (var image in listImage)
-                            {
-                                listImgs.Add(image.Url);
-                            }
-                        }
-                        ResponseAllFeedModelView response = new ResponseAllFeedModelView(item.Id, item.Status, item.Date.Value.ToString("H:mm dd/MM/yyyy"), listImgs, user.Id, user.FullName, user.Avatar, islike, likeCount, commentCount,isShare, shareCount);
+                        var response = await GetModelView(authUser, item);
                         listResult.Add(response);
                     }
                     return listResult;
@@ -267,32 +276,7 @@ namespace WhoruBackend.Repositorys.Implement
                 var feed = await _dbContext.Feeds.FirstOrDefaultAsync(s => s.Id == postId);
                 if(feed != null)
                 {
-                    bool isShare = false;
-                    bool islike = false;
-                    var like = await _dbContext.Likes.Where(s => s.UserId == authUser && s.FeedId == postId).FirstOrDefaultAsync();
-                    if (like != null)
-                    {
-                        islike = true;
-                    }
-                    var user = await _dbContext.UserInfos.Where(s => s.Id == feed.UserInfoId).FirstOrDefaultAsync();
-                    var listImage = await _dbContext.FeedImages.Where(s => s.FeedId == feed.Id).ToListAsync();
-                    int likeCount = await _dbContext.Likes.Where(s => s.FeedId == feed.Id).CountAsync();
-                    int commentCount = await _dbContext.Comments.Where(s => s.FeedId == feed.Id).CountAsync();
-                    var share = await _dbContext.Shares.Where(s => s.UserId == authUser && s.FeedId == postId).FirstOrDefaultAsync();
-                    if (share != null)
-                    {
-                        isShare = true;
-                    }
-                    int shareCount = await _dbContext.Shares.Where(s => s.FeedId == feed.Id).CountAsync();
-                    List<string> listImgs = new List<string>();
-                    if (listImage != null)
-                    {
-                        foreach (var image in listImage)
-                        {
-                            listImgs.Add(image.Url);
-                        }
-                    }
-                    ResponseAllFeedModelView response = new ResponseAllFeedModelView(feed.Id, feed.Status, feed.Date.Value.ToString("H:mm dd/MM/yyyy"), listImgs, user.Id, user.FullName, user.Avatar, islike, likeCount, commentCount, isShare, shareCount);
+                    var response = await GetModelView(authUser, feed);
                     return response;
                 }
                 return null;
@@ -319,32 +303,7 @@ namespace WhoruBackend.Repositorys.Implement
                     {
                         if (item.Status.IndexOf(keyWord, StringComparison.OrdinalIgnoreCase) >= 0)
                         {
-                            bool isShare = false;
-                            bool islike = false;
-                            var like = await _dbContext.Likes.Where(s => s.UserId == authUser && s.FeedId == item.Id).FirstOrDefaultAsync();
-                            if (like != null)
-                            {
-                                islike = true;
-                            }
-                            var user = await _dbContext.UserInfos.Where(s => s.Id == item.UserInfoId).FirstOrDefaultAsync();
-                            var listImage = await _dbContext.FeedImages.Where(s => s.FeedId == item.Id).ToListAsync();
-                            int likeCount = await _dbContext.Likes.Where(s => s.FeedId == item.Id).CountAsync();
-                            int commentCount = await _dbContext.Comments.Where(s => s.FeedId == item.Id).CountAsync();
-                            var share = await _dbContext.Shares.Where(s => s.UserId == authUser && s.FeedId == item.Id).FirstOrDefaultAsync();
-                            if (share != null)
-                            {
-                                isShare = true;
-                            }
-                            int shareCount = await _dbContext.Shares.Where(s => s.FeedId == item.Id).CountAsync();
-                            List<string> listImgs = new List<string>();
-                            if (listImage != null)
-                            {
-                                foreach (var image in listImage)
-                                {
-                                    listImgs.Add(image.Url);
-                                }
-                            }
-                            ResponseAllFeedModelView response = new ResponseAllFeedModelView(item.Id, item.Status, item.Date.Value.ToString("H:mm dd/MM/yyyy"), listImgs, user.Id, user.FullName, user.Avatar, islike, likeCount, commentCount,isShare,shareCount);
+                            var response = await GetModelView(authUser, item);
                             listResult.Add(response);
                         }
                     }

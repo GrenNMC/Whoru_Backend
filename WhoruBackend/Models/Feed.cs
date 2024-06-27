@@ -10,7 +10,7 @@ namespace WhoruBackend.Models
         public int Id { get; set; }
         public string? Status { get; set; }
         public DateTime? Date { get; set; }
-
+        public string? State {  get; set; }
         // Khóa ngoại
         public int? UserId { get; set; }
         public int? UserInfoId { get; set; }

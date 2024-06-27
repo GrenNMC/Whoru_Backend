@@ -29,5 +29,9 @@ namespace WhoruBackend.Utilities.Constants
         public static string IMAGE = "Image";
         public static string MESSAGE = "Message";
         public static string Room = "Room";
+        public static string PUBLIC = "Public";
+        public static string FRIENDONLY = "Only Friend";
+        public static string FOLLOWONLY = "Only Follower";
+        public static string PRIVATE = "Private";
     }
 }
