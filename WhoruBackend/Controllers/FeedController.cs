@@ -34,6 +34,18 @@ namespace WhoruBackend.Controllers
         }
 
         [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> UpdateFeedStatus([FromBody] FeedStatusModelView view)
+        {
+            var response = await _feedService.UpdateFeedStatus(view.idPost, view.status);
+            if (response.Message == MessageConstant.UPDATE_SUCCESS)
+                return Ok(response);
+            if(response.Message == MessageConstant.SYSTEM_ERROR)
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            return BadRequest();
+        }
+
+        [Authorize]
         [HttpDelete]
         public async Task<IActionResult> Delete([FromBody]int id)
         {

@@ -102,5 +102,38 @@ namespace WhoruBackend.Services.Implement
             var result = list.ToPagedList(page, 10).ToList();
             return result;
         }
+
+        public async Task<ResponseView> UpdateFeedStatus(int IdPost, int Status)
+        {
+            var feed = await _feedRepo.FindFeedById(IdPost);
+            if (feed != null) {
+                switch (Status)
+                {
+                    case 1:
+                        {
+                            feed.State = MessageConstant.PUBLIC;
+                            break;
+                        }
+                    case 2:
+                        {
+                            feed.State = MessageConstant.FOLLOWONLY;
+                            break;
+                        }
+                    case 3:
+                        {
+                            feed.State = MessageConstant.FRIENDONLY;
+                            break;
+                        }
+                    case 4:
+                        {
+                            feed.State = MessageConstant.PRIVATE;
+                            break;
+                        }
+                }
+                var response = await _feedRepo.UpdateFeed(feed);
+                return response;
+            }
+            return new ResponseView(MessageConstant.NO_DATA_REQUEST);
+        }
     }
 }

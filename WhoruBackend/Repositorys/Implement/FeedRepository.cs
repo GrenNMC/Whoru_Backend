@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Firebase.Auth;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 using System.Collections.Generic;
 using WhoruBackend.Data;
@@ -288,7 +289,7 @@ namespace WhoruBackend.Repositorys.Implement
                 return null;
             }
         }
-
+        
         public async Task<List<ResponseAllFeedModelView>?> SearchFeed(string keyWord, int authUser)
         {
             try
@@ -316,6 +317,22 @@ namespace WhoruBackend.Repositorys.Implement
                 Log.Error(ex.Message);
                 return null;
             }
+        }
+
+        public async Task<ResponseView> UpdateFeed(Feed feed)
+        {
+            try
+            {
+                _dbContext.Feeds.Update(feed);
+                await _dbContext.SaveChangesAsync();
+                return new(MessageConstant.UPDATE_SUCCESS);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+                return new(MessageConstant.SYSTEM_ERROR);
+            }
+
         }
     }
 }
