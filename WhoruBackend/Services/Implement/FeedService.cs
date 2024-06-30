@@ -20,7 +20,7 @@ namespace WhoruBackend.Services.Implement
             _userService = userService;
         }
 
-        public async Task<ResponseView> Create(int userId, string status, List<IFormFile> files)
+        public async Task<ResponseView> Create(int userId, string status, List<IFormFile> files, int state)
         {
             if(status == null)
             {
@@ -33,6 +33,7 @@ namespace WhoruBackend.Services.Implement
                 UserId = userId,
                 UserInfoId = infoId,
                 Date = DateTime.UtcNow,
+                State = GetState(state),
             };
             var newPost = await _feedRepo.Create(feed, files);
             return newPost;
@@ -103,33 +104,34 @@ namespace WhoruBackend.Services.Implement
             return result;
         }
 
+        private string GetState(int state)
+        {
+            switch (state)
+            {
+                case 1:
+                    {
+                        return MessageConstant.PUBLIC;
+                    }
+                case 2:
+                    {
+                        return MessageConstant.FOLLOWONLY;
+                    }
+                case 3:
+                    {
+                        return MessageConstant.FRIENDONLY;
+                    }
+                case 4:
+                    {
+                        return MessageConstant.PRIVATE;
+                    }
+            }
+            return MessageConstant.PUBLIC;
+        }
         public async Task<ResponseView> UpdateFeedStatus(int IdPost, int Status)
         {
             var feed = await _feedRepo.FindFeedById(IdPost);
             if (feed != null) {
-                switch (Status)
-                {
-                    case 1:
-                        {
-                            feed.State = MessageConstant.PUBLIC;
-                            break;
-                        }
-                    case 2:
-                        {
-                            feed.State = MessageConstant.FOLLOWONLY;
-                            break;
-                        }
-                    case 3:
-                        {
-                            feed.State = MessageConstant.FRIENDONLY;
-                            break;
-                        }
-                    case 4:
-                        {
-                            feed.State = MessageConstant.PRIVATE;
-                            break;
-                        }
-                }
+                feed.State =  GetState(Status);
                 var response = await _feedRepo.UpdateFeed(feed);
                 return response;
             }

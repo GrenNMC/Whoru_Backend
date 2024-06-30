@@ -145,7 +145,7 @@ namespace WhoruBackend.Controllers
             if (view != null)
             {
                 var response = await _userInfoService.UpdateEmbededNumber(view);
-                return Ok(response);
+                return CreatedAtAction(nameof(GetListEmbedding), response);
             }
             return BadRequest();
         }

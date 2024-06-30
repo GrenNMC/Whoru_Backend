@@ -29,12 +29,12 @@ namespace WhoruBackend.Controllers
             {
                 return BadRequest();
             }
-            var post = await _feedService.Create(id, feed.Status, feed.Files);
+            var post = await _feedService.Create(id, feed.Status, feed.Files, feed.State);
             return Ok(post);
         }
 
         [Authorize]
-        [HttpPost]
+        [HttpPut]
         public async Task<IActionResult> UpdateFeedStatus([FromBody] FeedStatusModelView view)
         {
             var response = await _feedService.UpdateFeedStatus(view.idPost, view.status);

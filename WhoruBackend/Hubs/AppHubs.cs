@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using Serilog;
+using System.Threading.Channels;
+using WhoruBackend.ModelViews.LocationModelView;
 using WhoruBackend.Services;
 using WhoruBackend.Utilities.Constants;
 
@@ -140,6 +143,42 @@ namespace WhoruBackend.Hubs
         {
             await _locationService.UpdateLocation(IdUser, Long, Lang);
         }
+        public ChannelReader<List<UserLocationModelView>> StreamNearestUser(int idUser, CancellationToken cancellationToken)
+        {
+            var channel = Channel.CreateUnbounded<List<UserLocationModelView>>();
 
+            // Start a background task to write to the channel
+            _ = WriteToChannel(channel.Writer,idUser, cancellationToken);
+
+            return channel.Reader;
+        }
+
+        private async Task WriteToChannel(ChannelWriter<List<UserLocationModelView>> writer,int id, CancellationToken cancellationToken)
+        {
+            try
+            {
+                while (!cancellationToken.IsCancellationRequested)
+                {
+                    List<int> userOnline = new List<int>();
+                    foreach (var user in onlineUser.Values)
+                    {
+                        userOnline.Add(user);
+                    }
+                    var nearestUsers = await _locationService.GetNearestUser(id, 5, userOnline);
+                    await writer.WriteAsync(nearestUsers, cancellationToken);
+                    await Task.Delay(5000, cancellationToken); 
+                }
+            }
+            catch (OperationCanceledException ex)
+            {
+                Log.Error(ex.Message);
+            }
+            finally
+            {
+                writer.TryComplete();
+            }
+        }
     }
+
 }
+
