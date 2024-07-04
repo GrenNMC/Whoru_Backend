@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Serilog;
+using System.Collections;
 using System.Collections.Generic;
 using WhoruBackend.Data;
 using WhoruBackend.Models;
@@ -64,16 +65,16 @@ namespace WhoruBackend.Repositorys.Implement
             try
             {
                 var list = await _dbContext.FaceRecogNumbers.ToListAsync();
+                var increaseList = list.OrderBy(s => s.Id);
                 List<NumberRecogModelView> result = new List<NumberRecogModelView>();
                 // Nhóm theo UserId và tạo NumberRecogModelView
-                result = list.GroupBy(x => x.UserId)
+                result = increaseList.GroupBy(x => x.UserId)
                                       .Select(g => new NumberRecogModelView
                                       {
                                           UserId = g.Key,
                                           Embedding = g.Select(x => x.Embedding).ToList()
                                       })
                                       .ToList();
-
                 return result;
             }
             catch(Exception ex)
@@ -101,30 +102,49 @@ namespace WhoruBackend.Repositorys.Implement
             }
         }
 
-        public async Task<List<SuggestUserModelView>?> GetSuggestionFriendList(int idAuth, List<int> idList)
+        public async Task<ResponseView> PostSuggestionFriendList(int idAuth,int type, List<int> idList)
         {
             try
             {
-                List<SuggestUserModelView> listResult = new List<SuggestUserModelView> ();
-                foreach (var item in idList)
+                if(type == 2)
                 {
-                    var checkFollow = await _dbContext.Follows.FirstOrDefaultAsync(s => s.IdFollower == idAuth && s.IdFollowing == item);
-                    if(checkFollow == null)
+                    var listLocation =       from suggestUser in _dbContext.SuggestionUsers
+                                             where suggestUser.UserId == idAuth && suggestUser.Type == 2
+                                             select suggestUser;
+                    foreach(var item in listLocation)
                     {
-                        var info = await _dbContext.UserInfos.FirstOrDefaultAsync(s => s.Id == item);
-                        listResult.Add(new SuggestUserModelView(item, info.FullName,info.Avatar));
+                        _dbContext.SuggestionUsers.Remove(item);
+                        await _dbContext.SaveChangesAsync();
                     }
                 }
-                if(listResult.Count() == 0)
+                //List<SuggestUserModelView> listResult = new List<SuggestUserModelView> ();
+                foreach (var item in idList)
                 {
-                    return null;
+                    var checkNull = await _dbContext.SuggestionUsers.FirstOrDefaultAsync(s => s.SuggestUser == item);
+                    if (checkNull == null)
+                    {
+                        var checkFollow = await _dbContext.Follows.FirstOrDefaultAsync(s => s.IdFollower == idAuth && s.IdFollowing == item);
+                        if (checkFollow == null)
+                        {
+                            //var info = await _dbContext.UserInfos.FirstOrDefaultAsync(s => s.Id == item);
+                            //listResult.Add(new SuggestUserModelView(item, info.FullName,info.Avatar));
+                            SuggestionUser suggestion = new SuggestionUser
+                            {
+                                UserId = idAuth,
+                                SuggestUser = item,
+                                Type = type,
+                            };
+                            _dbContext.SuggestionUsers.Add(suggestion);
+                            await _dbContext.SaveChangesAsync();
+                        }
+                    }
                 }
-                return listResult;
+                return new ResponseView(MessageConstant.CREATE_SUCCESS);
             }
             catch (Exception ex)
             {
                 Log.Error(ex.Message);
-                return null;
+                return new ResponseView(MessageConstant.SYSTEM_ERROR); ;
             }
         }
 
@@ -234,6 +254,26 @@ namespace WhoruBackend.Repositorys.Implement
             {
                 Log.Error(ex.Message);
                 return new(MessageConstant.SYSTEM_ERROR);
+            }
+        }
+
+        public async Task<List<SuggestUserModelView>?> GetSuggestionFriendList(int idAuth)
+        {
+            try
+            {
+                var list = await _dbContext.SuggestionUsers.Where(s => s.UserId == idAuth).ToListAsync();
+                List<SuggestUserModelView> listResult = new List<SuggestUserModelView> ();
+                foreach (var item in list)
+                {
+                        var info = await _dbContext.UserInfos.FirstOrDefaultAsync(s => s.Id == item.SuggestUser);
+                        listResult.Add(new SuggestUserModelView(item.SuggestUser, info.FullName, info.Avatar));
+                }
+                return listResult;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+                return null; ;
             }
         }
     }

@@ -36,5 +36,7 @@ namespace WhoruBackend.Models
         public Location? Location { get; set; }
         
         public List<FaceRecogNumber>? Embeddings { get; set; }
+        public List<SuggestionUser>? SuggestionUsers {  get; set; }
+        public List<SuggestionUser>? isSuggestionUsers { get; set; }
     }
 }

@@ -39,9 +39,11 @@ namespace WhoruBackend.Repositorys.Implement
                 {
                     var info = await _DbContext.UserInfos.FirstOrDefaultAsync(s => s.Id == notification.UserReceive);
                     result.Add(new NotificationModelView(notification.UserReceive.Value, info.Avatar, info.FullName,notification.Date.Value.ToString("H:mm dd/MM/yyyy"),notification.Message));
+                    
                 }
                 if(result.Count != 0)
                 {
+                    result.Reverse();
                     return result;
                 }
                 return null;

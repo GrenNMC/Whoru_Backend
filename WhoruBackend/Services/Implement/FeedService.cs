@@ -4,6 +4,7 @@ using WhoruBackend.ModelViews.FeedModelViews;
 using WhoruBackend.Repositorys;
 using WhoruBackend.Utilities.Constants;
 using PagedList;
+using WhoruBackend.Utilities.Model;
 
 namespace WhoruBackend.Services.Implement
 {
@@ -22,6 +23,16 @@ namespace WhoruBackend.Services.Implement
 
         public async Task<ResponseView> Create(int userId, string status, List<IFormFile> files, int state)
         {
+            var checkSensitive = false;
+            Model model = new Model();
+            foreach(var file in files)
+            {
+                var check = model.ClassifyImage(file);
+                if(check.PredictedLabel != "Neutral")
+                {
+                    return new ResponseView(MessageConstant.SENSITIVE);
+                }
+            } 
             if(status == null)
             {
                 return new ResponseView(MessageConstant.NO_DATA_REQUEST);
@@ -33,7 +44,7 @@ namespace WhoruBackend.Services.Implement
                 UserId = userId,
                 UserInfoId = infoId,
                 Date = DateTime.UtcNow,
-                State = GetState(state),
+                State = state,
             };
             var newPost = await _feedRepo.Create(feed, files);
             return newPost;
@@ -104,34 +115,12 @@ namespace WhoruBackend.Services.Implement
             return result;
         }
 
-        private string GetState(int state)
-        {
-            switch (state)
-            {
-                case 1:
-                    {
-                        return MessageConstant.PUBLIC;
-                    }
-                case 2:
-                    {
-                        return MessageConstant.FOLLOWONLY;
-                    }
-                case 3:
-                    {
-                        return MessageConstant.FRIENDONLY;
-                    }
-                case 4:
-                    {
-                        return MessageConstant.PRIVATE;
-                    }
-            }
-            return MessageConstant.PUBLIC;
-        }
+  
         public async Task<ResponseView> UpdateFeedStatus(int IdPost, int Status)
         {
             var feed = await _feedRepo.FindFeedById(IdPost);
             if (feed != null) {
-                feed.State =  GetState(Status);
+                feed.State =  Status;
                 var response = await _feedRepo.UpdateFeed(feed);
                 return response;
             }

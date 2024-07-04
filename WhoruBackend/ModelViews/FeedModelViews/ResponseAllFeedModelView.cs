@@ -14,9 +14,9 @@
         public int CommentsCount {  get; set; }
         public bool isShare { get; set; }
         public int SharesCount { get; set; }
-        public string Status { get; set; }
+        public int Status { get; set; }
 
-        public ResponseAllFeedModelView(int idFeed, string content,string? date, List<string> listImages, int idUser, string fullName, string avatar,bool isLike, int likesCount, int commentsCount,bool isShare, int sharesCount, string status)
+        public ResponseAllFeedModelView(int idFeed, string content,string? date, List<string> listImages, int idUser, string fullName, string avatar,bool isLike, int likesCount, int commentsCount,bool isShare, int sharesCount, int status)
         {
             IdFeed = idFeed;
             Content = content;

@@ -58,11 +58,11 @@ namespace WhoruBackend.Services.Implement
             return await _userInfoRepo.GetEmbeddedNumber();
         }
 
-        public async Task<List<SuggestUserModelView>?> GetSuggestionFriendList(List<int> idList)
+        public async Task<ResponseView> PostSuggestionFriendList(List<int> idList)
         {
             int idUser = await _userService.GetIdByToken();
             int idInfo = await _userInfoRepo.GetInfoByUserId(idUser);
-            return await _userInfoRepo.GetSuggestionFriendList(idInfo, idList);
+            return await _userInfoRepo.PostSuggestionFriendList(idInfo,1, idList);
         }
 
         public async Task<UserInfo?> GetUserInfo(int id)
@@ -171,6 +171,13 @@ namespace WhoruBackend.Services.Implement
                 await _userInfoRepo.CreateEmbedding(idInfo, item);
             }
             return new(MessageConstant.OK);
+        }
+
+        public async Task<List<SuggestUserModelView>?> GetSuggestionFriendList()
+        {
+            int idUser = await _userService.GetIdByToken();
+            int idInfo = await _userInfoRepo.GetInfoByUserId(idUser);
+            return await _userInfoRepo.GetSuggestionFriendList(idInfo);
         }
     }
 }

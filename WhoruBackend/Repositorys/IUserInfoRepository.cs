@@ -17,6 +17,7 @@ namespace WhoruBackend.Repositorys
         public Task<ResponseInfoView?> GetUserInfo(int userId, int idAuthor);
         public Task CreateEmbedding(int idUser, double embeddingNumber);
         public Task<List<NumberRecogModelView>?> GetEmbeddedNumber();
-        public Task<List<SuggestUserModelView>?> GetSuggestionFriendList(int idAuth, List<int> idList);
+        public Task<ResponseView> PostSuggestionFriendList(int idAuth,int type, List<int> idList);
+        public Task<List<SuggestUserModelView>?> GetSuggestionFriendList(int idAuth);
     }
 }

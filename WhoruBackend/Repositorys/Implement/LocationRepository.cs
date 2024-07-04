@@ -11,9 +11,11 @@ namespace WhoruBackend.Repositorys.Implement
     public class LocationRepository : ILocationRepository
     {
         private readonly ApplicationDbContext _AppDbContext;
-        public LocationRepository(ApplicationDbContext appDbContext)
+        private readonly IUserInfoRepository _infoRepo;
+        public LocationRepository(ApplicationDbContext appDbContext, IUserInfoRepository infoRepo)
         {
             _AppDbContext = appDbContext;
+            _infoRepo = infoRepo;
         }
 
         public async Task<List<UserLocationModelView>?> GetNearestUser(int id, double size, List<int> onlineUser)
@@ -29,6 +31,7 @@ namespace WhoruBackend.Repositorys.Implement
                         return null;
                     }
                     List<UserLocationModelView> listResult = new List<UserLocationModelView>();
+                    List<int> ListSuggestUser = new List<int>();
                     foreach (var location in listLocation)
                     {
                         if(id != location.UserId)
@@ -45,10 +48,12 @@ namespace WhoruBackend.Repositorys.Implement
                                     location.Latitude,
                                     location.Longitude
                                 );
+                                ListSuggestUser.Add(location.UserId);
                                 listResult.Add (user);
                             }
                         }
                     }
+                    await _infoRepo.PostSuggestionFriendList(id,2, ListSuggestUser); 
                     if(listResult.Count != 0)
                     {
                         return listResult;

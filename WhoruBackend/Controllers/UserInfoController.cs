@@ -155,7 +155,7 @@ namespace WhoruBackend.Controllers
         public async Task<IActionResult> GetListEmbedding()
         {
             var response = await _userInfoService.GetEmbeddedNumber();
-            if(response != null)
+            if(response != null && response.Count > 0)
             {
                 return Ok(response);
             }
@@ -164,10 +164,22 @@ namespace WhoruBackend.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> GetListSuggestions([FromBody] FriendshipSuggestionsModelView view)
+        public async Task<IActionResult> PostListSuggestions([FromBody] FriendshipSuggestionsModelView view)
         {
-            var response = await _userInfoService.GetSuggestionFriendList(view.listIdUser);
-            if (response != null)
+            var response = await _userInfoService.PostSuggestionFriendList(view.listIdUser);
+            if (response.Message == MessageConstant.CREATE_SUCCESS)
+            {
+                return CreatedAtAction(nameof(PostListSuggestions), response); 
+            }
+            return BadRequest();
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetListSuggestions()
+        {
+            var response = await _userInfoService.GetSuggestionFriendList();
+            if (response != null && response.Count > 0)
             {
                 return Ok(response);
             }

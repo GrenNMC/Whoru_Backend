@@ -173,14 +173,14 @@ namespace WhoruBackend.Repositorys.Implement
                     List<ResponseAllFeedModelView> listResult = new List<ResponseAllFeedModelView>();
                     foreach (var item in list)
                     {
-                        if(item.State == MessageConstant.PUBLIC)
+                        if(item.State == 1)
                         {
                             var response = await GetModelView(authUser, item);
                             listResult.Add(response);
                         }
                         else
                         {
-                            if (item.State == MessageConstant.FOLLOWONLY)
+                            if (item.State == 2)
                             {
                                 var follow = await _dbContext.Follows.FirstOrDefaultAsync(s => s.IdFollower == authUser && s.IdFollowing == item.UserInfoId);
                                 if(follow != null)
@@ -191,7 +191,7 @@ namespace WhoruBackend.Repositorys.Implement
                             }
                             else
                             {
-                                if (item.State == MessageConstant.FRIENDONLY)
+                                if (item.State == 3)
                                 {
                                     var follower = await _dbContext.Follows.FirstOrDefaultAsync(s => s.IdFollower == authUser && s.IdFollowing == item.UserInfoId);
                                     var following = await _dbContext.Follows.FirstOrDefaultAsync(s => s.IdFollower == item.UserInfoId && s.IdFollowing == authUser);

@@ -118,8 +118,8 @@ namespace WhoruBackend.Migrations
                     b.Property<DateTime?>("Date")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("State")
-                        .HasColumnType("text");
+                    b.Property<int>("State")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Status")
                         .HasColumnType("text");
@@ -278,16 +278,16 @@ namespace WhoruBackend.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedDate = new DateTime(2024, 6, 26, 17, 38, 45, 841, DateTimeKind.Utc).AddTicks(7225),
+                            CreatedDate = new DateTime(2024, 7, 2, 18, 41, 59, 668, DateTimeKind.Utc).AddTicks(6999),
                             RoleName = "Admin",
-                            UpdatedDate = new DateTime(2024, 6, 26, 17, 38, 45, 841, DateTimeKind.Utc).AddTicks(7231)
+                            UpdatedDate = new DateTime(2024, 7, 2, 18, 41, 59, 668, DateTimeKind.Utc).AddTicks(7003)
                         },
                         new
                         {
                             Id = 2,
-                            CreatedDate = new DateTime(2024, 6, 26, 17, 38, 45, 841, DateTimeKind.Utc).AddTicks(7232),
+                            CreatedDate = new DateTime(2024, 7, 2, 18, 41, 59, 668, DateTimeKind.Utc).AddTicks(7005),
                             RoleName = "User",
-                            UpdatedDate = new DateTime(2024, 6, 26, 17, 38, 45, 841, DateTimeKind.Utc).AddTicks(7233)
+                            UpdatedDate = new DateTime(2024, 7, 2, 18, 41, 59, 668, DateTimeKind.Utc).AddTicks(7006)
                         });
                 });
 
@@ -344,6 +344,30 @@ namespace WhoruBackend.Migrations
                     b.ToTable("Stories");
                 });
 
+            modelBuilder.Entity("WhoruBackend.Models.SuggestionUser", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("SuggestUser")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
+                    b.HasKey("UserId", "SuggestUser");
+
+                    b.HasIndex("SuggestUser");
+
+                    b.ToTable("SuggestionUsers");
+                });
+
             modelBuilder.Entity("WhoruBackend.Models.User", b =>
                 {
                     b.Property<int>("Id")
@@ -392,26 +416,26 @@ namespace WhoruBackend.Migrations
                         {
                             Id = 1,
                             ActiveCode = "412002",
-                            CreatedDate = new DateTime(2024, 6, 26, 17, 38, 45, 841, DateTimeKind.Utc).AddTicks(7290),
+                            CreatedDate = new DateTime(2024, 7, 2, 18, 41, 59, 668, DateTimeKind.Utc).AddTicks(7091),
                             Email = "nmc0401@gmail.com",
                             IsDisabled = false,
-                            Password = "AQAQJwAAS9FG/jABWmdsoajf0m5HIwoXoHq2YfAIV7TdNbOAY/KMMPDkGVMR7OtkbKtQCMXp",
+                            Password = "AQAQJwAANfT4KxaNQEIuy6bn0YqAn+U5KgYt+gCuBN0lOK5GAU8cFrwhsgaw7fqSYfOXst3T",
                             Phone = "0769395658",
                             RoleId = 1,
-                            UpdatedDate = new DateTime(2024, 6, 26, 17, 38, 45, 841, DateTimeKind.Utc).AddTicks(7291),
+                            UpdatedDate = new DateTime(2024, 7, 2, 18, 41, 59, 668, DateTimeKind.Utc).AddTicks(7093),
                             UserName = "Admin"
                         },
                         new
                         {
                             Id = 2,
                             ActiveCode = "412222",
-                            CreatedDate = new DateTime(2024, 6, 26, 17, 38, 45, 858, DateTimeKind.Utc).AddTicks(6413),
+                            CreatedDate = new DateTime(2024, 7, 2, 18, 41, 59, 690, DateTimeKind.Utc).AddTicks(3730),
                             Email = "20110455@gmail.com",
                             IsDisabled = false,
-                            Password = "AQAQJwAAtQz303mXpLBgi1OdDexl8NVgdrPjJjLhiOYyo60xXtzHRls97ChpeMO6F5+nH2vC",
+                            Password = "AQAQJwAAfCoBPJ3drb+FcQGrY9puTj5RNM9FY+q89O/C97YNOiC75WCkeSPSfKP7VF3yAldG",
                             Phone = "0769395658",
                             RoleId = 1,
-                            UpdatedDate = new DateTime(2024, 6, 26, 17, 38, 45, 858, DateTimeKind.Utc).AddTicks(6417),
+                            UpdatedDate = new DateTime(2024, 7, 2, 18, 41, 59, 690, DateTimeKind.Utc).AddTicks(3737),
                             UserName = "admin_2"
                         });
                 });
@@ -649,6 +673,25 @@ namespace WhoruBackend.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("WhoruBackend.Models.SuggestionUser", b =>
+                {
+                    b.HasOne("WhoruBackend.Models.UserInfo", "SuggestUserInfo")
+                        .WithMany("isSuggestionUsers")
+                        .HasForeignKey("SuggestUser")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .IsRequired();
+
+                    b.HasOne("WhoruBackend.Models.UserInfo", "UserInfo")
+                        .WithMany("SuggestionUsers")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .IsRequired();
+
+                    b.Navigation("SuggestUserInfo");
+
+                    b.Navigation("UserInfo");
+                });
+
             modelBuilder.Entity("WhoruBackend.Models.User", b =>
                 {
                     b.HasOne("WhoruBackend.Models.Role", "Role")
@@ -718,6 +761,10 @@ namespace WhoruBackend.Migrations
                     b.Navigation("Shares");
 
                     b.Navigation("Stories");
+
+                    b.Navigation("SuggestionUsers");
+
+                    b.Navigation("isSuggestionUsers");
                 });
 #pragma warning restore 612, 618
         }

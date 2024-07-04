@@ -33,5 +33,6 @@ namespace WhoruBackend.Utilities.Constants
         public static string FRIENDONLY = "Only Friend";
         public static string FOLLOWONLY = "Only Follower";
         public static string PRIVATE = "Private";
+        public static string SENSITIVE = "Sensitive data request!";
     }
 }

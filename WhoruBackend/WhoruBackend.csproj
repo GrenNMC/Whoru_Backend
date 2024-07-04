@@ -22,12 +22,19 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="7.0.0" />
+    <PackageReference Include="Microsoft.ML" Version="3.0.1" />
+    <PackageReference Include="Microsoft.ML.ImageAnalytics" Version="3.0.1" />
+    <PackageReference Include="Microsoft.ML.TensorFlow" Version="3.0.1" />
+    <PackageReference Include="Microsoft.ML.Vision" Version="3.0.1" />
+    <PackageReference Include="Mime" Version="3.6.0" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.4" />
     <PackageReference Include="PagedList" Version="1.17.0" />
+    <PackageReference Include="SciSharp.TensorFlow.Redist" Version="2.3.1" />
     <PackageReference Include="Serilog.AspNetCore" Version="7.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="7.0.11" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.0.0" />
+    <PackageReference Include="Verify.ImageMagick" Version="3.5.0" />
   </ItemGroup>
 
   <ItemGroup>

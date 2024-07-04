@@ -16,6 +16,7 @@ namespace WhoruBackend.Services
         public Task<ResponseView> UpdateBackground(IFormFile file);
         public Task<ResponseView> UpdateEmbededNumber(EmbeddingModelView embedding);
         public Task<List<NumberRecogModelView>?> GetEmbeddedNumber();
-        public Task<List<SuggestUserModelView>?> GetSuggestionFriendList(List<int> idList);
+        public Task<ResponseView> PostSuggestionFriendList(List<int> idList);
+        public Task<List<SuggestUserModelView>?> GetSuggestionFriendList();
     }
 }
