@@ -1,6 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Serilog;
+using WhoruBackend.Data;
+using WhoruBackend.Models;
+using WhoruBackend.ModelViews.ChatModelViews;
 using WhoruBackend.ModelViews.FeedModelViews;
 using WhoruBackend.Utilities.Model;
 
@@ -10,13 +15,5 @@ namespace WhoruBackend.Controllers
     [ApiController]
     public class TestController : ControllerBase
     {
-        [HttpPost]
-        public IActionResult PredictFromResNetV250([FromForm] ImageModelView image)
-        {
-            var model = new Model();
-            var result = model.ClassifyImage(image.File);
-            return Ok(result.PredictedLabel);
-        }
-        
     }
 }

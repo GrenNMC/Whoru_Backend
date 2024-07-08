@@ -1,6 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Firebase.Auth;
+using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Serilog;
 using System;
+using System.Linq;
 using WhoruBackend.Data;
 using WhoruBackend.Models;
 using WhoruBackend.ModelViews;
@@ -19,17 +23,110 @@ namespace WhoruBackend.Repositorys.Implement
             _DbContext = dbContext;
             _UserInfoRepo = userInfoRepo;
         }
-
-        public async Task CreateChat(Chat chat)
+        private async Task SendChat(Chat chat) 
+        {
+            // URL của SignalR hub
+            //var hubUrl = "wss://whorubackend20240510001558.azurewebsites.net/appHub";
+            var hubUrl = "wss://localhost:7175/appHub";
+            // Tạo một kết nối tới hub
+            var connection = new HubConnectionBuilder().WithUrl(hubUrl).Build();
+            // Kết nối tới hub
+            await connection.StartAsync();
+            await connection.InvokeAsync("SendMessToUser", chat.Id, chat.Message, chat.UserSend, chat.UserReceive);
+            await connection.StopAsync();
+        }
+        public async Task<ListChatModelView> CreateChat(Chat chat)
         {
             try
             {
+                var checkChat = await _DbContext.Chats.Where(s => (s.UserSend == chat.UserSend && s.UserReceive == chat.UserReceive) || (s.UserSend == chat.UserReceive && s.UserReceive == chat.UserSend)).ToListAsync();
+
                 _DbContext.Chats.Add(chat);
                 await _DbContext.SaveChangesAsync();
+
+                var checkIsWaitList = await _DbContext.UserChats.Where(s => s.IdUser1 == chat.UserReceive && s.IdUser2 == chat.UserSend && s.isWait == true).FirstOrDefaultAsync();
+
+                if (checkIsWaitList != null)
+                {
+                    checkIsWaitList.isWait = false;
+                    _DbContext.UserChats.Update(checkIsWaitList);
+                    UserChat user = new UserChat 
+                    {
+                        IdUser1 = checkIsWaitList.IdUser2,
+                        IdUser2 = checkIsWaitList.IdUser1,
+                        isWait = false,
+                    };
+                    _DbContext.UserChats.Add(user);
+                    await _DbContext.SaveChangesAsync();
+                    await SendChat(chat);
+                }
+                else
+                {
+                    var checkFollow = await _DbContext.Follows.Where(s => (s.IdFollower == chat.UserSend && s.IdFollowing == chat.UserReceive) || (s.IdFollower == chat.UserReceive && s.IdFollowing == chat.UserSend)).ToListAsync();
+
+                    var checkNull = await _DbContext.UserChats.Where(s => (s.IdUser1 == chat.UserSend && s.IdUser2 == chat.UserReceive && s.isWait == false) || (s.IdUser1 == chat.UserReceive && s.IdUser2 == chat.UserSend && s.isWait == false)).ToListAsync();
+
+                    if (checkFollow.Count < 2 && checkNull.Count < 2 && checkChat.Count < 1)
+                    {
+
+                        UserChat user = new UserChat
+                        {
+                            IdUser1 = chat.UserSend.GetValueOrDefault(),
+                            IdUser2 = chat.UserReceive.GetValueOrDefault(),
+                            isWait = true,
+                        };
+                        _DbContext.UserChats.Add(user);
+                        await _DbContext.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        if(checkFollow.Count == 2 && checkChat.Count < 1)
+                        {
+                            UserChat user1 = new UserChat
+                            {
+                                IdUser1 = chat.UserSend.GetValueOrDefault(),
+                                IdUser2 = chat.UserReceive.GetValueOrDefault(),
+                                isWait = false,
+                            };
+                            UserChat user2 = new UserChat
+                            {
+                                IdUser1 = chat.UserReceive.GetValueOrDefault(),
+                                IdUser2 = chat.UserSend.GetValueOrDefault(),
+                                isWait = false,
+                            };
+                            _DbContext.UserChats.AddRange(user1, user2);
+                            await _DbContext.SaveChangesAsync();
+                            await SendChat(chat);
+                        }
+                        else
+                        {
+                            var check = await _DbContext.UserChats.Where(s => s.IdUser1 == chat.UserSend && s.IdUser2 == chat.UserReceive && s.isWait == true).FirstOrDefaultAsync();
+                            if(check == null) 
+                            {
+                                await SendChat(chat);
+                            }
+                        }
+                        
+                    }
+                }
+                string date = chat.Date.Value.ToString("H:mm dd/MM/yyyy");
+                ListChatModelView objChat = new ListChatModelView(chat.Id, date, chat.Message, chat.UserSend, chat.UserReceive, chat.Type);
+                //// URL của SignalR hub
+                //var hubUrl = "wss://whorubackend20240510001558.azurewebsites.net/appHub";
+                ////var hubUrl = "wss://localhost:7175/chatHub";
+                //// Tạo một kết nối tới hub
+                //var connection = new HubConnectionBuilder().WithUrl(hubUrl).Build();
+                //// Kết nối tới hub
+                //await connection.StartAsync();
+                //await connection.InvokeAsync("SendMessToUser", chat.Id, chat.Message, chat.UserSend, chat.UserReceive);
+                //await connection.StopAsync();
+
+                return objChat;
             }
             catch (Exception ex)
             {
                 Log.Error(ex.Message);
+                return null;
             }
         }
 
@@ -42,13 +139,24 @@ namespace WhoruBackend.Repositorys.Implement
                 {
                     return new(MessageConstant.NOT_FOUND);
                 }
-                if(chat.Type != MessageConstant.MESSAGE)
+                if(chat.Type != MessageConstant.MESSAGE && chat.Type != MessageConstant.Room)
                 {
                     UploadImageToStorage storage = new UploadImageToStorage();
                     await storage.DeleteChatImageUrl(chat.Type);
                 }
                 _DbContext.Chats.Remove(chat);
                 await _DbContext.SaveChangesAsync();
+
+                // URL của SignalR hub
+                var hubUrl = "wss://whorubackend20240510001558.azurewebsites.net/appHub";
+                //var hubUrl = "wss://localhost:7175/chatHub";
+                // Tạo một kết nối tới hub
+                var connection = new HubConnectionBuilder().WithUrl(hubUrl).Build();
+                // Kết nối tới hub
+                await connection.StartAsync();
+                await connection.InvokeAsync("DeleteMessage",chat.UserReceive, chat.Id);
+                await connection.StopAsync();
+
                 return new(MessageConstant.DELETE_SUCCESS);
             }
             catch (Exception ex)
@@ -74,7 +182,7 @@ namespace WhoruBackend.Repositorys.Implement
                         ListChatModelView objChat = new ListChatModelView(chat.Id, date, chat.Message, chat.UserSend, chat.UserReceive, chat.Type);
                         result.Add(objChat);
                     }
-                    //result.Reverse();
+                    result.Reverse();
                     return result;
                 }
                 return null;
@@ -90,38 +198,48 @@ namespace WhoruBackend.Repositorys.Implement
         {
             try
             {
-                var list = await _DbContext.Chats.Where(s=> s.UserSend == idUser || s.UserReceive == idUser).ToListAsync();
-                list.Reverse();
-                if(list.Count() != 0)
+                var users = new List<UserChatModelView>();
+                var listUser = await _DbContext.UserChats.Where(s => s.IdUser1 == idUser && s.isWait == false).ToListAsync();
+                var currentChatList = await _DbContext.Chats.Where(s => s.UserSend == idUser || s.UserReceive == idUser).ToListAsync();
+                currentChatList.Reverse();
+                if (listUser.Count != 0)
                 {
-                    List<int> idUsers = new List<int>();
-                    foreach (Chat chat in list)
-                    {
-                        if(chat.UserSend == idUser)
+                        foreach (var user in listUser)
                         {
-                            idUsers.Add(chat.UserReceive.GetValueOrDefault());
-                        }
-                        if (chat.UserReceive == idUser)
-                        {
-                            idUsers.Add(chat.UserSend.GetValueOrDefault());
-                        }
-                    }
-                    if(idUsers.Count() != 0)
-                    {
-                        var listUnique = idUsers.Distinct();
-                        var users = new List<UserChatModelView>();
-                        foreach (var user in listUnique)
-                        {
-                            var chatModel = list.Where(s => s.UserSend == user || s.UserReceive == user).FirstOrDefault();
-                            var infoUser = await _UserInfoRepo.GetUserInfoById(user);
+                            var chatModel = currentChatList.Where(s=> (s.UserSend == user.IdUser1 && s.UserReceive == user.IdUser2) || (s.UserSend == user.IdUser2 && s.UserReceive == user.IdUser1)).FirstOrDefault();
+                            var infoUser = await _UserInfoRepo.GetUserInfoById(user.IdUser2);
                             UserChatModelView modelView = new UserChatModelView(infoUser.Id, infoUser.FullName,infoUser.Avatar, chatModel.Message, chatModel.Type,chatModel.IsSeen.GetValueOrDefault());
                             users.Add(modelView);
                         }
-                        return users;
-                    }
-                    return null;
                 }
+                return users;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
                 return null;
+            }
+        }
+
+        public async Task<List<UserChatModelView>?> GetAllWaitingUser(int idUser)
+        {
+            try
+            {
+                var users = new List<UserChatModelView>();
+                var listUser = await _DbContext.UserChats.Where(s => s.IdUser2 == idUser && s.isWait == true).ToListAsync();
+                var currentChatList = await _DbContext.Chats.Where(s => s.UserReceive == idUser).ToListAsync();
+                currentChatList.Reverse();
+                if (listUser.Count != 0)
+                {
+                    foreach (var user in listUser)
+                    {
+                        var chatModel = currentChatList.Where(s => (s.UserSend == user.IdUser1 )).FirstOrDefault();
+                        var infoUser = await _UserInfoRepo.GetUserInfoById(user.IdUser1);
+                        UserChatModelView modelView = new UserChatModelView(infoUser.Id, infoUser.FullName, infoUser.Avatar, chatModel.Message, chatModel.Type, chatModel.IsSeen.GetValueOrDefault());
+                        users.Add(modelView);
+                    }
+                }
+                return users;
             }
             catch (Exception ex)
             {

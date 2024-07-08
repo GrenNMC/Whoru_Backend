@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Serilog;
+using System;
+using System.Reflection;
 using System.Threading.Channels;
+using WhoruBackend.Models;
 using WhoruBackend.ModelViews.LocationModelView;
 using WhoruBackend.Services;
 using WhoruBackend.Utilities.Constants;
@@ -70,12 +73,33 @@ namespace WhoruBackend.Hubs
         }
         public async Task SendMessage(int Sender, int Receiver, string Message)
         {
+            //var isOnline = onlineUser.ContainsValue(Receiver);
+            var chat =  await _chatService.SendChat(Sender, Receiver, Message, MessageConstant.MESSAGE, false);
+            await Clients.Caller.SendAsync("ReceiveMessage", chat.Id, chat.Date, chat.Message, chat.Type, chat.UserSend, chat.UserReceive);
+            //if (isOnline)
+            //{
+            //    await Clients.Client(GetConnectionId(Receiver)).SendAsync("ReceiveMessage",chat.Id, Message, Sender, Receiver);
+            //}
+            
+        }
+        public async Task SendMessToUser(int Id,string Message,int Sender,int Receiver)
+        {
             var isOnline = onlineUser.ContainsValue(Receiver);
             if (isOnline)
             {
-                await Clients.Client(GetConnectionId(Receiver)).SendAsync("ReceiveMessage", Message, Sender, Receiver);
+                await Clients.Client(GetConnectionId(Receiver)).SendAsync("ReceiveMessage", Id, Message, Sender, Receiver);
             }
-            await _chatService.SendChat(Sender, Receiver, Message, MessageConstant.MESSAGE, false);
+
+        }
+
+        public async Task DeleteMessage(int Receiver, int idPost)
+        {
+            var isOnline = onlineUser.ContainsValue(Receiver);
+            if (isOnline)
+            {
+                await Clients.Client(GetConnectionId(Receiver)).SendAsync("DeleteMessage", idPost);
+            }
+
         }
 
         public async Task SendImage(int Sender, int Receiver, string ImageUrl)

@@ -28,7 +28,8 @@ namespace WhoruBackend.Services.Implement
             int id = await _userService.GetIdByToken();
             int idSender = await _userInfoRepo.GetInfoByUserId(id);
             var listUser = await _chatRepo.GetAllChat(idSender, idUser);
-            var result = listUser.ToPagedList(page, 10).ToList();
+            var result = listUser.ToPagedList(page, 20).ToList();
+            ///result.Reverse();
             return result;
 
         }
@@ -41,19 +42,27 @@ namespace WhoruBackend.Services.Implement
             var result = listUser.ToPagedList(page, 10).ToList();
             return result;
         }
+        public async Task<List<UserChatModelView>?> GetAllWaitingUser(int page)
+        {
+            int id = await _userService.GetIdByToken();
+            int idSender = await _userInfoRepo.GetInfoByUserId(id);
+            var listUser = await _chatRepo.GetAllWaitingUser(idSender);
+            var result = listUser.ToPagedList(page, 10).ToList();
+            return result;
+        }
 
-        public async Task SendChat(int Sender, int Receiver, string Message, string Type, bool IsSeen)
+        public async Task<ListChatModelView> SendChat(int Sender, int Receiver, string Message, string Type, bool IsSeen)
         {
             Chat chat = new Chat
             {
                 UserSend = Sender,
                 UserReceive = Receiver,
                 Message = Message,
-                Date = DateTime.UtcNow,
+                Date = (DateTime.UtcNow).AddHours(7),
                 Type = Type,
                 IsSeen = IsSeen,
             };
-            await _chatRepo.CreateChat(chat);
+            return await _chatRepo.CreateChat(chat);
         }
     }
 }

@@ -38,7 +38,7 @@ namespace WhoruBackend.Services.Implement
             Comment newComment = new Comment
             {
                 FeedId = comment.IdFeed,
-                Date = DateTime.UtcNow,
+                Date = (DateTime.UtcNow).AddHours(7),
                 Message = comment.Content,
                 UserId = infoId,
             };

@@ -23,16 +23,15 @@ namespace WhoruBackend.Services.Implement
 
         public async Task<ResponseView> Create(int userId, string status, List<IFormFile> files, int state)
         {
-            var checkSensitive = false;
-            Model model = new Model();
-            foreach(var file in files)
-            {
-                var check = model.ClassifyImage(file);
-                if(check.PredictedLabel != "Neutral")
-                {
-                    return new ResponseView(MessageConstant.SENSITIVE);
-                }
-            } 
+            //Model model = new Model();
+            //foreach(var file in files)
+            //{
+            //    var check = model.ClassifyImage(file);
+            //    if(check.PredictedLabel != "Neutral")
+            //    {
+            //        return new ResponseView(MessageConstant.SENSITIVE);
+            //    }
+            //} 
             if(status == null)
             {
                 return new ResponseView(MessageConstant.NO_DATA_REQUEST);
@@ -43,7 +42,7 @@ namespace WhoruBackend.Services.Implement
                 Status = status,
                 UserId = userId,
                 UserInfoId = infoId,
-                Date = DateTime.UtcNow,
+                Date = (DateTime.UtcNow).AddHours(7),
                 State = state,
             };
             var newPost = await _feedRepo.Create(feed, files);

@@ -222,17 +222,18 @@ namespace WhoruBackend.Repositorys.Implement
         {
             try
             {
+                List<ResponseListUser> list = new List<ResponseListUser>();
+                if (keyWord == string.Empty)
+                    return list;
                 var listUser = await _dbContext.UserInfos.ToListAsync();
                 if(listUser.Count() != 0) {
-                    List<ResponseListUser> list = new List<ResponseListUser>();
                     foreach (var item in listUser)
                     {
                         if (item.FullName.IndexOf(keyWord, StringComparison.OrdinalIgnoreCase) >= 0)
                             list.Add(new ResponseListUser(item.Id, item.FullName, item.Avatar));
                     }
-                    return list;
                 }
-                return null;
+                return list;
             }
             catch(Exception ex) {
                 Log.Error(ex.Message);

@@ -26,7 +26,17 @@ namespace WhoruBackend.Controllers
         public async Task<IActionResult> GetAllChatUser([FromBody] int page)
         {
             var list = await _chatService.GetAllUser(page);
-            if (list == null)
+            if (list.Count < 1)
+                return NotFound();
+            return Ok(list);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> GetAllWaitingUser([FromBody] int page)
+        {
+            var list = await _chatService.GetAllWaitingUser(page);
+            if (list.Count < 1)
                 return NotFound();
             return Ok(list);
         }

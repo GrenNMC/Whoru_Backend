@@ -278,16 +278,16 @@ namespace WhoruBackend.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedDate = new DateTime(2024, 7, 2, 18, 41, 59, 668, DateTimeKind.Utc).AddTicks(6999),
+                            CreatedDate = new DateTime(2024, 7, 7, 18, 36, 30, 447, DateTimeKind.Utc).AddTicks(3559),
                             RoleName = "Admin",
-                            UpdatedDate = new DateTime(2024, 7, 2, 18, 41, 59, 668, DateTimeKind.Utc).AddTicks(7003)
+                            UpdatedDate = new DateTime(2024, 7, 7, 18, 36, 30, 447, DateTimeKind.Utc).AddTicks(3563)
                         },
                         new
                         {
                             Id = 2,
-                            CreatedDate = new DateTime(2024, 7, 2, 18, 41, 59, 668, DateTimeKind.Utc).AddTicks(7005),
+                            CreatedDate = new DateTime(2024, 7, 7, 18, 36, 30, 447, DateTimeKind.Utc).AddTicks(3564),
                             RoleName = "User",
-                            UpdatedDate = new DateTime(2024, 7, 2, 18, 41, 59, 668, DateTimeKind.Utc).AddTicks(7006)
+                            UpdatedDate = new DateTime(2024, 7, 7, 18, 36, 30, 447, DateTimeKind.Utc).AddTicks(3565)
                         });
                 });
 
@@ -416,28 +416,52 @@ namespace WhoruBackend.Migrations
                         {
                             Id = 1,
                             ActiveCode = "412002",
-                            CreatedDate = new DateTime(2024, 7, 2, 18, 41, 59, 668, DateTimeKind.Utc).AddTicks(7091),
+                            CreatedDate = new DateTime(2024, 7, 7, 18, 36, 30, 447, DateTimeKind.Utc).AddTicks(3613),
                             Email = "nmc0401@gmail.com",
                             IsDisabled = false,
-                            Password = "AQAQJwAANfT4KxaNQEIuy6bn0YqAn+U5KgYt+gCuBN0lOK5GAU8cFrwhsgaw7fqSYfOXst3T",
+                            Password = "AQAQJwAATyNqMlg43Zuae3upYBVGLPl2LhcCuBDmU0LY2+qXm9WYV8IbdmE6bZUTSH9+ra1o",
                             Phone = "0769395658",
                             RoleId = 1,
-                            UpdatedDate = new DateTime(2024, 7, 2, 18, 41, 59, 668, DateTimeKind.Utc).AddTicks(7093),
+                            UpdatedDate = new DateTime(2024, 7, 7, 18, 36, 30, 447, DateTimeKind.Utc).AddTicks(3614),
                             UserName = "Admin"
                         },
                         new
                         {
                             Id = 2,
                             ActiveCode = "412222",
-                            CreatedDate = new DateTime(2024, 7, 2, 18, 41, 59, 690, DateTimeKind.Utc).AddTicks(3730),
+                            CreatedDate = new DateTime(2024, 7, 7, 18, 36, 30, 456, DateTimeKind.Utc).AddTicks(4198),
                             Email = "20110455@gmail.com",
                             IsDisabled = false,
-                            Password = "AQAQJwAAfCoBPJ3drb+FcQGrY9puTj5RNM9FY+q89O/C97YNOiC75WCkeSPSfKP7VF3yAldG",
+                            Password = "AQAQJwAAQ6GwNSLRcpVqDe5IsYuY0txybMQrYviLz5w1OZcauK8UNcYppMZqCscUVbxsGnAj",
                             Phone = "0769395658",
                             RoleId = 1,
-                            UpdatedDate = new DateTime(2024, 7, 2, 18, 41, 59, 690, DateTimeKind.Utc).AddTicks(3737),
+                            UpdatedDate = new DateTime(2024, 7, 7, 18, 36, 30, 456, DateTimeKind.Utc).AddTicks(4199),
                             UserName = "admin_2"
                         });
+                });
+
+            modelBuilder.Entity("WhoruBackend.Models.UserChat", b =>
+                {
+                    b.Property<int>("IdUser1")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("IdUser2")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("isWait")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("IdUser1", "IdUser2");
+
+                    b.HasIndex("IdUser2");
+
+                    b.ToTable("UserChats");
                 });
 
             modelBuilder.Entity("WhoruBackend.Models.UserInfo", b =>
@@ -703,6 +727,25 @@ namespace WhoruBackend.Migrations
                     b.Navigation("Role");
                 });
 
+            modelBuilder.Entity("WhoruBackend.Models.UserChat", b =>
+                {
+                    b.HasOne("WhoruBackend.Models.UserInfo", "UserInfo1")
+                        .WithMany("UserChat1")
+                        .HasForeignKey("IdUser1")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .IsRequired();
+
+                    b.HasOne("WhoruBackend.Models.UserInfo", "UserInfo2")
+                        .WithMany("UserChat2")
+                        .HasForeignKey("IdUser2")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .IsRequired();
+
+                    b.Navigation("UserInfo1");
+
+                    b.Navigation("UserInfo2");
+                });
+
             modelBuilder.Entity("WhoruBackend.Models.UserInfo", b =>
                 {
                     b.HasOne("WhoruBackend.Models.User", "User")
@@ -763,6 +806,10 @@ namespace WhoruBackend.Migrations
                     b.Navigation("Stories");
 
                     b.Navigation("SuggestionUsers");
+
+                    b.Navigation("UserChat1");
+
+                    b.Navigation("UserChat2");
 
                     b.Navigation("isSuggestionUsers");
                 });

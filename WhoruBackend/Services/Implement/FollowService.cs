@@ -23,13 +23,13 @@ namespace WhoruBackend.Services.Implement
         {
             int follower = await _userService.GetIdByToken();
             int idFollower = await _userInfoRepo.GetInfoByUserId(follower);
-            int idUserInfo = await _userInfoRepo.GetInfoByUserId(idUser);
-            if (follower < 0 || idFollower < 0 || idUserInfo < 0)
-            {
-                return new ResponseView(MessageConstant.NOT_FOUND);
-            }
+            //int idUserInfo = await _userInfoRepo.GetInfoByUserId(idUser);
+            //if (follower < 0 || idFollower < 0 || idUserInfo < 0)
+            //{
+            //    return new ResponseView(MessageConstant.NOT_FOUND);
+            //}
 
-            var response = await _followRepo.FollowUser(idFollower, idUserInfo);
+            var response = await _followRepo.FollowUser(idFollower, idUser);
             return response;
         }
 
@@ -64,13 +64,13 @@ namespace WhoruBackend.Services.Implement
         {
             int follower = await _userService.GetIdByToken();
             int idFollower = await _userInfoRepo.GetInfoByUserId(follower);
-            int idUserInfo = await _userInfoRepo.GetInfoByUserId(idUser);
-            if (follower < 0 || idFollower < 0 || idUserInfo < 0)
-            {
-                return new ResponseView(MessageConstant.NOT_FOUND);
-            }
+            //int idUserInfo = await _userInfoRepo.GetInfoByUserId(idUser);
+            //if (follower < 0 || idFollower < 0 || idUserInfo < 0)
+            //{
+            //    return new ResponseView(MessageConstant.NOT_FOUND);
+            //}
 
-            var response = await _followRepo.UnFollowUser(idFollower, idUserInfo);
+            var response = await _followRepo.UnFollowUser(idFollower, idUser);
             return response;
         }
     }

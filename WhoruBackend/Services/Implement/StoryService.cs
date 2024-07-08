@@ -29,7 +29,7 @@ namespace WhoruBackend.Services.Implement
             Story story = new Story
             {
                 Name = file.FileName,
-                Date = DateTime.UtcNow,
+                Date = (DateTime.UtcNow).AddHours(7),
                 UserId = id,
                 ImageUrl = url,
             };

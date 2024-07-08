@@ -115,17 +115,7 @@ namespace WhoruBackend.Controllers
         [HttpPost]
         public async Task<IActionResult> SearchPost([FromBody] SearchFeedModelView view)
         {
-            if (view.keyword == string.Empty)
-            {
-                return NotFound();
-            }
-
             var info = await _feedService.SearchFeed(view.keyword,view.page);
-            if (info == null)
-            {
-                return NotFound();
-            }
-
             return Ok(info);
         }
     }

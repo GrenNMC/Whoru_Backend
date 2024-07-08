@@ -22,6 +22,7 @@ namespace WhoruBackend.Data
         public DbSet<Location> Locations { get; set; }
         public DbSet<FaceRecogNumber> FaceRecogNumbers { get; set; }
         public DbSet<SuggestionUser> SuggestionUsers {  get; set; }
+        public DbSet<UserChat> UserChats { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
 
@@ -39,6 +40,8 @@ namespace WhoruBackend.Data
                 .HasKey(f => new { f.IdFollowing, f.IdFollower });
             modelBuilder.Entity<SuggestionUser>()
                 .HasKey(f => new { f.UserId, f.SuggestUser });
+            modelBuilder.Entity<UserChat>()
+                .HasKey(f => new { f.IdUser1, f.IdUser2 });
             modelBuilder.Entity<User>()
                 .HasOne(s => s.Role)
                 .WithMany(s => s.Users)
@@ -79,6 +82,18 @@ namespace WhoruBackend.Data
                 .WithMany(s => s.isSuggestionUsers)
                 .HasForeignKey(s => s.SuggestUser)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<UserChat>()
+                .HasOne(s => s.UserInfo1)
+                .WithMany(s => s.UserChat1)
+                .HasForeignKey(s => s.IdUser1)
+                .OnDelete(DeleteBehavior.SetNull);
+            modelBuilder.Entity<UserChat>()
+                .HasOne(s => s.UserInfo2)
+                .WithMany(s => s.UserChat2)
+                .HasForeignKey(s => s.IdUser2)
+                .OnDelete(DeleteBehavior.SetNull);
+
             modelBuilder.Entity<FeedImage>()
                 .HasOne(s => s.Feed)
                 .WithMany(s => s.Images)

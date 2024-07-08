@@ -272,6 +272,11 @@ namespace WhoruBackend.Repositorys.Implement
             {
                 List<ResponseAllFeedModelView> listResult = new List<ResponseAllFeedModelView>();
 
+                if(keyWord == string.Empty)
+                {
+                    return listResult;
+                }
+
                 var list = await _dbContext.Feeds.ToListAsync();
 
                 if (list != null)
@@ -284,9 +289,8 @@ namespace WhoruBackend.Repositorys.Implement
                             listResult.Add(response);
                         }
                     }
-                    return listResult;
                 }
-                return null;
+                return listResult;
             }
             catch (Exception ex)
             {

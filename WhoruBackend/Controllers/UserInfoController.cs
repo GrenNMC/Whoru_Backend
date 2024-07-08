@@ -106,17 +106,7 @@ namespace WhoruBackend.Controllers
         [Authorize]
         public async Task<IActionResult> SearchUser([FromBody] SearchInfoModelView view)
         {
-            if(view.keyword == string.Empty)
-            {
-                return NotFound();
-            }
-
             var info = await _userInfoService.GetUserInfoByName(view.keyword,view.page);    
-            if(info == null)
-            {
-                return NotFound();
-            }
-
             return Ok(info);
         }
 
