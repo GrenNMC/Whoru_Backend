@@ -61,6 +61,7 @@ services.AddScoped<IChatService, ChatService>();
 services.AddScoped<INotificationService, NotificationService>();
 services.AddScoped<IStoryService, StoryService>();
 services.AddScoped<ILocationService, LocationService>();
+services.AddScoped<ISavedPostService, SavedPostService>();
 // Register Repository
 services.AddScoped<IUserRepository, UserRepositoty>();
 services.AddScoped<IlogRepository, LogRepository>();
@@ -75,6 +76,7 @@ services.AddScoped<IChatRepository, ChatRepository>();
 services.AddScoped<INotificationRepository, NotificationRepository>();
 services.AddScoped<IStoryRepository, StoryRepository>();
 services.AddScoped<ILocationRepository, LocationRepository>();
+services.AddScoped<ISavedPostRepository, SavedPostRepository>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 services.AddEndpointsApiExplorer();
 services.AddHttpContextAccessor();

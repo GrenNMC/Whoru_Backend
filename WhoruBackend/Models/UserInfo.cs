@@ -41,6 +41,7 @@ namespace WhoruBackend.Models
 
         public List<UserChat>? UserChat1 { get; set; }
         public List<UserChat>? UserChat2 { get; set; }
+        public List<SavedFeed>? SavedFeed { get; set; }
 
     }
 }

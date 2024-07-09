@@ -11,13 +11,11 @@ namespace WhoruBackend.Services.Implement
     {
         private readonly IShareRepository _shareRepo;
         private readonly IUserService _userService;
-        private readonly IFeedRepository _feedRepo;
         private readonly IUserInfoRepository _userInfoRepo;
-        public ShareService(IShareRepository shareRepo, IUserService userService, IFeedRepository feedRepo,IUserInfoRepository infoRepository)
+        public ShareService(IShareRepository shareRepo, IUserService userService,IUserInfoRepository infoRepository)
         {
             _shareRepo = shareRepo;
             _userService = userService;
-            _feedRepo = feedRepo;
             _userInfoRepo = infoRepository;
         }
 
@@ -31,27 +29,17 @@ namespace WhoruBackend.Services.Implement
         public async Task<ResponseView> SharePost(int idPost)
         {
             var idUser = await _userService.GetIdByToken();
-            var feed = await _feedRepo.FindFeedById(idPost);
-            if(feed != null)
-            {
-                var idInfo = await _userInfoRepo.GetInfoByUserId(idUser);
-                var response = await _shareRepo.ShareFeed(idInfo, idPost);
-                return new(response.Message);
-            }
-            return new(MessageConstant.NOT_FOUND);
+            var idInfo = await _userInfoRepo.GetInfoByUserId(idUser);
+            var response = await _shareRepo.ShareFeed(idInfo, idPost);
+            return new(response.Message);
         }
 
         public async Task<ResponseView> UnSharePost(int idPost)
         {
             var idUser = await _userService.GetIdByToken();
-            var feed = await _feedRepo.FindFeedById(idPost);
-            if (feed != null)
-            {
-                var idInfo = await _userInfoRepo.GetInfoByUserId(idUser);
-                var response = await _shareRepo.UnShareFeed(idInfo, idPost);
-                return new(response.Message);
-            }
-            return new(MessageConstant.NOT_FOUND);
+            var idInfo = await _userInfoRepo.GetInfoByUserId(idUser);
+            var response = await _shareRepo.UnShareFeed(idInfo, idPost);
+            return new(response.Message);
         }
     }
 }

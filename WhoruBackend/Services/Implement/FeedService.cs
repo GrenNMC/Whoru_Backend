@@ -87,6 +87,16 @@ namespace WhoruBackend.Services.Implement
             return result;
         }
 
+        public async Task<List<ResponseAllFeedModelView>?> GetAllSavedPost(int idUser, int page)
+        {
+            var id = await _userService.GetIdByToken();
+            int authUser = await _infoRepo.GetInfoByUserId(id);
+            var list = await _feedRepo.GetAllSavePost(idUser, authUser);
+            var sortedFeeds = list.OrderByDescending(f => f.Date);
+            var result = sortedFeeds.ToPagedList(page, 10).ToList();
+            return result;
+        }
+
         public async Task<List<ResponseAllFeedModelView>?> GetAllSharedPost(int idUser, int page)
         {
             var id = await _userService.GetIdByToken();

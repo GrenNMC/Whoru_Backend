@@ -314,5 +314,35 @@ namespace WhoruBackend.Repositorys.Implement
             }
 
         }
+
+        public async Task<List<ResponseAllFeedModelView>?> GetAllSavePost(int idUser, int authUser)
+        {
+            try
+            {
+                var list = new List<Feed>();
+                var listShared = await _dbContext.SavedFeeds.Where(s => s.UserId == idUser).ToListAsync();
+                foreach (var item in listShared)
+                {
+                    var feed = await _dbContext.Feeds.Where(s => s.Id == item.FeedId).FirstOrDefaultAsync();
+                    list.Add(feed);
+                }
+                if (list != null)
+                {
+                    List<ResponseAllFeedModelView> listResult = new List<ResponseAllFeedModelView>();
+                    foreach (var item in list)
+                    {
+                        var response = await GetModelView(authUser, item);
+                        listResult.Add(response);
+                    }
+                    return listResult;
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+                return null;
+            }
+        }
     }
 }

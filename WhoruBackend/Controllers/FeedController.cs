@@ -111,6 +111,16 @@ namespace WhoruBackend.Controllers
             return Ok(list);
         }
 
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> GetAllSavePost([FromBody] FindFeedModelView view)
+        {
+            var list = await _feedService.GetAllSavedPost(view.id, view.page);
+            if (list.Count <= 0)
+                return NotFound();
+            return Ok(list);
+        }
+
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> SearchPost([FromBody] SearchFeedModelView view)

@@ -21,20 +21,11 @@ namespace WhoruBackend.Controllers
 
         [HttpPost]
         [Authorize]
-        public IActionResult SharePostToUser()
-        {
-            return Ok();
-        }
-
-        [HttpPost]
-        [Authorize]
         public async Task<IActionResult> SharePost([FromBody] int idPost)
         {
             if (idPost < 0)
                 return BadRequest();
             var str = await _shareService.SharePost(idPost);
-            if(str.Message == MessageConstant.NOT_FOUND)
-                return NotFound();
             if(str.Message == MessageConstant.SYSTEM_ERROR)
                 return StatusCode(StatusCodes.Status500InternalServerError);
             return Ok(str);
@@ -47,8 +38,6 @@ namespace WhoruBackend.Controllers
             if (idPost < 0)
                 return BadRequest();
             var str = await _shareService.UnSharePost(idPost);
-            if (str.Message == MessageConstant.NOT_FOUND)
-                return NotFound();
             if (str.Message == MessageConstant.SYSTEM_ERROR)
                 return StatusCode(StatusCodes.Status500InternalServerError);
             return Ok(str);

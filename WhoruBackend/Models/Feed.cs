@@ -19,6 +19,7 @@ namespace WhoruBackend.Models
         public List<Share>? Shares { get; set; }
         public List<Like>? Likes { get; set; }
         public List<Comment>? Comments { get; set; }
+        public List<SavedFeed>? SavedFeed {  get; set; }
         public UserInfo? UserInfo { get; set; }
     }
 }

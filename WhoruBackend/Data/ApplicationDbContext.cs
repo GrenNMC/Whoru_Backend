@@ -23,6 +23,7 @@ namespace WhoruBackend.Data
         public DbSet<FaceRecogNumber> FaceRecogNumbers { get; set; }
         public DbSet<SuggestionUser> SuggestionUsers {  get; set; }
         public DbSet<UserChat> UserChats { get; set; }
+        public DbSet<SavedFeed> SavedFeeds { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
 
@@ -109,6 +110,17 @@ namespace WhoruBackend.Data
                 .WithMany(s => s.Shares)
                 .HasForeignKey(s => s.UserId)
                 .OnDelete(DeleteBehavior.SetNull);
+            modelBuilder.Entity<SavedFeed>()
+                .HasOne(s => s.Feed)
+                .WithMany(s => s.SavedFeed)
+                .HasForeignKey(s => s.FeedId)
+                .OnDelete(DeleteBehavior.SetNull);
+            modelBuilder.Entity<SavedFeed>()
+                .HasOne(s => s.UserInfo)
+                .WithMany(s => s.SavedFeed)
+                .HasForeignKey(s => s.UserId)
+                .OnDelete(DeleteBehavior.SetNull);
+
             modelBuilder.Entity<Like>()
                .HasOne(s => s.Feed)
                .WithMany(s => s.Likes)
