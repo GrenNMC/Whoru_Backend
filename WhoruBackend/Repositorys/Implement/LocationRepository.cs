@@ -18,6 +18,36 @@ namespace WhoruBackend.Repositorys.Implement
             _infoRepo = infoRepo;
         }
 
+        public async Task CreateNote(int idUser, string Note)
+        {
+            try
+            {
+                var location = await _AppDbContext.Locations.FirstOrDefaultAsync(s => s.UserId == idUser);
+                location.Note = Note;
+                _AppDbContext.Locations.Update(location);
+                await _AppDbContext.SaveChangesAsync();
+            }
+            catch(Exception ex) 
+            {
+                Log.Error(ex.Message);
+            }
+        }
+
+        public async Task DeleteNote(int idUser)
+        {
+            try
+            {
+                var location = await _AppDbContext.Locations.FirstOrDefaultAsync(s => s.UserId == idUser);
+                location.Note = "";
+                _AppDbContext.Locations.Update(location);
+                await _AppDbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+            }
+        }
+
         public async Task<List<UserLocationModelView>?> GetNearestUser(int id, double size, List<int> onlineUser)
         {
             try
@@ -44,9 +74,11 @@ namespace WhoruBackend.Repositorys.Implement
                                 UserLocationModelView user = new UserLocationModelView
                                 (
                                     location.UserId,
+                                    info.FullName,
                                     info.Avatar,
                                     location.Latitude,
-                                    location.Longitude
+                                    location.Longitude,
+                                    location.Note
                                 );
                                 ListSuggestUser.Add(location.UserId);
                                 listResult.Add (user);

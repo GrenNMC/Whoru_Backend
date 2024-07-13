@@ -29,7 +29,7 @@ namespace WhoruBackend.Services.Implement
             int idSender = await _userInfoRepo.GetInfoByUserId(id);
             var listUser = await _chatRepo.GetAllChat(idSender, idUser);
             var result = listUser.ToPagedList(page, 20).ToList();
-            ///result.Reverse();
+            result.Reverse();
             return result;
 
         }
@@ -64,5 +64,10 @@ namespace WhoruBackend.Services.Implement
             };
             return await _chatRepo.CreateChat(chat);
         }
+
+        //public Task SendWaitChat(int Sender, int Receiver, string Message, string Type, bool IsSeen)
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }

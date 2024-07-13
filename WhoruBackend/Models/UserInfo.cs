@@ -39,9 +39,10 @@ namespace WhoruBackend.Models
         public List<SuggestionUser>? SuggestionUsers {  get; set; }
         public List<SuggestionUser>? isSuggestionUsers { get; set; }
 
-        public List<UserChat>? UserChat1 { get; set; }
-        public List<UserChat>? UserChat2 { get; set; }
+        //public List<UserChat>? UserChat1 { get; set; }
+        //public List<UserChat>? UserChat2 { get; set; }
         public List<SavedFeed>? SavedFeed { get; set; }
+        public List<MemberGroup>? Groups { get; set; }
 
     }
 }

@@ -62,21 +62,21 @@ namespace WhoruBackend.Hubs
             }
             return string.Empty;
         }
-        public async Task SendSignal(int Sender, int Receiver, string Type)
-        {
-            var isCall = isCalling.ContainsValue(Receiver);
-            if (isCall)
-            {
-                await Clients.Caller.SendAsync("ReceiveSignal", "The recipient cannot answer the phone because he is on another call");
-            }
-            else
-            {
-                await _chatService.SendChat(Sender, Receiver, "Call video", MessageConstant.Room, true);
-                isCalling.Add(Context.ConnectionId, Sender);
-                var info = await _infoService.GetUserInfo(Sender);
-                await Clients.Client(GetConnectionId(Receiver)).SendAsync("ReceiveSignal", Sender, info.FullName, info.Avatar, Receiver, Type);
-            }
-        }
+        //public async Task SendSignal(int Sender, int Receiver, string Type)
+        //{
+        //    var isCall = isCalling.ContainsValue(Receiver);
+        //    if (isCall)
+        //    {
+        //        await Clients.Caller.SendAsync("ReceiveSignal", "The recipient cannot answer the phone because he is on another call");
+        //    }
+        //    else
+        //    {
+        //        await _chatService.SendChat(Sender, Receiver, "Call video", MessageConstant.Room, true);
+        //        isCalling.Add(Context.ConnectionId, Sender);
+        //        var info = await _infoService.GetUserInfo(Sender);
+        //        await Clients.Client(GetConnectionId(Receiver)).SendAsync("ReceiveSignal", Sender, info.FullName, info.Avatar, Receiver, Type);
+        //    }
+        //}
         public async Task SendOffer(int Sender, int Receiver, string ConnectionString) 
         {
             await Clients.Client(GetConnectionId(Receiver)).SendAsync("ReceiveOffer", Sender, Receiver, ConnectionString);

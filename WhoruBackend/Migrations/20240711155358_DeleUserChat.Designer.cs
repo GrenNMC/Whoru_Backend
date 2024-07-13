@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using WhoruBackend.Data;
@@ -11,9 +12,11 @@ using WhoruBackend.Data;
 namespace WhoruBackend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240711155358_DeleUserChat")]
+    partial class DeleUserChat
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -363,16 +366,16 @@ namespace WhoruBackend.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedDate = new DateTime(2024, 7, 12, 22, 8, 16, 196, DateTimeKind.Utc).AddTicks(8012),
+                            CreatedDate = new DateTime(2024, 7, 11, 15, 53, 58, 70, DateTimeKind.Utc).AddTicks(3250),
                             RoleName = "Admin",
-                            UpdatedDate = new DateTime(2024, 7, 12, 22, 8, 16, 196, DateTimeKind.Utc).AddTicks(8016)
+                            UpdatedDate = new DateTime(2024, 7, 11, 15, 53, 58, 70, DateTimeKind.Utc).AddTicks(3255)
                         },
                         new
                         {
                             Id = 2,
-                            CreatedDate = new DateTime(2024, 7, 12, 22, 8, 16, 196, DateTimeKind.Utc).AddTicks(8018),
+                            CreatedDate = new DateTime(2024, 7, 11, 15, 53, 58, 70, DateTimeKind.Utc).AddTicks(3258),
                             RoleName = "User",
-                            UpdatedDate = new DateTime(2024, 7, 12, 22, 8, 16, 196, DateTimeKind.Utc).AddTicks(8019)
+                            UpdatedDate = new DateTime(2024, 7, 11, 15, 53, 58, 70, DateTimeKind.Utc).AddTicks(3259)
                         });
                 });
 
@@ -524,26 +527,26 @@ namespace WhoruBackend.Migrations
                         {
                             Id = 1,
                             ActiveCode = "412002",
-                            CreatedDate = new DateTime(2024, 7, 12, 22, 8, 16, 196, DateTimeKind.Utc).AddTicks(8095),
+                            CreatedDate = new DateTime(2024, 7, 11, 15, 53, 58, 70, DateTimeKind.Utc).AddTicks(3348),
                             Email = "nmc0401@gmail.com",
                             IsDisabled = false,
-                            Password = "AQAQJwAAoQXVUlb9SGsO9fxkp5WkswWcJgOQrS2U/K1rzgiMQCoUnPLOwZu47wtEzcz33oqQ",
+                            Password = "AQAQJwAAfZotdOYc58fJfq3IVp4e/lNeHzc8NJ9Yn5I8dIhKxo6m8uyEMK4jF9Qjv4ezKUhZ",
                             Phone = "0769395658",
                             RoleId = 1,
-                            UpdatedDate = new DateTime(2024, 7, 12, 22, 8, 16, 196, DateTimeKind.Utc).AddTicks(8095),
+                            UpdatedDate = new DateTime(2024, 7, 11, 15, 53, 58, 70, DateTimeKind.Utc).AddTicks(3349),
                             UserName = "Admin"
                         },
                         new
                         {
                             Id = 2,
                             ActiveCode = "412222",
-                            CreatedDate = new DateTime(2024, 7, 12, 22, 8, 16, 207, DateTimeKind.Utc).AddTicks(1770),
+                            CreatedDate = new DateTime(2024, 7, 11, 15, 53, 58, 84, DateTimeKind.Utc).AddTicks(3924),
                             Email = "20110455@gmail.com",
                             IsDisabled = false,
-                            Password = "AQAQJwAAdIIjmZje0yC0dMQI059PrS3+HsYNHGOjXrlztl+6zr8EC6lLH2Fh96TksTHwRqxY",
+                            Password = "AQAQJwAA/+IoisBdjuA+zAdRynd+Wq+4BjiP2y/X9xuAKawT9u2b99vrW3fz85NmGydwrVoD",
                             Phone = "0769395658",
                             RoleId = 1,
-                            UpdatedDate = new DateTime(2024, 7, 12, 22, 8, 16, 207, DateTimeKind.Utc).AddTicks(1773),
+                            UpdatedDate = new DateTime(2024, 7, 11, 15, 53, 58, 84, DateTimeKind.Utc).AddTicks(3929),
                             UserName = "admin_2"
                         });
                 });

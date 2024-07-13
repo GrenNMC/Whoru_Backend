@@ -44,7 +44,7 @@ services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 // Add services to the container.
-services.AddDbContext<ApplicationDbContext>(option => option.UseNpgsql(builder.Configuration.GetConnectionString("WhoruDbConnectionString")));
+services.AddDbContext<ApplicationDbContext>(option => option.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnectionString")));
 
 services.AddControllers().AddJsonOptions(s => s.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
@@ -106,8 +106,9 @@ builder.Services.AddCors(options =>
 
 services.AddSignalR(hubOptions => { 
     hubOptions.EnableDetailedErrors = true; 
-    hubOptions.KeepAliveInterval = TimeSpan.FromSeconds(10); 
-    hubOptions.HandshakeTimeout = TimeSpan.FromSeconds(5); 
+    hubOptions.KeepAliveInterval = TimeSpan.FromMinutes(1); 
+    hubOptions.HandshakeTimeout = TimeSpan.FromSeconds(5);
+    hubOptions.ClientTimeoutInterval = TimeSpan.FromSeconds(120);
 });
 //Register Serilog
 //Log.Logger = new LoggerConfiguration().WriteTo.File("Logs/logs.txt", rollingInterval: RollingInterval.Day).CreateLogger();

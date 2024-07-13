@@ -3,16 +3,18 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WhoruBackend.Models
 {
-    public class Location
+    public class FeedGroup
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public double Latitude { get; set; }
-        public double Longitude { get; set; }
-        public int UserId { get; set; }
-        public string? Note { get; set; }
 
-        public UserInfo? UserInfo { get; set; }
+        // Khóa ngoại
+        public int GroupId { get; set; }
+        public int FeedId { get; set; }
+
+        // Connect to table 
+        public Feed? Feed { get; set; }
+        public Group? Group { get; set; }
     }
 }

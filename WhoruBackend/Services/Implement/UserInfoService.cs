@@ -65,9 +65,10 @@ namespace WhoruBackend.Services.Implement
             return await _userInfoRepo.PostSuggestionFriendList(idInfo,1, idList);
         }
 
-        public async Task<UserInfo?> GetUserInfo(int id)
+        public async Task<UserInfoImgModelView?> GetUserInfo(int id)
         {
-            return await _userInfoRepo.GetUserInfoById(id);
+            var info = await _userInfoRepo.GetUserInfoById(id);
+            return new UserInfoImgModelView(info.Avatar, info.FullName);
         }
 
         public async Task<ResponseInfoView?> GetUserInfoById(int id)

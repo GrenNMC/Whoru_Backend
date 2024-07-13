@@ -12,6 +12,7 @@ namespace WhoruBackend.Models
         public string? Message { get; set; }
         public string? Type {  get; set; }
         public bool? IsSeen {  get; set; }
+        public int? Status { get; set; } //1: Normal, 2: Pending
 
         //Khoa ngoai
         public int? UserSend { get; set; }

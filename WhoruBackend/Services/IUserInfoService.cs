@@ -9,7 +9,7 @@ namespace WhoruBackend.Services
     {
         public Task<List<ResponseListUser>?> GetUserInfoByName(string userName, int page);
         public Task<ResponseInfoView?> GetUserInfoById(int id);
-        public Task<UserInfo?> GetUserInfo(int id);
+        public Task<UserInfoImgModelView?> GetUserInfo(int id);
         public Task<int> Create(RequestUserInfoView request);
         public Task<ResponseView> Update(RequestUserInfoView request);
         public Task<ResponseView> UpdateAvatar(IFormFile file);

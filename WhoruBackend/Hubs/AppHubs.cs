@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using Firebase.Auth;
+using Microsoft.AspNetCore.SignalR;
 using Serilog;
 using System;
 using System.Reflection;
 using System.Threading.Channels;
+using Tensorflow;
 using WhoruBackend.Models;
 using WhoruBackend.ModelViews.LocationModelView;
 using WhoruBackend.Services;
@@ -40,10 +42,25 @@ namespace WhoruBackend.Hubs
 
             return base.OnDisconnectedAsync(exception);
         }
-        public async Task OnDisconnectCalling(int idUser)
+        public async Task OnDisconnectCalling(int idSender, int idReceiver)
         {
-            isCalling.Remove(GetConnectionId(idUser));
+            var isCall = isCalling.ContainsValue(idSender);
+            var isRep = isCalling.ContainsValue(idReceiver);
+            if(isCall)
+            {
+                isCalling.Remove(GetConnectionId(idSender));
+            }
+            if(isRep)
+            {
+                isCalling.Remove(GetConnectionId(idReceiver));
+            }
+            if(Context.ConnectionId == GetConnectionId(idSender))
+            {
+                await Clients.Client(GetConnectionId(idReceiver)).SendAsync("DisconnectCalling", "");
+            }
+            await Clients.Client(GetConnectionId(idSender)).SendAsync("DisconnectCalling", "");
         }
+
         public override async Task OnConnectedAsync()
         {
             await Clients.Caller.SendAsync("Notification", $"{Context.ConnectionId} has connected");
@@ -75,13 +92,25 @@ namespace WhoruBackend.Hubs
         {
             //var isOnline = onlineUser.ContainsValue(Receiver);
             var chat =  await _chatService.SendChat(Sender, Receiver, Message, MessageConstant.MESSAGE, false);
-            await Clients.Caller.SendAsync("ReceiveMessage", chat.Id, chat.Date, chat.Message, chat.Type, chat.UserSend, chat.UserReceive);
+            await Clients.Caller.SendAsync("SendMessage", chat.Id, chat.Message,chat.UserSend,chat.UserReceive);
             //if (isOnline)
             //{
-            //    await Clients.Client(GetConnectionId(Receiver)).SendAsync("ReceiveMessage",chat.Id, Message, Sender, Receiver);
+            //    await Clients.Client(GetConnectionId(Receiver)).SendAsync("ReceiveMessage", chat.Id, Message, Sender, Receiver);
             //}
-            
+
         }
+
+        //public async Task SendWaitMessage(int Sender, int Receiver, string Message)
+        //{
+        //    //var isOnline = onlineUser.ContainsValue(Receiver);
+        //    var chat = await _chatService.SendChat(Sender, Receiver, Message, MessageConstant.MESSAGE, false);
+        //    await Clients.Caller.SendAsync("ReceiveMessage", chat.Id, chat.Date, chat.Message, chat.Type, chat.UserSend, chat.UserReceive);
+        //    //if (isOnline)
+        //    //{
+        //    //    await Clients.Client(GetConnectionId(Receiver)).SendAsync("ReceiveMessage", chat.Id, Message, Sender, Receiver);
+        //    //}
+
+        //}
         public async Task SendMessToUser(int Id,string Message,int Sender,int Receiver)
         {
             var isOnline = onlineUser.ContainsValue(Receiver);
@@ -110,9 +139,14 @@ namespace WhoruBackend.Hubs
                 await Clients.Client(GetConnectionId(Receiver)).SendAsync("ReceiveImage", ImageUrl, Sender, Receiver);
             }
         }
+        public async Task GetCallingList()
+        {
+            await Clients.Caller.SendAsync("ReceiveListCalling", isCalling);
+        }
 
         public async Task SendSignal(int Sender, int Receiver, string Type)
         {
+            isCalling.Add(Context.ConnectionId, Sender);
             var isCall = isCalling.ContainsValue(Receiver);
             if (isCall)
             {
@@ -121,9 +155,9 @@ namespace WhoruBackend.Hubs
             else
             {
                 await _chatService.SendChat(Sender, Receiver, "Call video", MessageConstant.Room, true);
-                isCalling.Add(Context.ConnectionId, Sender);
+                isCalling.Add(GetConnectionId(Receiver), Receiver);
                 var info = await _infoService.GetUserInfo(Sender);
-                await Clients.Client(GetConnectionId(Receiver)).SendAsync("ReceiveSignal", Sender, info.FullName, info.Avatar, Receiver, Type);
+                await Clients.Client(GetConnectionId(Receiver)).SendAsync("ReceiveSignal", Sender, info.name, info.avatar, Receiver, Type);
             }
         }
 
@@ -160,12 +194,23 @@ namespace WhoruBackend.Hubs
             //foreach (var user in onlineUser.Values)
             //{
                 var nearestUsers = await _locationService.GetNearestUser(id, 5, userOnline); //5km
+                //if(nearestUsers.Count == 0)
+                //{
+                //await Clients.Caller.SendAsync("Return_List_User", "[]");
+                //}
                 await Clients.Caller.SendAsync("Return_List_User", nearestUsers);
             //}
         }
         public async Task SendLocation(int IdUser, double Long, double Lang)
         {
             await _locationService.UpdateLocation(IdUser, Long, Lang);
+        }
+        public async Task SendNote(int IdUser, string Note) {
+            await _locationService.CreateNote(IdUser, Note);
+        }
+        public async Task DeleteNote(int IdUser)
+        {
+            await _locationService.DeleteNote(IdUser);
         }
         public ChannelReader<List<UserLocationModelView>> StreamNearestUser(int idUser, CancellationToken cancellationToken)
         {

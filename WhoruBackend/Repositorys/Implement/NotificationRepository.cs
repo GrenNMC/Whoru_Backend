@@ -37,8 +37,8 @@ namespace WhoruBackend.Repositorys.Implement
                 var list = await _DbContext.Notifications.Where(u => u.UserReceive == idUser).ToListAsync();
                 foreach (var notification in list)
                 {
-                    var info = await _DbContext.UserInfos.FirstOrDefaultAsync(s => s.Id == notification.UserReceive);
-                    result.Add(new NotificationModelView(notification.UserReceive.Value, info.Avatar, info.FullName,notification.Date.Value.ToString("H:mm dd/MM/yyyy"),notification.Message));
+                    var info = await _DbContext.UserInfos.FirstOrDefaultAsync(s => s.Id == notification.UserSend);
+                    result.Add(new NotificationModelView(info.Id, info.Avatar, info.FullName, notification.Date.Value.ToString("H:mm dd/MM/yyyy"), $"Has "+notification.Message+ " your Feed!"));
                     
                 }
                 if(result.Count != 0)

@@ -2,15 +2,17 @@
 {
     public class StoryModelView
     {
-        public int id {  get; set; }
+        public int idUser {  get; set; }
+        public int idStory { get; set; }
         public string name { get; set; }
         public string avatar { get; set; }
         public string imageUrl { get; set; }
         public string date { get; set; }
 
-        public StoryModelView(int id, string name, string avatar, string imageUrl, string date)
+        public StoryModelView(int id,int idStory, string name, string avatar, string imageUrl, string date)
         {
-            this.id = id;
+            this.idUser = id;
+            this.idStory = idStory;
             this.name = name;
             this.avatar = avatar;
             this.imageUrl = imageUrl;

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Serilog;
 using System;
+using Tensorflow;
 using WhoruBackend.Data;
 using WhoruBackend.Models;
 using WhoruBackend.ModelViews;
@@ -80,6 +81,18 @@ namespace WhoruBackend.Repositorys.Implement
             try
             {
                 var story = await _Dbcontext.Stories.Where(s => s.UserId == id).ToListAsync();
+                DateTime today = DateTime.UtcNow.AddHours(7);
+                DateTime oneDaysAgo = today.AddDays(-1);
+                UploadImageToStorage storage = new UploadImageToStorage();
+                foreach (var item in story)
+                {
+                    if (oneDaysAgo >= item.Date)
+                    {
+                        await storage.DeleteStoryImageUrl(item.Name);
+                        _Dbcontext.Stories.Remove(item);
+                        await _Dbcontext.SaveChangesAsync();
+                    }
+                }
                 var following = await _FollowRepository.GetAllFollowing(id);
                 if(following != null)
                 {
@@ -94,7 +107,7 @@ namespace WhoruBackend.Repositorys.Implement
                 foreach(var item in list)
                 {
                     var info = await _UserInfoRepository.GetUserInfoById((int)item.UserId);
-                    Results.Add(new StoryModelView(item.UserId.Value, info.FullName, info.Avatar, item.ImageUrl, item.Date.Value.ToString("H:mm dd/MM/yyyy")));
+                    Results.Add(new StoryModelView(item.UserId.Value,item.Id, info.FullName, info.Avatar, item.ImageUrl, item.Date.Value.ToString("H:mm dd/MM/yyyy")));
                 }
                 return Results;
             }

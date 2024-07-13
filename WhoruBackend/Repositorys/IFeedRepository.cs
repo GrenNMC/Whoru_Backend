@@ -15,6 +15,7 @@ namespace WhoruBackend.Repositorys
         public Task<List<ResponseAllFeedModelView>?> GetAllSavePost(int idUser, int authUser);
         public Task<List<ResponseAllFeedModelView>?> SearchFeed(string keyWord, int authUser);
         public Task<ResponseAllFeedModelView> GetFeedById(int postId, int authUser);
-        public Task<ResponseView> UpdateFeed(Feed feed); 
+        public Task<ResponseView> UpdateFeed(Feed feed);
+        public Task UploadImage(int idPost, List<IFormFile> images);
     }
 }

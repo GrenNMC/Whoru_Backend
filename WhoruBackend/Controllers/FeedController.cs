@@ -35,9 +35,9 @@ namespace WhoruBackend.Controllers
 
         [Authorize]
         [HttpPut]
-        public async Task<IActionResult> UpdateFeedStatus([FromBody] FeedStatusModelView view)
+        public async Task<IActionResult> UpdateFeed([FromForm] UpdateFeedModelView view)
         {
-            var response = await _feedService.UpdateFeedStatus(view.idPost, view.status);
+            var response = await _feedService.UpdateFeed(view);
             if (response.Message == MessageConstant.UPDATE_SUCCESS)
                 return Ok(response);
             if(response.Message == MessageConstant.SYSTEM_ERROR)

@@ -12,6 +12,16 @@ namespace WhoruBackend.Services.Implement
             _locationRepo = locationRepo;
         }
 
+        public async Task CreateNote(int idUser, string Note)
+        {
+            await _locationRepo.CreateNote(idUser, Note);
+        }
+
+        public async Task DeleteNote(int idUser)
+        {
+            await _locationRepo.DeleteNote(idUser);        
+        }
+
         public async Task<List<UserLocationModelView>?> GetNearestUser(int id, double size, List<int> onlineUser)
         {
             return await _locationRepo.GetNearestUser(id, size, onlineUser);

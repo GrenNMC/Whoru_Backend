@@ -21,5 +21,6 @@ namespace WhoruBackend.Models
         public List<Comment>? Comments { get; set; }
         public List<SavedFeed>? SavedFeed {  get; set; }
         public UserInfo? UserInfo { get; set; }
+        public Group? Group { get; set; }
     }
 }

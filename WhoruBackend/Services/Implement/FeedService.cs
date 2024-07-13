@@ -67,11 +67,8 @@ namespace WhoruBackend.Services.Implement
             int authUser = await _infoRepo.GetInfoByUserId(id);
             var listFeed = await _feedRepo.GetAllFeed(authUser);
 
-            var sortedFeeds = listFeed.OrderByDescending(f => f.Date)
-                               .ThenByDescending(f => f.LikesCount);
-
-            var result = sortedFeeds.ToPagedList(page, pageSize).ToList();
-
+            var pageList = listFeed.ToPagedList(page, pageSize).ToList();
+            var result = pageList.OrderByDescending(x => x.LikesCount).ToList();
             return result;
         }
 
@@ -81,8 +78,7 @@ namespace WhoruBackend.Services.Implement
             int authUser = await _infoRepo.GetInfoByUserId(idUser);
 
             var list = await _feedRepo.GetAllFeedByUserId(id, authUser);
-            var sortedFeeds = list.OrderByDescending(f => f.Date);
-            var result = sortedFeeds.ToPagedList(page, 10).ToList();
+            var result = list.ToPagedList(page, 10).ToList();
 
             return result;
         }
@@ -92,8 +88,7 @@ namespace WhoruBackend.Services.Implement
             var id = await _userService.GetIdByToken();
             int authUser = await _infoRepo.GetInfoByUserId(id);
             var list = await _feedRepo.GetAllSavePost(idUser, authUser);
-            var sortedFeeds = list.OrderByDescending(f => f.Date);
-            var result = sortedFeeds.ToPagedList(page, 10).ToList();
+            var result = list.ToPagedList(page, 10).ToList();
             return result;
         }
 
@@ -102,8 +97,7 @@ namespace WhoruBackend.Services.Implement
             var id = await _userService.GetIdByToken();
             int authUser = await _infoRepo.GetInfoByUserId(id);
             var list = await _feedRepo.GetAllSharedPost(idUser, authUser);
-            var sortedFeeds = list.OrderByDescending(f => f.Date);
-            var result = sortedFeeds.ToPagedList(page, 10).ToList();
+            var result = list.ToPagedList(page, 10).ToList();
             return result;
         }
 
@@ -125,11 +119,15 @@ namespace WhoruBackend.Services.Implement
         }
 
   
-        public async Task<ResponseView> UpdateFeedStatus(int IdPost, int Status)
+        public async Task<ResponseView> UpdateFeed(UpdateFeedModelView view)
         {
-            var feed = await _feedRepo.FindFeedById(IdPost);
+            var feed = await _feedRepo.FindFeedById(view.Id);
             if (feed != null) {
-                feed.State =  Status;
+                feed.Status = view.Status;
+                feed.State =  view.State;
+                feed.Date = DateTime.UtcNow.AddHours(7);
+                if(view.Files.Count > 0)
+                    await _feedRepo.UploadImage(view.Id, view.Files);
                 var response = await _feedRepo.UpdateFeed(feed);
                 return response;
             }
