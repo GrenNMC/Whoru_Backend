@@ -53,7 +53,7 @@ namespace WhoruBackend.Repositorys.Implement
             try
             {
                 var listLocation = await _AppDbContext.Locations.Where(s => onlineUser.Contains(s.UserId)).ToListAsync();
-                if (listLocation != null) 
+                if (listLocation.Count > 1) 
                 {
                     var userLocation = listLocation.FirstOrDefault(s=> s.UserId == id);
                     if (userLocation == null) 
@@ -76,8 +76,8 @@ namespace WhoruBackend.Repositorys.Implement
                                     location.UserId,
                                     info.FullName,
                                     info.Avatar,
-                                    location.Latitude,
                                     location.Longitude,
+                                    location.Latitude,
                                     location.Note
                                 );
                                 ListSuggestUser.Add(location.UserId);
@@ -85,7 +85,10 @@ namespace WhoruBackend.Repositorys.Implement
                             }
                         }
                     }
-                    await _infoRepo.PostSuggestionFriendList(id,2, ListSuggestUser); 
+                    if (ListSuggestUser.Count > 0)
+                    {
+                        _ = await _infoRepo.PostSuggestionFriendList(id, 2, ListSuggestUser);
+                    }
                     if(listResult.Count != 0)
                     {
                         return listResult;

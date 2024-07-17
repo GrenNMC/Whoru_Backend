@@ -58,7 +58,8 @@ namespace WhoruBackend.Hubs
             {
                 await Clients.Client(GetConnectionId(idReceiver)).SendAsync("DisconnectCalling", "");
             }
-            await Clients.Client(GetConnectionId(idSender)).SendAsync("DisconnectCalling", "");
+            else 
+                await Clients.Client(GetConnectionId(idSender)).SendAsync("DisconnectCalling", "");
         }
 
         public override async Task OnConnectedAsync()
@@ -144,17 +145,23 @@ namespace WhoruBackend.Hubs
             await Clients.Caller.SendAsync("ReceiveListCalling", isCalling);
         }
 
+        public async Task GetOnlineList()
+        {
+            await Clients.Caller.SendAsync("ReceiveListOnline", onlineUser);
+        }
+
         public async Task SendSignal(int Sender, int Receiver, string Type)
         {
-            isCalling.Add(Context.ConnectionId, Sender);
             var isCall = isCalling.ContainsValue(Receiver);
             if (isCall)
             {
-                await Clients.Caller.SendAsync("ReceiveSignal", "The recipient cannot answer the phone because he is on another call");
+                await Clients.Caller.SendAsync("isCalling", "The recipient cannot answer the phone because he is on another call");
             }
             else
             {
+
                 await _chatService.SendChat(Sender, Receiver, "Call video", MessageConstant.Room, true);
+                isCalling.Add(Context.ConnectionId, Sender);
                 isCalling.Add(GetConnectionId(Receiver), Receiver);
                 var info = await _infoService.GetUserInfo(Sender);
                 await Clients.Client(GetConnectionId(Receiver)).SendAsync("ReceiveSignal", Sender, info.name, info.avatar, Receiver, Type);

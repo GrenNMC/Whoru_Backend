@@ -36,6 +36,13 @@ namespace WhoruBackend.Repositorys.Implement
                         IdFollowing = idUser,
                     };
                     _DbContext.Follows.Add(response);
+                    
+
+                    var sugestUser = await _DbContext.SuggestionUsers.FirstOrDefaultAsync(s => s.SuggestUser == idUser);
+                    if(sugestUser != null)
+                    {
+                        _DbContext.SuggestionUsers.Remove(sugestUser);
+                    }
                     await _DbContext.SaveChangesAsync();
                     var info = await _DbContext.UserInfos.FirstOrDefaultAsync(s => s.Id == idFollower);
                     // URL của SignalR hub

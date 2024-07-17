@@ -114,13 +114,13 @@ namespace WhoruBackend.Repositorys.Implement
                     foreach(var item in listLocation)
                     {
                         _dbContext.SuggestionUsers.Remove(item);
-                        await _dbContext.SaveChangesAsync();
                     }
+                    await _dbContext.SaveChangesAsync();
                 }
                 //List<SuggestUserModelView> listResult = new List<SuggestUserModelView> ();
                 foreach (var item in idList)
                 {
-                    var checkNull = await _dbContext.SuggestionUsers.FirstOrDefaultAsync(s => s.SuggestUser == item);
+                    var checkNull = await _dbContext.SuggestionUsers.FirstOrDefaultAsync(s => s.SuggestUser == item && s.UserId == idAuth);
                     if (checkNull == null)
                     {
                         var checkFollow = await _dbContext.Follows.FirstOrDefaultAsync(s => s.IdFollower == idAuth && s.IdFollowing == item);
