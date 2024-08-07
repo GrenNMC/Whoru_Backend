@@ -1,4 +1,5 @@
 # WhoruBackend
+##FRONT-END: https://github.com/Lucisokiu/whoru_redesign
 ---
 # Cài đặt
 1. Công cụ
@@ -26,6 +27,6 @@
 4. Khởi động dự án
 - Vào giao diện visual studio code nhấn F5 hoặc Ctrl F5 để chạy chương trình.
 - Vào Postman để thực hiện Test các API.
-- 
+  
 ---
 ### By GrenNMC
