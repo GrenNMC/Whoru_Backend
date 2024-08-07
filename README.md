@@ -1,5 +1,5 @@
 # WhoruBackend
-##FRONT-END: https://github.com/Lucisokiu/whoru_redesign
+#FRONT-END: https://github.com/Lucisokiu/whoru_redesign
 ---
 # Cài đặt
 1. Công cụ
